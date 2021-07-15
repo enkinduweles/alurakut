@@ -2,7 +2,7 @@ import { css } from 'styled-components';
 import { AlurakutLoginScreen } from './AlurakutLoginScreen';
 
 export const AlurakutStyles = css`
-  *::-webkit-scrollbar {
+  /* *::-webkit-scrollbar {
     width: 8px;
   }
   *::-webkit-scrollbar-track {
@@ -14,7 +14,7 @@ export const AlurakutStyles = css`
   }
   *::-webkit-scrollbar-thumb:hover {
     background: #555;
-  }
+  } */
   a,
   button {
     cursor: pointer;

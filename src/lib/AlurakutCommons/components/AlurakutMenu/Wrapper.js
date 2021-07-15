@@ -6,6 +6,8 @@ export const Wrapper = styled.header`
   width: 100%;
   background-color: #308bc5;
 
+  position: ${({ isMenuOpen }) => (isMenuOpen ? 'fixed' : 'initial')};
+
   .alurakutMenuProfileSidebar {
     background: white;
     position: fixed;
@@ -20,13 +22,23 @@ export const Wrapper = styled.header`
     opacity: ${({ isMenuOpen }) => (isMenuOpen ? '1' : '0')};
     transform: ${({ isMenuOpen }) =>
       isMenuOpen ? 'translateY(0)' : 'translateY(calc(-100% - 48px))'};
+    overflow: auto;
     @media (min-width: 860px) {
       display: none;
     }
     > div {
       max-width: 400px;
       margin: auto;
+
+      figure {
+        text-align: center;
+
+        img {
+          display: inline-block;
+        }
+      }
     }
+
     a {
       font-size: 18px;
     }

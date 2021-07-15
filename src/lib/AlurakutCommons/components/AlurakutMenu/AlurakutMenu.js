@@ -8,11 +8,11 @@ import { Wrapper } from './Wrapper';
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
-export const AlurakutMenu = ({ githubUser }) => {
+export const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened }) => {
   const [isMenuOpen, setMenuState] = useState(false);
 
   return (
-    <Wrapper isMenuOpen={isMenuOpen}>
+    <Wrapper isMenuOpen={isMenuOpened}>
       <div className="container">
         <Logo src={`${BASE_URL}/logo.svg`} />
 
@@ -38,9 +38,11 @@ export const AlurakutMenu = ({ githubUser }) => {
           </div>
         </nav>
 
-        <button onClick={() => setMenuState(!isMenuOpen)}>
-          {isMenuOpen && <img src={`${BASE_URL}/icons/menu-open.svg?v=${v}`} />}
-          {!isMenuOpen && (
+        <button onClick={showMenu}>
+          {isMenuOpened && (
+            <img src={`${BASE_URL}/icons/menu-open.svg?v=${v}`} />
+          )}
+          {!isMenuOpened && (
             <img src={`${BASE_URL}/icons/menu-closed.svg?v=${v}`} />
           )}
         </button>
