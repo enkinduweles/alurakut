@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { Box } from '../src/components/Box/Box';
 import { MainGrid } from '../src/components/MainGrid/MainGrid';
@@ -25,11 +25,34 @@ const Home = (props) => {
   const [communities, setCommunities] = useState([
     {
       id: '2839138',
-      title: 'Eu odeio acordar cedo',
+      name: 'Eu odeio acordar cedo',
       image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
     },
   ]);
+  const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        'https://api.github.com/users/enkinduweles/following'
+      );
+      const parsedResponse = await response.json();
+
+      const mappedResponse = parsedResponse.map((user) => {
+        const { id, avatar_url, login } = user;
+        return {
+          id,
+          name: login,
+          image: avatar_url,
+        };
+      });
+
+      setFollowingUsers(mappedResponse);
+    };
+
+    fetchData();
+  }, []);
 
   const addCommunityHandler = (event) => {
     event.preventDefault();
@@ -44,6 +67,10 @@ const Home = (props) => {
 
     setCommunities((prevCommunities) => [...prevCommunities, community]);
   };
+
+  if (!followingUsers.length > 0) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Fragment>
@@ -94,7 +121,7 @@ const Home = (props) => {
           style={{ gridArea: 'profileRelationsArea' }}
         >
           <ProfileRelations>
-            <ProfileRelationsContent title="Following" data={USERS_TO_FOLLOW} />
+            <ProfileRelationsContent title="Following" data={followingUsers} />
           </ProfileRelations>
           <ProfileRelations>
             <ProfileRelationsContent title="Communities" data={communities} />

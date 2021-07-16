@@ -18,13 +18,10 @@ export const ProfileRelationsContent = (props) => {
       <ul>
         {dataLimitedBy.map((item) => {
           return (
-            <li key={item.id || item}>
+            <li key={item.id}>
               <a href="#">
-                <img
-                  src={item.image || `https://github.com/${item}.png`}
-                  alt={item.title || item}
-                />
-                <span>{item.title || item}</span>
+                <img src={item.image} alt={item.name} />
+                <span>{item.name}</span>
               </a>
             </li>
           );
