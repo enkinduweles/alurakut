@@ -8,7 +8,7 @@ export const ProfileRelationsContent = (props) => {
   if (data.length > 6) {
     dataLimitedBy.splice(6, data.length - 5);
   }
-
+  console.log(data);
   return (
     <Fragment>
       <h2 className="smallTitle">
@@ -20,7 +20,7 @@ export const ProfileRelationsContent = (props) => {
           return (
             <li key={item.id}>
               <a href="#">
-                <img src={item.image} alt={item.name} />
+                <img src={item.imageUrl} alt={item.name} />
                 <span>{item.name}</span>
               </a>
             </li>

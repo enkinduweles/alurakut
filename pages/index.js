@@ -22,18 +22,12 @@ const USERS_TO_FOLLOW = [
 ];
 
 const Home = (props) => {
-  const [communities, setCommunities] = useState([
-    {
-      id: '2839138',
-      name: 'Eu odeio acordar cedo',
-      image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
-    },
-  ]);
+  const [communities, setCommunities] = useState([]);
   const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDataGitHub = async () => {
       const response = await fetch(
         'https://api.github.com/users/enkinduweles/following'
       );
@@ -44,28 +38,67 @@ const Home = (props) => {
         return {
           id,
           name: login,
-          image: avatar_url,
+          imageUrl: avatar_url,
         };
       });
 
       setFollowingUsers(mappedResponse);
     };
 
-    fetchData();
+    const fetchDataDatoCMS = async () => {
+      const response = await fetch('https://graphql.datocms.com/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: process.env.NEXT_PUBLIC_READ_ONLY_TOKEN,
+        },
+        body: JSON.stringify({
+          query: `query {
+            allCommunities {
+              id
+              name
+              creatorSlug
+              imageUrl
+            }
+          }`,
+        }),
+      });
+
+      const parsedResponse = await response.json();
+
+      setCommunities(parsedResponse.data.allCommunities);
+    };
+
+    fetchDataGitHub();
+    fetchDataDatoCMS();
   }, []);
 
-  const addCommunityHandler = (event) => {
+  const addCommunityHandler = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
 
     const community = {
-      id: new Date().toISOString(),
-      title: formData.get('title'),
-      image: formData.get('image'),
+      name: formData.get('title'),
+      imageUrl: formData.get('image'),
+      creatorSlug: GITHUB_USER,
     };
 
-    setCommunities((prevCommunities) => [...prevCommunities, community]);
+    const response = await fetch('/api/communities', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(community),
+    });
+
+    const parsedResponse = await response.json();
+
+    setCommunities((prevCommunities) => [
+      ...prevCommunities,
+      parsedResponse.data,
+    ]);
   };
 
   if (!followingUsers.length > 0) {
