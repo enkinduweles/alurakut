@@ -1,16 +1,19 @@
 import React from 'react';
-
 import { useRouter } from 'next/router';
-import nookies from 'nookies';
+import toast, { Toaster } from 'react-hot-toast';
+import { validateToken } from '../src/utils/auth';
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
+  console.log(props);
   const router = useRouter();
   const [githubUser, setGithubUser] = React.useState('');
+  const [isFocused, setIsFocused] = React.useState(false);
 
   const submitLoginForm = async (event) => {
     event.preventDefault();
+    const toastId = toast.loading('Loading...');
 
-    const response = await fetch('https://alurakut.vercel.app/api/login', {
+    const response = await fetch('/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,18 +21,25 @@ const LoginScreen = () => {
       body: JSON.stringify({ githubUser: githubUser }),
     });
 
-    const parsedResponse = await response.json();
+    const { error } = await response.json();
 
-    console.log(parsedResponse);
-
-    const token = parsedResponse.token;
-    nookies.set(null, 'USER_TOKEN', token, {
-      path: '/',
-      maxAge: 86400 * 7,
-    });
-
-    router.push('/');
+    if (error) {
+      toast.error('User not found', { id: toastId });
+    } else {
+      toast.remove();
+      router.push('/');
+    }
   };
+
+  const inputFocusHandler = () => {
+    setIsFocused(true);
+  };
+  const inputBlurHandler = () => {
+    setIsFocused(false);
+  };
+
+  const invalidClass =
+    isFocused && githubUser.length === 0 ? 'inputFieldInvalid' : '';
 
   return (
     <main
@@ -63,15 +73,27 @@ const LoginScreen = () => {
             <p>
               Acesse agora mesmo com seu usuário do <strong>GitHub</strong>!
             </p>
-            <input
-              placeholder="Usuário"
-              value={githubUser}
-              onChange={(evento) => {
-                setGithubUser(evento.target.value);
-              }}
-            />
-            {githubUser.length === 0 ? 'Preencha o campo' : ''}
-            <button type="submit">Login</button>
+            <div>
+              <input
+                className={invalidClass}
+                placeholder="Usuário"
+                value={githubUser}
+                onChange={(evento) => {
+                  setGithubUser(evento.target.value);
+                }}
+                onFocus={inputFocusHandler}
+                onBlur={inputBlurHandler}
+              />
+              {githubUser.length === 0 && isFocused ? (
+                <span>Preencha o campo</span>
+              ) : (
+                ''
+              )}
+            </div>
+            <button type="submit" disabled={githubUser.length === 0}>
+              Login
+            </button>
+            <Toaster position="bottom-right" />
           </form>
 
           <footer className="box">
@@ -97,3 +119,20 @@ const LoginScreen = () => {
 };
 
 export default LoginScreen;
+
+export async function getServerSideProps(context) {
+  const { isAuthorized } = validateToken(context.req.headers.cookie);
+  console.log(isAuthorized);
+  if (isAuthorized) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

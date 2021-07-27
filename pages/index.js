@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import jwt from 'jsonwebtoken';
 
 import { Box } from '../src/components/Box/Box';
 import { MainGrid } from '../src/components/MainGrid/MainGrid';
@@ -9,19 +10,10 @@ import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
 } from '../src/lib/AlurakutCommons';
-
-const GITHUB_USER = 'enkinduweles';
-const USERS_TO_FOLLOW = [
-  'juunegreiros',
-  'omariosouto',
-  'peas',
-  'rafaballerini',
-  'marcobrunodev',
-  'felipefialho',
-  'enkinduweles',
-];
+import { validateToken } from '../src/utils/auth';
 
 const Home = (props) => {
+  const { githubUser } = props;
   const [communities, setCommunities] = useState([]);
   const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -82,7 +74,7 @@ const Home = (props) => {
     const community = {
       name: formData.get('title'),
       imageUrl: formData.get('image'),
-      creatorSlug: GITHUB_USER,
+      creatorSlug: githubUser,
     };
 
     const response = await fetch('/api/communities', {
@@ -101,25 +93,21 @@ const Home = (props) => {
     ]);
   };
 
-  if (!followingUsers.length > 0) {
-    return <p>Loading...</p>;
-  }
   console.log('Home');
   return (
     <Fragment>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
-        githubUser={GITHUB_USER}
+        githubUser={githubUser}
         showMenu={() => setIsMenuOpened((prevState) => !prevState)}
       />
-
       <MainGrid isMenuOpened={isMenuOpened}>
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
-          <ProfileSidebar githubUser={GITHUB_USER} />
+          <ProfileSidebar githubUser={githubUser} />
         </div>
         <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
           <Box>
-            <h1 className="title">Bem vindo, {GITHUB_USER}</h1>
+            <h1 className="title">Bem vindo, {githubUser}</h1>
             <OrkutNostalgicIconSet />
           </Box>
 
@@ -168,18 +156,11 @@ const Home = (props) => {
 export default Home;
 
 export async function getServerSideProps(context) {
-  const cookies = nookies.get(context);
-  const token = cookies.USER_TOKEN;
-  const { isAuthenticated } = await fetch(
-    'https://alurakut.vercel.app/api/auth',
-    {
-      headers: {
-        Authorization: token,
-      },
-    }
-  ).then((resposta) => resposta.json());
+  const { isAuthorized, githubUser } = validateToken(
+    context.req.headers.cookie
+  );
 
-  if (!isAuthenticated) {
+  if (!isAuthorized) {
     return {
       redirect: {
         destination: '/login',
@@ -188,7 +169,6 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const { githubUser } = jwt.decode(token);
   return {
     props: {
       githubUser,
