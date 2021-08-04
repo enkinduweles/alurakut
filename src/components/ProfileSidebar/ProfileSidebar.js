@@ -4,7 +4,7 @@ import { AlurakutProfileSidebarMenuDefault } from '../../lib/AlurakutCommons';
 
 export const ProfileSidebar = memo((props) => {
   const { githubUser } = props;
-  console.log(githubUser);
+
   return (
     <Box as="aside">
       <img

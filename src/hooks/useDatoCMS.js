@@ -42,12 +42,11 @@ export const useDatoCMS = (startWithPending = false) => {
       });
       const { data } = await response.json();
       dispatch({ type: 'SUCCESS', profileInfo: data.profileInfo });
-      console.log('getUserProfile');
     } catch (error) {
       dispatch({ type: 'FAILED', errorMessage: error });
     }
   }, []);
-  console.log('useDato');
+
   return { ...state, getUserProfile };
 };
 

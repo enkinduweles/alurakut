@@ -50,11 +50,9 @@ const ProfilePages = (props) => {
 
       delete copyProfileInfoHookState.id;
       setFormProfile(copyProfileInfoHookState);
-      console.log('status completed');
+
       return;
     }
-
-    console.log('useEffect');
   }, [status]);
 
   const changeProfileModeHandler = async () => {
@@ -163,7 +161,7 @@ const ProfilePages = (props) => {
       </div>
     );
   }
-  console.log('ProfileComponent, status: ' + status);
+
   return (
     <>
       <AlurakutMenu

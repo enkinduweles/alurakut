@@ -52,8 +52,8 @@ export const Profile = styled(Box)`
 
         label {
           margin-right: 8px;
-          width: 15%;
-          text-align: left;
+          width: 40%;
+          text-align: right;
           color: rgba(0, 0, 0, 0.6);
         }
 
@@ -71,9 +71,10 @@ export const Profile = styled(Box)`
         }
 
         input {
-          width: initial;
+          width: 60%;
+
           margin: 0;
-          padding: 8px 12px;
+          padding: 0;
           background-color: transparent;
           border-bottom: 2px solid #70a1ff;
           border-radius: 0;

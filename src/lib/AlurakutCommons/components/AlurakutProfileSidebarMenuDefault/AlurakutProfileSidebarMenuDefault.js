@@ -5,7 +5,7 @@ const BASE_URL = 'http://alurakut.vercel.app/';
 
 export const AlurakutProfileSidebarMenuDefault = (props) => {
   const { user } = props;
-  console.log(user);
+
   return (
     <Wrapper>
       <nav>

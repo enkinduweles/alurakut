@@ -9,7 +9,6 @@ const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
 export const AlurakutMenu = memo(({ githubUser, showMenu, isMenuOpened }) => {
-  console.log(githubUser);
   return (
     <Wrapper isMenuOpen={isMenuOpened}>
       <div className="container">

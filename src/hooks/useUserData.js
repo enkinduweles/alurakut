@@ -11,7 +11,6 @@ export const useUserData = (user) => {
       );
       const parsedResponse = await response.json();
 
-      console.log(parsedResponse);
       const mappedResponse = parsedResponse.map((item) => {
         const { id, avatar_url, login } = item;
         return {

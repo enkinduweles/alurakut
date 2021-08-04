@@ -4,7 +4,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import { validateToken } from '../src/utils/auth';
 
 const LoginScreen = (props) => {
-  console.log(props);
   const router = useRouter();
   const [githubUser, setGithubUser] = React.useState('');
   const [isFocused, setIsFocused] = React.useState(false);
@@ -122,7 +121,7 @@ export default LoginScreen;
 
 export async function getServerSideProps(context) {
   const { isAuthorized } = validateToken(context.req.headers.cookie);
-  console.log(isAuthorized);
+
   if (isAuthorized) {
     return {
       redirect: {
