@@ -19,7 +19,7 @@ export const AlurakutMenuProfileSidebar = ({ githubUser }) => {
         </p>
         <hr />
 
-        <AlurakutProfileSidebarMenuDefault />
+        <AlurakutProfileSidebarMenuDefault user={githubUser} />
       </div>
     </div>
   );

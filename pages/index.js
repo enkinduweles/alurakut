@@ -9,6 +9,7 @@ import { ProfileRelationsContent } from '../src/components/ProfileRelationsConte
 import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
+  AlurakutProfileSidebarMenuDefault,
 } from '../src/lib/AlurakutCommons';
 import { validateToken } from '../src/utils/auth';
 
@@ -77,7 +78,7 @@ const Home = (props) => {
       creatorSlug: githubUser,
     };
 
-    const response = await fetch('/api/communities', {
+    const response = await fetch('/api/datoCMSContent', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +94,6 @@ const Home = (props) => {
     ]);
   };
 
-  console.log('Home');
   return (
     <Fragment>
       <AlurakutMenu

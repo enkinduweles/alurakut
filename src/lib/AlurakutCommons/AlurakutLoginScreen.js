@@ -98,16 +98,33 @@ export const AlurakutLoginScreen = css`
           text-decoration: none;
           color: var(--colorPrimary);
         }
-        input {
+
+        > div {
           width: 100%;
-          display: block;
-          border: 1px solid var(--textQuarternaryColor);
-          padding: 12px;
-          background-color: var(--backgroundTertiary);
-          border-radius: var(--commonRadius);
           margin-top: 24px;
           margin-bottom: 16px;
+
+          input {
+            width: 100%;
+            display: block;
+            border: 1px solid var(--textQuarternaryColor);
+            padding: 12px;
+            background-color: var(--backgroundTertiary);
+            border-radius: var(--commonRadius);
+          }
+
+          .inputFieldInvalid {
+            background-color: #fab1a0;
+          }
+
+          span {
+            margin-top: 8px;
+            text-align: left;
+            color: tomato;
+            display: block;
+          }
         }
+
         button {
           width: 100%;
           display: block;

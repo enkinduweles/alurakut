@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
 import { AlurakutMenuProfileSidebar } from '../AlurakutProfileSidebarMenu/AlurakutProfileSidebarMenu';
 import { Link } from '../Link';
@@ -8,9 +8,8 @@ import { Wrapper } from './Wrapper';
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
-export const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened }) => {
-  const [isMenuOpen, setMenuState] = useState(false);
-
+export const AlurakutMenu = memo(({ githubUser, showMenu, isMenuOpened }) => {
+  console.log(githubUser);
   return (
     <Wrapper isMenuOpen={isMenuOpened}>
       <div className="container">
@@ -50,4 +49,4 @@ export const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened }) => {
       <AlurakutMenuProfileSidebar githubUser={githubUser} />
     </Wrapper>
   );
-};
+});
