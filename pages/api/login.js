@@ -17,9 +17,13 @@ export default async function sendRequest(request, response) {
       return;
     }
 
-    token = jwt.sign({ githubUser: user }, process.env.PRIVATE_KEY, {
-      expiresIn: '1h',
-    });
+    token = jwt.sign(
+      { githubUser: parsedData.login, id: parsedData.id },
+      process.env.PRIVATE_KEY,
+      {
+        expiresIn: '1h',
+      }
+    );
 
     response.setHeader(
       'Set-Cookie',

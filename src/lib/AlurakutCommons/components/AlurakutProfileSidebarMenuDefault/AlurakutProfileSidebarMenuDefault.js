@@ -1,15 +1,20 @@
+import Link from 'next/link';
 import { Wrapper } from './Wrapper';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 
-export const AlurakutProfileSidebarMenuDefault = () => {
+export const AlurakutProfileSidebarMenuDefault = (props) => {
+  const { user } = props;
+  console.log(user);
   return (
     <Wrapper>
       <nav>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/user.svg`} />
-          Perfil
-        </a>
+        <Link href={`/profile/${user}`} passHref>
+          <a>
+            <img src={`${BASE_URL}/icons/user.svg`} />
+            Perfil
+          </a>
+        </Link>
         <a href="/">
           <img src={`${BASE_URL}/icons/book.svg`} />
           Recados

@@ -6,8 +6,8 @@ export const validateToken = (httpCookie) => {
     const { TOKEN } = cookie.parse(httpCookie);
 
     try {
-      const { githubUser } = jwt.verify(TOKEN, process.env.PRIVATE_KEY);
-      return { isAuthorized: true, githubUser };
+      const { githubUser, id } = jwt.verify(TOKEN, process.env.PRIVATE_KEY);
+      return { isAuthorized: true, githubUser, id };
     } catch (err) {
       return { message: err, isAuthorized: false };
     }

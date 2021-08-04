@@ -8,7 +8,7 @@ export const ProfileRelationsContent = (props) => {
   if (data.length > 6) {
     dataLimitedBy.splice(6, data.length - 5);
   }
-  console.log(data);
+
   return (
     <Fragment>
       <h2 className="smallTitle">
