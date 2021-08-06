@@ -1,5 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+
+import { LoginPageMain } from '../src/components/LoginPages/styled';
+
 import toast, { Toaster } from 'react-hot-toast';
 import { validateToken } from '../src/utils/auth';
 
@@ -41,14 +44,7 @@ const LoginScreen = (props) => {
     isFocused && githubUser.length === 0 ? 'inputFieldInvalid' : '';
 
   return (
-    <main
-      style={{
-        display: 'flex',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <LoginPageMain>
       <div className="loginScreen">
         <section className="logoArea">
           <img src="https://alurakut.vercel.app/logo.svg" />
@@ -113,7 +109,7 @@ const LoginScreen = (props) => {
           </p>
         </footer>
       </div>
-    </main>
+    </LoginPageMain>
   );
 };
 

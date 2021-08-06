@@ -2,61 +2,11 @@ import styled from 'styled-components';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 
-export const Wrapper = styled.header`
+export const AlurakutMenuWrapper = styled.header`
   width: 100%;
   background-color: #308bc5;
 
   position: ${({ isMenuOpen }) => (isMenuOpen ? 'fixed' : 'initial')};
-
-  .alurakutMenuProfileSidebar {
-    background: white;
-    position: fixed;
-    z-index: 100;
-    padding: 46px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 48px;
-    transition: 0.3s;
-    pointer-events: ${({ isMenuOpen }) => (isMenuOpen ? 'all' : 'none')};
-    opacity: ${({ isMenuOpen }) => (isMenuOpen ? '1' : '0')};
-    transform: ${({ isMenuOpen }) =>
-      isMenuOpen ? 'translateY(0)' : 'translateY(calc(-100% - 48px))'};
-    overflow: auto;
-    @media (min-width: 860px) {
-      display: none;
-    }
-    > div {
-      max-width: 400px;
-      margin: auto;
-
-      figure {
-        text-align: center;
-
-        img {
-          display: inline-block;
-        }
-      }
-    }
-
-    a {
-      font-size: 18px;
-    }
-    .boxLink {
-      font-size: 18px;
-      color: #2e7bb4;
-      -webkit-text-decoration: none;
-      text-decoration: none;
-      font-weight: 800;
-    }
-
-    hr {
-      margin-top: 12px;
-      margin-bottom: 8px;
-      border-color: transparent;
-      border-bottom-color: #ecf2fa;
-    }
-  }
 
   .container {
     background-color: #308bc5;
@@ -76,6 +26,7 @@ export const Wrapper = styled.header`
       background: transparent;
       align-self: center;
       display: inline-block;
+
       @media (min-width: 860px) {
         display: none;
       }
@@ -106,6 +57,7 @@ export const Wrapper = styled.header`
         }
       }
     }
+
     input {
       color: #ffffff;
       background: #5579a1;
@@ -122,4 +74,11 @@ export const Wrapper = styled.header`
       }
     }
   }
+`;
+
+export const Logo = styled.img`
+  background-color: #ffffff;
+  padding: 9px 14px;
+  border-radius: 1000px;
+  height: 34px;
 `;

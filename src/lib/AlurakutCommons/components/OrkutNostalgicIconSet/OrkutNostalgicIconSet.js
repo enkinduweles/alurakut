@@ -1,8 +1,8 @@
-import { List } from './List';
+import { OrkutNostalgicIconSetList } from './styled';
 
 export const OrkutNostalgicIconSet = (props) => {
   return (
-    <List>
+    <OrkutNostalgicIconSetList>
       {[
         { name: 'Recados', slug: 'recados', icon: 'book' },
         { name: 'Fotos', slug: 'fotos', icon: 'camera' },
@@ -61,6 +61,6 @@ export const OrkutNostalgicIconSet = (props) => {
           </li>
         );
       })}
-    </List>
+    </OrkutNostalgicIconSetList>
   );
 };

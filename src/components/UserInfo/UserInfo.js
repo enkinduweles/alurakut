@@ -2,15 +2,17 @@ import { memo } from 'react';
 import { Box } from '../Box/Box';
 import { AlurakutProfileSidebarMenuDefault } from '../../lib/AlurakutCommons';
 
-export const ProfileSidebar = memo((props) => {
-  const { githubUser } = props;
+export const UserInfo = memo((props) => {
+  const { githubUser, id } = props;
 
   return (
-    <Box as="aside">
-      <img
-        src={`https://github.com/${githubUser}.png`}
-        style={{ borderRadius: '8px' }}
-      />
+    <div>
+      <figure>
+        <img
+          src={`https://github.com/${githubUser}.png`}
+          style={{ borderRadius: '8px' }}
+        />
+      </figure>
 
       <hr />
 
@@ -21,7 +23,7 @@ export const ProfileSidebar = memo((props) => {
       </p>
 
       <hr />
-      <AlurakutProfileSidebarMenuDefault user={githubUser} />
-    </Box>
+      <AlurakutProfileSidebarMenuDefault user={githubUser} id={id} />
+    </div>
   );
 });

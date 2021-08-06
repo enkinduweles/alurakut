@@ -1,7 +1,21 @@
 import { css } from 'styled-components';
-import { AlurakutLoginScreen } from './AlurakutLoginScreen';
 
 export const AlurakutStyles = css`
+  :root {
+    --backgroundPrimary: #d9e6f6;
+    --backgroundSecondary: #f1f9fe;
+    --backgroundTertiary: #ffffff;
+    --backgroundQuarternary: #bbcde8;
+    --colorPrimary: #2e7bb4;
+    --colorSecondary: #388bb0;
+    --colorTertiary: #2f4a71;
+    --colorQuarternary: #d81d99;
+    --textPrimaryColor: #333333;
+    --textSecondaryColor: #ffffff;
+    --textTertiaryColor: #5a5a5a;
+    --textQuarternaryColor: #c5c6ca;
+    --commonRadius: 8px;
+  }
   /* *::-webkit-scrollbar {
     width: 8px;
   }
@@ -41,6 +55,4 @@ export const AlurakutStyles = css`
       box-shadow: 0px 0px 5px #33333357;
     }
   }
-
-  ${AlurakutLoginScreen}
 `;

@@ -14,12 +14,13 @@ export default async function sendRequest(request, response) {
     const TOKEN = process.env.READ_WRITE_TOKEN;
     const client = new SiteClient(TOKEN);
 
-    await client.items.update(id, {
+    const updatedRegister = await client.items.update(id, {
       ...request.body,
     });
 
     response.json({
       message: 'Response from API',
+      data: updatedRegister,
     });
     return;
   }

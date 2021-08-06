@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Toaster, toast } from 'react-hot-toast';
 
 import { MainGrid } from '../../src/components/MainGrid/MainGrid';
-import { Box } from '../../src/components/Box/Box';
-import { ProfileSidebar } from '../../src/components/ProfileSidebar/ProfileSidebar';
-import { Profile, Wrapper } from '../../src/components/ProfilePages/styled';
+import { UserInfo } from '../../src/components/UserInfo/UserInfo';
+import {
+  Profile,
+  ProfileGridItem,
+} from '../../src/components/ProfilePages/styled';
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
 import { Spinner } from '../../src/components/Spinner/Spinner';
 
-import { useUserData } from '../../src/hooks/useUserData';
 import { validateToken } from '../../src/utils/auth';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
 import { shallowEqual } from '../../src/utils/shallowEquality';
 
 const ProfilePages = (props) => {
-  const { githubUser, id } = props;
+  const { githubUser, ownerId } = props;
 
   const router = useRouter();
-  const { user } = router.query;
+  const { id: userId } = router.query;
   const { getUserProfile, profileInfo, status, error } = useDatoCMS(true);
   const [profileEditMode, setProfileEditMode] = useState(false);
   const [formProfile, setFormProfile] = useState({
+    id: '',
     city: '',
     state: '',
     profession: '',
@@ -28,11 +31,10 @@ const ProfilePages = (props) => {
   });
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [tryFetchProfileInfo, setTryFetchProfileInfo] = useState(true);
-
   useEffect(() => {
     if (tryFetchProfileInfo) {
       getUserProfile(`query MyQuery {
-        profileInfo(filter: {userId: {eq: "${id}"}}) {
+        profileInfo(filter: {userId: {eq: "${userId}"}}) {
           id
           profession
           city
@@ -45,31 +47,35 @@ const ProfilePages = (props) => {
   }, [tryFetchProfileInfo]);
 
   useEffect(() => {
-    if (status === 'completed') {
-      const copyProfileInfoHookState = { ...profileInfo };
-
-      delete copyProfileInfoHookState.id;
-      setFormProfile(copyProfileInfoHookState);
-
-      return;
+    if (status === 'completed' && Object.keys(profileInfo).length !== 0) {
+      setFormProfile(profileInfo);
     }
   }, [status]);
 
   const changeProfileModeHandler = async () => {
     setProfileEditMode((prevState) => !prevState);
   };
+  console.log(profileInfo);
 
   const submitProfileInfoHandler = async (event) => {
     event.preventDefault();
-
+    console.log(profileInfo);
     if (!shallowEqual(formProfile, profileInfo)) {
-      await fetch(`/api/datoCMSContent?id=${profileInfo.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formProfile),
-      });
+      console.log(formProfile, profileInfo);
+      toast.promise(
+        fetch(`/api/datoCMSContent?id=${profileInfo.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formProfile),
+        }),
+        {
+          loading: 'Loading',
+          success: 'Profile saved successfuly',
+          error: 'It was not possible save profile ',
+        }
+      );
     }
 
     setProfileEditMode((prevState) => !prevState);
@@ -85,13 +91,13 @@ const ProfilePages = (props) => {
     profileContent = (
       <form className="userInfoForm" onSubmit={submitProfileInfoHandler}>
         <div>
-          <label htmlFor="">Cidade:</label>
+          <label htmlFor="">Cidade</label>
           <input
             type="text"
             name="city"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.city}
+            value={formProfile.city || ''}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -101,13 +107,13 @@ const ProfilePages = (props) => {
           />
         </div>
         <div>
-          <label htmlFor="">Estado:</label>
+          <label htmlFor="">Estado</label>
           <input
             type="text"
             name="state"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.state}
+            value={formProfile.state || ''}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -117,13 +123,13 @@ const ProfilePages = (props) => {
           />
         </div>
         <div>
-          <label htmlFor="">Profissão:</label>
+          <label htmlFor="">Profissão</label>
           <input
             type="text"
             name="profession"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.profession}
+            value={formProfile.profession || ''}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -133,13 +139,13 @@ const ProfilePages = (props) => {
           />
         </div>
         <div>
-          <label htmlFor="">Contato:</label>
+          <label htmlFor="">Contato</label>
           <input
             type="text"
             name="contact"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.contact}
+            value={formProfile.contact || ''}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -148,7 +154,15 @@ const ProfilePages = (props) => {
             }
           />
         </div>
-        {profileEditMode && <button type="submit">Salvar</button>}
+
+        {profileEditMode && (
+          <div className="formControls">
+            <button type="reset" onClick={() => setProfileEditMode(false)}>
+              Cancelar
+            </button>
+            <button type="submit">Salvar</button>
+          </div>
+        )}
       </form>
     );
   }
@@ -170,26 +184,27 @@ const ProfilePages = (props) => {
         githubUser={githubUser}
       />
       <MainGrid type="profile" isMenuOpened={isMenuOpened}>
-        <Wrapper templateArea="profileArea">
-          <ProfileSidebar githubUser={githubUser} />
-        </Wrapper>
-        <Wrapper templateArea="mainArea">
+        <ProfileGridItem templateArea="profileArea">
+          <UserInfo githubUser={githubUser} />
+        </ProfileGridItem>
+        <ProfileGridItem templateArea="mainArea">
           <Profile as="section" profileEditMode={profileEditMode}>
             <header>
               <div className="profileHeaderContainer">
                 <h2>Perfil</h2>
-                {githubUser === user
-                  ? !error && (
-                      <button onClick={changeProfileModeHandler}>Editar</button>
-                    )
-                  : null}
+                {ownerId.toString() === userId ? (
+                  !error && !profileEditMode ? (
+                    <button onClick={changeProfileModeHandler}>Editar</button>
+                  ) : null
+                ) : null}
               </div>
               {/* breadcrumbe */}
             </header>
             <article>{profileContent}</article>
           </Profile>
-        </Wrapper>
+        </ProfileGridItem>
       </MainGrid>
+      <Toaster position="bottom-right" />
     </>
   );
 };
@@ -213,7 +228,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       githubUser,
-      id,
+      ownerId: id,
     },
   };
 }

@@ -1,21 +1,10 @@
-import { css } from 'styled-components';
+import styled from 'styled-components';
 
-export const AlurakutLoginScreen = css`
-  :root {
-    --backgroundPrimary: #d9e6f6;
-    --backgroundSecondary: #f1f9fe;
-    --backgroundTertiary: #ffffff;
-    --backgroundQuarternary: #bbcde8;
-    --colorPrimary: #2e7bb4;
-    --colorSecondary: #388bb0;
-    --colorTertiary: #2f4a71;
-    --colorQuarternary: #d81d99;
-    --textPrimaryColor: #333333;
-    --textSecondaryColor: #ffffff;
-    --textTertiaryColor: #5a5a5a;
-    --textQuarternaryColor: #c5c6ca;
-    --commonRadius: 8px;
-  }
+export const LoginPageMain = styled.main`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 
   .loginScreen {
     padding: 16px;

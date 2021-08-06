@@ -1,10 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import jwt from 'jsonwebtoken';
 
 import { Box } from '../src/components/Box/Box';
 import { MainGrid } from '../src/components/MainGrid/MainGrid';
 import { ProfileRelations } from '../src/components/ProfileRelations/ProfileRelations';
-import { ProfileSidebar } from '../src/components/ProfileSidebar/ProfileSidebar';
+import { UserInfo } from '../src/components/UserInfo/UserInfo';
 import { ProfileRelationsContent } from '../src/components/ProfileRelationsContent/ProfileRelationsContent';
 import {
   AlurakutMenu,
@@ -14,7 +13,8 @@ import {
 import { validateToken } from '../src/utils/auth';
 
 const Home = (props) => {
-  const { githubUser } = props;
+  const { githubUser, id } = props;
+  console.log(id);
   const [communities, setCommunities] = useState([]);
   const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -100,10 +100,13 @@ const Home = (props) => {
         isMenuOpened={isMenuOpened}
         githubUser={githubUser}
         showMenu={() => setIsMenuOpened((prevState) => !prevState)}
+        id={id}
       />
       <MainGrid isMenuOpened={isMenuOpened}>
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
-          <ProfileSidebar githubUser={githubUser} />
+          <Box as="aside">
+            <UserInfo githubUser={githubUser} id={id} />
+          </Box>
         </div>
         <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
           <Box>
@@ -156,7 +159,7 @@ const Home = (props) => {
 export default Home;
 
 export async function getServerSideProps(context) {
-  const { isAuthorized, githubUser } = validateToken(
+  const { isAuthorized, githubUser, id } = validateToken(
     context.req.headers.cookie
   );
 
@@ -172,6 +175,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       githubUser,
+      id,
     },
   };
 }

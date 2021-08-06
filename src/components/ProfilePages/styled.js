@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Box } from '../Box/Box';
 
-export const Wrapper = styled.div`
+export const ProfileGridItem = styled.div`
   display: ${({ templateArea }) =>
     templateArea === 'profileArea' ? 'none' : 'block'};
   @media (min-width: 860px) {
@@ -24,14 +24,13 @@ export const Profile = styled(Box)`
       padding-bottom: 8px;
     }
 
-    article {
-      text-align: center;
+   
       .profileError {
         button {
           margin-top: 12px;
         }
       }
-    }
+    
 
     .userInfoForm {
       display: flex;
@@ -46,15 +45,16 @@ export const Profile = styled(Box)`
 
       div {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 0;
+        align-items: flex-start;
+        flex-direction: column;
+        /* justify-content: */
+        padding: 8px 8px;
 
         label {
-          margin-right: 8px;
-          width: 40%;
-          text-align: right;
+          margin-bottom: 8px;
+          font-weight:bold;
           color: rgba(0, 0, 0, 0.6);
+          
         }
 
         .editMode {
@@ -71,29 +71,41 @@ export const Profile = styled(Box)`
         }
 
         input {
-          width: 60%;
-
+          width: auto;
           margin: 0;
-          padding: 0;
+          padding: 8px;
           background-color: transparent;
-          border-bottom: 2px solid #70a1ff;
+          border-bottom: 2px solid #565857;
           border-radius: 0;
           color: black;
           box-shadow: none;
-          
+
           &:hover, &:focus{
-            border-bottom: 2px solid #5352ed;
+            border-bottom: 2px solid #F14D89;
             
           }
         }
       }
 
-      div:nth-child(odd) {
+      div:not(.formControls):nth-child(odd) {
         background-color: var(--backgroundPrimary);
       }
-      div:nth-child(even) {
+      div:not(.formControls):nth-child(even) {
         background-color: var(--backgroundSecondary);
       }
+
+      .formControls {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 8px;
+
+        button:first-child {
+          background-color: transparent;
+          color: black
+        }
+      }
     }
+    
   }
 `;

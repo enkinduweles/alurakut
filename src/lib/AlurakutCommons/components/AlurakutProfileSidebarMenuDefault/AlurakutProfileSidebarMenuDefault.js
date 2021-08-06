@@ -1,15 +1,15 @@
 import Link from 'next/link';
-import { Wrapper } from './Wrapper';
+import { AlurakutProfileSidebarMenuDefaultWrapper } from './styled';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 
 export const AlurakutProfileSidebarMenuDefault = (props) => {
-  const { user } = props;
+  const { user, id } = props;
 
   return (
-    <Wrapper>
+    <AlurakutProfileSidebarMenuDefaultWrapper>
       <nav>
-        <Link href={`/profile/${user}`} passHref>
+        <Link href={`/profile/${user}?id=${id}`} passHref>
           <a>
             <img src={`${BASE_URL}/icons/user.svg`} />
             Perfil
@@ -39,6 +39,6 @@ export const AlurakutProfileSidebarMenuDefault = (props) => {
           Sair
         </a>
       </nav>
-    </Wrapper>
+    </AlurakutProfileSidebarMenuDefaultWrapper>
   );
 };

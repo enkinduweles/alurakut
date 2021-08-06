@@ -1,26 +1,16 @@
 import { AlurakutProfileSidebarMenuDefault } from '../AlurakutProfileSidebarMenuDefault/AlurakutProfileSidebarMenuDefault';
+import { UserInfo } from '../../../../components/UserInfo/UserInfo';
 
-export const AlurakutMenuProfileSidebar = ({ githubUser }) => {
+import { AlurakutMenuProfileSidebarWrapper } from './styled';
+
+export const AlurakutMenuProfileSidebar = ({
+  githubUser,
+  id,
+  isMenuOpened,
+}) => {
   return (
-    <div className="alurakutMenuProfileSidebar">
-      <div>
-        <figure>
-          <img
-            src={`https://github.com/${githubUser}.png`}
-            style={{ borderRadius: '8px' }}
-          />
-        </figure>
-
-        <hr />
-        <p>
-          <a className="boxLink" href={`/user/${githubUser}`}>
-            @{githubUser}
-          </a>
-        </p>
-        <hr />
-
-        <AlurakutProfileSidebarMenuDefault user={githubUser} />
-      </div>
-    </div>
+    <AlurakutMenuProfileSidebarWrapper isMenuOpened={isMenuOpened}>
+      <UserInfo githubUser={githubUser} id={id} />
+    </AlurakutMenuProfileSidebarWrapper>
   );
 };

@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import Link from 'next/link';
 
 export const ProfileRelationsContent = (props) => {
   const { title, data } = props;
@@ -19,10 +20,12 @@ export const ProfileRelationsContent = (props) => {
         {dataLimitedBy.map((item) => {
           return (
             <li key={item.id}>
-              <a href="#">
-                <img src={item.imageUrl} alt={item.name} />
-                <span>{item.name}</span>
-              </a>
+              <Link href={`/profile/${item.name}?id=${item.id}`}>
+                <a>
+                  <img src={item.imageUrl} alt={item.name} />
+                  <span>{item.name}</span>
+                </a>
+              </Link>
             </li>
           );
         })}

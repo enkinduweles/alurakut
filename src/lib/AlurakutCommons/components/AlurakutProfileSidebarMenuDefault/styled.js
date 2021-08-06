@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+export const AlurakutProfileSidebarMenuDefaultWrapper = styled.div`
   a {
     font-size: 12px;
     color: #2e7bb4;
