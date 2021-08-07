@@ -14,7 +14,7 @@ import { validateToken } from '../src/utils/auth';
 
 const Home = (props) => {
   const { githubUser, id } = props;
-  console.log(id);
+
   const [communities, setCommunities] = useState([]);
   const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);

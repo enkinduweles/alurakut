@@ -14,14 +14,19 @@ export default async function sendRequest(request, response) {
     const TOKEN = process.env.READ_WRITE_TOKEN;
     const client = new SiteClient(TOKEN);
 
-    const updatedRegister = await client.items.update(id, {
-      ...request.body,
-    });
+    try {
+      const updatedRegister = await client.items.update(id, {
+        ...request.body,
+      });
 
-    response.json({
-      message: 'Response from API',
-      data: updatedRegister,
-    });
+      response.json({
+        message: 'Response from API',
+        data: updatedRegister,
+      });
+    } catch (error) {
+      response.status(404).json(error.statusText);
+    }
+
     return;
   }
 

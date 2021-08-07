@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Toaster, toast } from 'react-hot-toast';
 
@@ -20,7 +20,13 @@ const ProfilePages = (props) => {
 
   const router = useRouter();
   const { id: userId } = router.query;
-  const { getUserProfile, profileInfo, status, error } = useDatoCMS(true);
+  const {
+    getUserProfile,
+    updateUserProfile,
+    profileInfo,
+    status,
+    error,
+  } = useDatoCMS(true);
   const [profileEditMode, setProfileEditMode] = useState(false);
   const [formProfile, setFormProfile] = useState({
     id: '',
@@ -31,6 +37,7 @@ const ProfilePages = (props) => {
   });
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [tryFetchProfileInfo, setTryFetchProfileInfo] = useState(true);
+
   useEffect(() => {
     if (tryFetchProfileInfo) {
       getUserProfile(`query MyQuery {
@@ -50,32 +57,24 @@ const ProfilePages = (props) => {
     if (status === 'completed' && Object.keys(profileInfo).length !== 0) {
       setFormProfile(profileInfo);
     }
+    if (status === 'updateFailed') {
+      setTryFetchProfileInfo(true);
+      toast.error('Sorry, an error occurred!');
+    }
   }, [status]);
 
   const changeProfileModeHandler = async () => {
     setProfileEditMode((prevState) => !prevState);
   };
-  console.log(profileInfo);
 
   const submitProfileInfoHandler = async (event) => {
     event.preventDefault();
-    console.log(profileInfo);
+
     if (!shallowEqual(formProfile, profileInfo)) {
-      console.log(formProfile, profileInfo);
-      toast.promise(
-        fetch(`/api/datoCMSContent?id=${profileInfo.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formProfile),
-        }),
-        {
-          loading: 'Loading',
-          success: 'Profile saved successfuly',
-          error: 'It was not possible save profile ',
-        }
-      );
+      await updateUserProfile({
+        queryParams: `?id=${formProfile.id}`,
+        body: formProfile,
+      });
     }
 
     setProfileEditMode((prevState) => !prevState);
@@ -84,6 +83,11 @@ const ProfilePages = (props) => {
   const tryAgainFetchProfileInfo = () => {
     setTryFetchProfileInfo(true);
   };
+
+  const showMenuHandler = useCallback(
+    () => setIsMenuOpened((prevState) => !prevState),
+    []
+  );
 
   let profileContent = <Spinner />;
 
@@ -97,7 +101,7 @@ const ProfilePages = (props) => {
             name="city"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.city || ''}
+            value={formProfile.city}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -113,7 +117,7 @@ const ProfilePages = (props) => {
             name="state"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.state || ''}
+            value={formProfile.state}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -129,7 +133,7 @@ const ProfilePages = (props) => {
             name="profession"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.profession || ''}
+            value={formProfile.profession}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -145,7 +149,7 @@ const ProfilePages = (props) => {
             name="contact"
             disabled={!profileEditMode}
             className={!profileEditMode ? 'viewMode' : ''}
-            value={formProfile.contact || ''}
+            value={formProfile.contact}
             onChange={(event) =>
               setFormProfile((prevState) => ({
                 ...prevState,
@@ -167,7 +171,7 @@ const ProfilePages = (props) => {
     );
   }
 
-  if (status === 'failed') {
+  if (status === 'fetchFailed') {
     profileContent = (
       <div className="profileError">
         <p>Profile couldn't be loaded</p>
@@ -180,7 +184,7 @@ const ProfilePages = (props) => {
     <>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
-        showMenu={() => setIsMenuOpened((prevState) => !prevState)}
+        showMenu={showMenuHandler}
         githubUser={githubUser}
       />
       <MainGrid type="profile" isMenuOpened={isMenuOpened}>

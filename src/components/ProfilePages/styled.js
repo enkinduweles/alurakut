@@ -1,14 +1,15 @@
+import { memo } from 'react';
 import styled from 'styled-components';
 import { Box } from '../Box/Box';
 
-export const ProfileGridItem = styled.div`
+export const ProfileGridItem = memo(styled.div`
   display: ${({ templateArea }) =>
     templateArea === 'profileArea' ? 'none' : 'block'};
   @media (min-width: 860px) {
     grid-area: ${({ templateArea }) => templateArea};
     display: block;
   }
-`;
+`);
 
 export const Profile = styled(Box)`
 
