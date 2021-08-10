@@ -7,7 +7,7 @@ export const validateToken = (httpCookie) => {
 
     try {
       const { githubUser, id } = jwt.verify(TOKEN, process.env.PRIVATE_KEY);
-      return { isAuthorized: true, githubUser, id };
+      return { isAuthorized: true, githubUser, id: id.toString() };
     } catch (err) {
       return { message: err, isAuthorized: false };
     }

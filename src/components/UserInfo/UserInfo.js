@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { Box } from '../Box/Box';
+import PropTypes from 'prop-types';
+
 import { AlurakutProfileSidebarMenuDefault } from '../../lib/AlurakutCommons';
 
 export const UserInfo = memo((props) => {
@@ -27,3 +28,8 @@ export const UserInfo = memo((props) => {
     </div>
   );
 });
+
+UserInfo.propTypes = {
+  githubUser: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+};

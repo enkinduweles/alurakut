@@ -1,9 +1,24 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-const GRID_TYPE = {
-  profile: {
-    templateArea: "'profileArea mainArea'",
-  },
+const defineTypeGrid = (type) => {
+  switch (type) {
+    case 'profile':
+      return {
+        templateArea: "'profileArea mainArea'",
+        columnsSize: '160px 1fr',
+      };
+    case 'scrap':
+      return {
+        templateArea: "'profileArea mainArea mainArea'",
+        columnsSize: '160px 1fr 1fr',
+      };
+    default:
+      return {
+        templateArea: "'profileArea welcomeArea profileRelationsArea'",
+        columnsSize: '160px 1fr 312px',
+      };
+  }
 };
 
 export const MainGrid = styled.main`
@@ -26,12 +41,15 @@ export const MainGrid = styled.main`
     max-width: 1110px;
     display: grid;
     grid-template-areas: ${(props) => {
-      return props.type === 'profile'
-        ? GRID_TYPE.profile.templateArea
-        : "'profileArea welcomeArea profileRelationsArea'";
+      return defineTypeGrid(props.type);
     }};
     grid-template-columns: ${(props) => {
-      return props.type === 'profile' ? '160px 1fr' : '160px 1fr 312px;';
+      return defineTypeGrid(props.type);
     }};
   }
 `;
+
+MainGrid.propTypes = {
+  isMenuOpened: PropTypes.bool.isRequired,
+  type: PropTypes.string,
+};

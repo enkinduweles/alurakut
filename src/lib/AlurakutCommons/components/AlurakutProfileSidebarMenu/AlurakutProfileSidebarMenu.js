@@ -1,4 +1,5 @@
-import { AlurakutProfileSidebarMenuDefault } from '../AlurakutProfileSidebarMenuDefault/AlurakutProfileSidebarMenuDefault';
+import PropTypes from 'prop-types';
+
 import { UserInfo } from '../../../../components/UserInfo/UserInfo';
 
 import { AlurakutMenuProfileSidebarWrapper } from './styled';
@@ -13,4 +14,10 @@ export const AlurakutMenuProfileSidebar = ({
       <UserInfo githubUser={githubUser} id={id} />
     </AlurakutMenuProfileSidebarWrapper>
   );
+};
+
+AlurakutMenuProfileSidebar.propTypes = {
+  githubUser: PropTypes.string.isRequired,
+  isMenuOpened: PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
 };

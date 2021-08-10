@@ -1,4 +1,6 @@
-import Link from 'next/link';
+import PropTypes from 'prop-types';
+
+import { Link } from '../Link';
 import { AlurakutProfileSidebarMenuDefaultWrapper } from './styled';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
@@ -9,11 +11,9 @@ export const AlurakutProfileSidebarMenuDefault = (props) => {
   return (
     <AlurakutProfileSidebarMenuDefaultWrapper>
       <nav>
-        <Link href={`/profile/${user}?id=${id}`} passHref>
-          <a>
-            <img src={`${BASE_URL}/icons/user.svg`} />
-            Perfil
-          </a>
+        <Link href={`/profile/${user}?id=${id}`}>
+          <img src={`${BASE_URL}/icons/user.svg`} />
+          Perfil
         </Link>
         <a href="/">
           <img src={`${BASE_URL}/icons/book.svg`} />
@@ -41,4 +41,9 @@ export const AlurakutProfileSidebarMenuDefault = (props) => {
       </nav>
     </AlurakutProfileSidebarMenuDefaultWrapper>
   );
+};
+
+AlurakutProfileSidebarMenuDefault.propTypes = {
+  user: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 };

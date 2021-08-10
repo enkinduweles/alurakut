@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import NextLink from 'next/link';
+import PropTypes from 'prop-types';
 
 import { AlurakutMenuProfileSidebar } from '../AlurakutProfileSidebarMenu/AlurakutProfileSidebarMenu';
 import { Link } from '../Link';
@@ -13,11 +13,9 @@ export const AlurakutMenu = memo(
     return (
       <AlurakutMenuWrapper isMenuOpen={isMenuOpened}>
         <div className="container">
-          <NextLink href="/">
-            <a>
-              <Logo src={`${BASE_URL}/logo.svg`} />
-            </a>
-          </NextLink>
+          <Link href="/">
+            <Logo src={`${BASE_URL}/logo.svg`} />
+          </Link>
 
           <nav style={{ flex: 1 }}>
             {[
@@ -59,3 +57,10 @@ export const AlurakutMenu = memo(
     );
   }
 );
+
+AlurakutMenu.propTypes = {
+  githubUser: PropTypes.string.isRequired,
+  showMenu: PropTypes.func.isRequired,
+  isMenuOpened: PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
+};
