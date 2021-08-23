@@ -4,20 +4,23 @@ import { Box } from '../src/components/Box/Box';
 import { MainGrid } from '../src/components/MainGrid/MainGrid';
 import { ProfileRelations } from '../src/components/ProfileRelations/ProfileRelations';
 import { UserInfo } from '../src/components/UserInfo/UserInfo';
+import { Spinner } from '../src/components/Spinner/Spinner';
 import { ProfileRelationsContent } from '../src/components/ProfileRelationsContent/ProfileRelationsContent';
 import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
-  AlurakutProfileSidebarMenuDefault,
 } from '../src/lib/AlurakutCommons';
 import { validateToken } from '../src/utils/auth';
+import { useDatoCMS } from '../src/hooks/useDatoCMS';
 
 const Home = (props) => {
   const { githubUser, id } = props;
 
-  const [communities, setCommunities] = useState([]);
   const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [isFirstLoading, setIsFirstLoading] = useState(true);
+
+  const { getData, datoContent } = useDatoCMS();
 
   useEffect(() => {
     const fetchDataGitHub = async () => {
@@ -38,34 +41,22 @@ const Home = (props) => {
       setFollowingUsers(mappedResponse);
     };
 
-    const fetchDataDatoCMS = async () => {
-      const response = await fetch('https://graphql.datocms.com/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: process.env.NEXT_PUBLIC_READ_ONLY_TOKEN,
-        },
-        body: JSON.stringify({
-          query: `query {
-            allCommunities {
-              id
-              name
-              creatorSlug
-              imageUrl
-            }
-          }`,
-        }),
-      });
-
-      const parsedResponse = await response.json();
-
-      setCommunities(parsedResponse.data.allCommunities);
-    };
-
     fetchDataGitHub();
-    fetchDataDatoCMS();
   }, []);
+
+  useEffect(() => {
+    if (isFirstLoading) {
+      const fetchData = async () => {
+        await getData({
+          content: 'communities',
+          queryParams: { userId: `?userId=${id}` },
+        });
+        setIsFirstLoading(false);
+      };
+
+      fetchData();
+    }
+  }, [getData, id, isFirstLoading]);
 
   const addCommunityHandler = async (event) => {
     event.preventDefault();
@@ -102,56 +93,68 @@ const Home = (props) => {
         showMenu={() => setIsMenuOpened((prevState) => !prevState)}
         id={id}
       />
-      <MainGrid isMenuOpened={isMenuOpened}>
-        <div className="profileArea" style={{ gridArea: 'profileArea' }}>
-          <Box as="aside">
-            <UserInfo githubUser={githubUser} id={id} />
-          </Box>
-        </div>
-        <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
-          <Box>
-            <h1 className="title">Bem vindo, {githubUser}</h1>
-            <OrkutNostalgicIconSet />
-          </Box>
+      {!isFirstLoading ? (
+        <MainGrid isMenuOpened={isMenuOpened}>
+          <div className="profileArea" style={{ gridArea: 'profileArea' }}>
+            <Box as="aside">
+              <UserInfo githubUser={githubUser} id={id} />
+            </Box>
+          </div>
+          <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
+            <Box>
+              <h1 className="title">Bem vindo, {githubUser}</h1>
+              <OrkutNostalgicIconSet recados={10} />
+            </Box>
 
-          <Box>
-            <h2>O que você deseja fazer?</h2>
+            <Box>
+              <h2>O que você deseja fazer?</h2>
 
-            <form onSubmit={addCommunityHandler}>
-              <div>
-                <input
-                  type="text"
-                  placeholder="Qual vai ser o nome da sua comunidade?"
-                  name="title"
-                  aria-label="Qual vai ser o nome da sua comunidade?"
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  placeholder="Coloque uma URL para usarmos de capa."
-                  name="image"
-                  aria-label="Coloque uma URL para usarmos de capa."
-                />
-              </div>
+              <form onSubmit={addCommunityHandler}>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Qual vai ser o nome da sua comunidade?"
+                    name="title"
+                    aria-label="Qual vai ser o nome da sua comunidade?"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Coloque uma URL para usarmos de capa."
+                    name="image"
+                    aria-label="Coloque uma URL para usarmos de capa."
+                  />
+                </div>
 
-              <button>Create</button>
-            </form>
-          </Box>
-        </div>
+                <button>Create</button>
+              </form>
+            </Box>
+          </div>
 
-        <div
-          className="profileRelationsArea"
-          style={{ gridArea: 'profileRelationsArea' }}
-        >
-          <ProfileRelations>
-            <ProfileRelationsContent title="Following" data={followingUsers} />
-          </ProfileRelations>
-          <ProfileRelations>
-            <ProfileRelationsContent title="Communities" data={communities} />
-          </ProfileRelations>
-        </div>
-      </MainGrid>
+          <div
+            className="profileRelationsArea"
+            style={{ gridArea: 'profileRelationsArea' }}
+          >
+            <ProfileRelations>
+              <ProfileRelationsContent
+                title="Following"
+                data={followingUsers}
+                type="profile"
+              />
+            </ProfileRelations>
+            <ProfileRelations>
+              <ProfileRelationsContent
+                title="Communities"
+                data={datoContent}
+                type="community"
+              />
+            </ProfileRelations>
+          </div>
+        </MainGrid>
+      ) : (
+        <Spinner />
+      )}
     </Fragment>
   );
 };

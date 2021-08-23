@@ -1,9 +1,16 @@
 import styled from 'styled-components';
 
+/* 32px - padding aplied to grid | 48px - height of header */
+
 export const Wrapper = styled.div`
+  width: 100%;
+  height: calc(100vh - 32px - 48px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   & > div {
-    width: 18px;
-    height: 18px;
+    width: 25px;
+    height: 25px;
     background-color: #f368e0;
 
     border-radius: 100%;

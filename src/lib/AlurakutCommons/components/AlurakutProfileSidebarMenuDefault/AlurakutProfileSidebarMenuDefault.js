@@ -15,10 +15,10 @@ export const AlurakutProfileSidebarMenuDefault = (props) => {
           <img src={`${BASE_URL}/icons/user.svg`} />
           Perfil
         </Link>
-        <a href="/">
+        <Link href={`/scrap/${user}?id=${id}`}>
           <img src={`${BASE_URL}/icons/book.svg`} />
           Recados
-        </a>
+        </Link>
         <a href="/">
           <img src={`${BASE_URL}/icons/camera.svg`} />
           Fotos

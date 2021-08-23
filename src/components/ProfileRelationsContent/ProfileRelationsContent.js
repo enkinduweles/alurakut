@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { Link } from '../../lib/AlurakutCommons/components/Link';
 
 export const ProfileRelationsContent = (props) => {
-  const { title, data } = props;
+  const { title, data, type } = props;
+
+  console.log(data);
 
   let dataLimitedBy = [...data];
 
@@ -22,7 +24,7 @@ export const ProfileRelationsContent = (props) => {
         {dataLimitedBy.map((item) => {
           return (
             <li key={item.id}>
-              <Link href={`/profile/${item.name}?id=${item.id}`}>
+              <Link href={`/${type}/${item.name}?id=${item.id}`}>
                 <img src={item.imageUrl} alt={item.name} />
                 <span>{item.name}</span>
               </Link>

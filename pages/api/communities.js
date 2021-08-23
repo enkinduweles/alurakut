@@ -1,13 +1,9 @@
 import { SiteClient } from 'datocms-client';
 
-const DATOCMS_DEFINITIONS = {
-  communities: {
-    modelId: '975326',
-  },
-};
+const USER_CONTENT = '1083247';
 
 export default async function sendRequest(request, response) {
-  const { id, content } = request.query;
+  const { userId, communityId } = request.query;
 
   if (request.method === 'PUT') {
     const TOKEN = process.env.READ_WRITE_TOKEN;
@@ -33,20 +29,26 @@ export default async function sendRequest(request, response) {
     const TOKEN = process.env.READ_WRITE_TOKEN;
     const client = new SiteClient(TOKEN);
 
-    const records = await client.items.all({
+    const [records] = await client.items.all({
       filter: {
-        type: DATOCMS_DEFINITIONS[content].modelId,
+        type: USER_CONTENT,
         fields: {
-          userId: {
-            eq: `${id}`,
+          user_id: {
+            eq: `${userId}`,
           },
         },
       },
     });
 
+    const communities = await Promise.all(
+      records.communities.map(async (idCommunity) => {
+        return await client.items.find(idCommunity);
+      })
+    );
+
     response.json({
       message: 'Response from API',
-      data: records,
+      data: communities,
     });
     return;
   }

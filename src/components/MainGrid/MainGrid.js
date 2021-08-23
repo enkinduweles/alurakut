@@ -26,7 +26,7 @@ export const MainGrid = styled.main`
   grid-gap: 10px;
   margin-left: auto;
   margin-right: auto;
-  max-width: 500px;
+  max-width: 600px;
   padding: 16px;
 
   display: ${({ isMenuOpened }) => (isMenuOpened ? 'none' : 'initial')};
@@ -41,10 +41,10 @@ export const MainGrid = styled.main`
     max-width: 1110px;
     display: grid;
     grid-template-areas: ${(props) => {
-      return defineTypeGrid(props.type);
+      return defineTypeGrid(props.type).templateArea;
     }};
     grid-template-columns: ${(props) => {
-      return defineTypeGrid(props.type);
+      return defineTypeGrid(props.type).columnsSize;
     }};
   }
 `;

@@ -1,91 +1,102 @@
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'SEND':
-      return {
-        profileInfo: {},
-        status: 'pending',
-        error: null,
-      };
-    case 'SUCCESS':
-      return {
-        profileInfo: action.profileInfo,
-        status: 'completed',
-        error: null,
-      };
-    case 'FETCH_FAILED':
-      return {
-        profileInfo: {},
-        status: 'fetchFailed',
-        error: action.errorMessage,
-      };
-    case 'UPDATE_FAILED':
-      return {
-        ...state,
-        error: action.errorMessage,
-        status: 'updateFailed',
-      };
-  }
-};
+export const useDatoCMS = () => {
+  const [datoContent, setDataDatoContent] = useState([]);
+  const [isFirstLoading, setIsFirtstLoading] = useState(null);
 
-export const useDatoCMS = (startWithPending = false) => {
-  const [state, dispatch] = useReducer(reducer, {
-    profileInfo: {},
-    status: startWithPending ? 'pending' : null,
-    error: null,
-  });
+  useEffect(() => {
+    setIsFirtstLoading(true);
+  }, []);
 
-  const updateUserProfile = useCallback(async (requestConfig) => {
-    dispatch({ type: 'SEND' });
-
+  const getData = useCallback(async ({ content, queryParams }) => {
     try {
-      const response = await fetch(
-        `/api/datoCMSContent${requestConfig.queryParams}`,
+      const response = await fetch(`/api/${content}${queryParams.userId}`);
+      const { data } = await response.json();
+      setDataDatoContent(data);
+      setIsFirtstLoading(false);
+    } catch (error) {}
+  }, []);
+
+  const createData = useCallback(async ({ content, queryParams, body }) => {
+    const toastId = toast.loading('Loading');
+    try {
+      const createResponse = await fetch(
+        `/api/${content}${queryParams.userId}`,
         {
-          method: 'PUT',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestConfig.body),
+          body: JSON.stringify(body),
         }
       );
 
-      const { data } = await response.json();
-      const parsedData = {
-        id: data.id,
-        city: data.city,
-        state: data.state,
-        profession: data.profession,
-        contact: data.contact,
-      };
+      if (!createResponse.ok) {
+        throw new Error('Create operation failed');
+      }
 
-      dispatch({ type: 'SUCCESS', profileInfo: parsedData });
+      const getResponse = await fetch(`/api/${content}${queryParams.userId}`);
+      const { data } = await getResponse.json();
+      setDataDatoContent(data);
+
+      toast.success('Scrap added!', { id: toastId });
     } catch (error) {
-      dispatch({
-        type: 'UPDATE_FAILED',
-      });
+      console.log(error);
+
+      toast.error('Scrap could not be crated', { id: toastId });
     }
   }, []);
 
-  const getUserProfile = useCallback(async (queryToFilter) => {
-    dispatch({ type: 'SEND' });
+  const updateData = useCallback(async ({ content, queryParams, body }) => {
     try {
-      const response = await fetch('https://graphql.datocms.com/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: process.env.NEXT_PUBLIC_READ_ONLY_TOKEN,
-        },
-        body: JSON.stringify({
-          query: queryToFilter,
-        }),
+      let response = await fetch(`/api/${content}${queryParams.itemId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       });
+
+      if (!response.ok) {
+        throw new Error('Profile could not be updated');
+      }
+
+      response = await fetch(`/api/${content}${queryParams.userId}`);
       const { data } = await response.json();
-      dispatch({ type: 'SUCCESS', profileInfo: data.profileInfo });
+      setDataDatoContent(data);
+    } catch (error) {}
+  }, []);
+
+  const deleteData = useCallback(async ({ content, queryParams }) => {
+    const toastId = toast.loading('Loading');
+    try {
+      const deleteResponse = await fetch(
+        `/api/${content}${queryParams.itemId}`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      if (!deleteResponse.ok) {
+        throw new Error('Delete operation failed');
+      }
+
+      const getResponse = await fetch(`/api/${content}${queryParams.userId}`);
+      const { data } = await getResponse.json();
+      setDataDatoContent(data);
+
+      toast.success('Scrap deleted!', { id: toastId });
     } catch (error) {
-      dispatch({ type: 'FETCH_FAILED', errorMessage: error });
+      console.log(error);
+
+      toast.error('Scrap could not be deleted', { id: toastId });
     }
   }, []);
 
-  return { ...state, getUserProfile, updateUserProfile };
+  return {
+    getData,
+    createData,
+    updateData,
+    deleteData,
+    datoContent,
+    isFirstLoading,
+  };
 };

@@ -18,6 +18,17 @@ export const Profile = styled(Box)`
     margin-bottom: 16px;
   }
 
+  article {
+    > div {
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
+  }
+  
+  
+
   .profileHeaderContainer {
       display: flex;
       justify-content: space-between;

@@ -1,13 +1,15 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 
+import { Box } from '../Box/Box';
+
 import { AlurakutProfileSidebarMenuDefault } from '../../lib/AlurakutCommons';
 
 export const UserInfo = memo((props) => {
   const { githubUser, id } = props;
 
   return (
-    <div>
+    <Box>
       <figure>
         <img
           src={`https://github.com/${githubUser}.png`}
@@ -25,7 +27,7 @@ export const UserInfo = memo((props) => {
 
       <hr />
       <AlurakutProfileSidebarMenuDefault user={githubUser} id={id} />
-    </div>
+    </Box>
   );
 });
 
