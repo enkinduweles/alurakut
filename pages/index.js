@@ -18,9 +18,8 @@ const Home = (props) => {
 
   const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [isFirstLoading, setIsFirstLoading] = useState(true);
 
-  const { getData, datoContent } = useDatoCMS();
+  const { getData, data: datoContent, isFirstLoading } = useDatoCMS();
 
   useEffect(() => {
     const fetchDataGitHub = async () => {
@@ -51,7 +50,6 @@ const Home = (props) => {
           content: 'communities',
           queryParams: { userId: `?userId=${id}` },
         });
-        setIsFirstLoading(false);
       };
 
       fetchData();

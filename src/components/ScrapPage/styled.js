@@ -19,6 +19,18 @@ export const ScrapsWrapper = styled(Box)`
     display: flex;
     justify-content: center;
   }
+
+  .noScrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    font-size: 20px;
+    color: #f368e0;
+    > svg {
+      margin-right: 8px;
+    }
+  }
   .sectionForm {
     form {
       width: 100%;
@@ -30,6 +42,10 @@ export const ScrapsWrapper = styled(Box)`
         padding: 8px;
         margin-bottom: 8px;
         resize: none;
+        border: none;
+        border-bottom: 2px solid black;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+        outline: none;
       }
 
       button {

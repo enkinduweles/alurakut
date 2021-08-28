@@ -38,6 +38,7 @@ export const Profile = styled(Box)`
 
    
       .profileError {
+        flex-direction: column;
         button {
           margin-top: 12px;
         }

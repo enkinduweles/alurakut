@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Toaster, toast } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
+import { FaSadCry } from 'react-icons/fa';
 
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
 import { MainGrid } from '../../src/components/MainGrid/MainGrid';
@@ -18,10 +19,16 @@ import {
 const ScrapPage = ({ githubUser, ownerId }) => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [message, setMessage] = useState('');
-  const [isFirstLoading, setIsFirstLaoding] = useState(true);
+
   const router = useRouter();
   const { id: userId, userScrap } = router.query;
-  const { getData, createData, deleteData, datoContent } = useDatoCMS();
+  const {
+    getData,
+    createData,
+    deleteData,
+    data: datoContent,
+    isFirstLoading,
+  } = useDatoCMS();
 
   console.log(router.query);
   useEffect(() => {
@@ -31,7 +38,6 @@ const ScrapPage = ({ githubUser, ownerId }) => {
           content: 'scrap',
           queryParams: { userId: `?userId=${userId}` },
         });
-        setIsFirstLaoding(false);
       };
 
       fetchScraps();
@@ -57,6 +63,8 @@ const ScrapPage = ({ githubUser, ownerId }) => {
       queryParams: { userId: `?userId=${userId}` },
       body: mountedScrap,
     });
+
+    setMessage('');
   };
 
   const deleteScrapHandler = useCallback(
@@ -64,8 +72,8 @@ const ScrapPage = ({ githubUser, ownerId }) => {
       deleteData({
         content: 'scrap',
         queryParams: {
-          itemId: `?scrapId=${scrapId}`,
-          userId: `?userId=${userId}`,
+          scrapId,
+          userId,
         },
       });
     },
@@ -101,11 +109,18 @@ const ScrapPage = ({ githubUser, ownerId }) => {
             </ScrapsWrapper>
 
             <ScrapsWrapper>
-              <ScrapList
-                scraps={datoContent}
-                onDeleteScrap={deleteScrapHandler}
-                githubUser={githubUser}
-              />
+              {datoContent.length === 0 && (
+                <p className="noScrap">
+                  <FaSadCry /> you don't have scraps yet
+                </p>
+              )}
+              {datoContent.length !== 0 && (
+                <ScrapList
+                  scraps={datoContent}
+                  onDeleteScrap={deleteScrapHandler}
+                  githubUser={githubUser}
+                />
+              )}
             </ScrapsWrapper>
           </ScrapGridItem>
         ) : (
