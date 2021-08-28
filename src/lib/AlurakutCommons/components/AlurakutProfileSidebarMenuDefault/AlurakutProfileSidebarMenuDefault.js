@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 
 import { Link } from '../Link';
 import { AlurakutProfileSidebarMenuDefaultWrapper } from './styled';
@@ -12,32 +13,32 @@ export const AlurakutProfileSidebarMenuDefault = (props) => {
     <AlurakutProfileSidebarMenuDefaultWrapper>
       <nav>
         <Link href={`/profile/${user}?id=${id}`}>
-          <img src={`${BASE_URL}/icons/user.svg`} />
+          <Image src={`${BASE_URL}/icons/user.svg`} alt="" />
           Perfil
         </Link>
         <Link href={`/scrap/${user}?id=${id}`}>
-          <img src={`${BASE_URL}/icons/book.svg`} />
+          <Image src={`${BASE_URL}/icons/book.svg`} alt="" />
           Recados
         </Link>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/camera.svg`} />
+        <Link href="/">
+          <Image src={`${BASE_URL}/icons/camera.svg`} alt="" />
           Fotos
-        </a>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/sun.svg`} />
+        </Link>
+        <Link href="/">
+          <Image src={`${BASE_URL}/icons/sun.svg`} alt="" />
           Depoimentos
-        </a>
+        </Link>
       </nav>
       <hr />
       <nav>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/plus.svg`} />
+        <Link href="/">
+          <Image src={`${BASE_URL}/icons/plus.svg`} alt="" />
           GitHub Trends
-        </a>
-        <a href="/logout">
-          <img src={`${BASE_URL}//icons/logout.svg`} />
+        </Link>
+        <Link href="/logout">
+          <Image src={`${BASE_URL}//icons/logout.svg`} alt="" />
           Sair
-        </a>
+        </Link>
       </nav>
     </AlurakutProfileSidebarMenuDefaultWrapper>
   );

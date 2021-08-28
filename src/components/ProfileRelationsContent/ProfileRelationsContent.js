@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 
 import { Link } from '../../lib/AlurakutCommons/components/Link';
 
@@ -25,7 +26,7 @@ export const ProfileRelationsContent = (props) => {
           return (
             <li key={item.id}>
               <Link href={`/${type}/${item.name}?id=${item.id}`}>
-                <img src={item.imageUrl} alt={item.name} />
+                <Image src={item.imageUrl} alt={item.name} />
                 <span>{item.name}</span>
               </Link>
             </li>

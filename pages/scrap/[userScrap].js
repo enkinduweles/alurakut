@@ -5,7 +5,7 @@ import { FaSadCry } from 'react-icons/fa';
 
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
 import { MainGrid } from '../../src/components/MainGrid/MainGrid';
-import { Spinner } from '../../src/components/Spinner/Spinner';
+import Spinner from '../../src/components/Spinner/Spinner';
 import { UserInfo } from '../../src/components/UserInfo/UserInfo';
 import { validateToken } from '../../src/utils/auth';
 import { ScrapList } from '../../src/components/ScrapList/ScrapList';
@@ -111,7 +111,7 @@ const ScrapPage = ({ githubUser, ownerId }) => {
             <ScrapsWrapper>
               {datoContent.length === 0 && (
                 <p className="noScrap">
-                  <FaSadCry /> you don't have scraps yet
+                  <FaSadCry /> you don&apos;t have scraps yet
                 </p>
               )}
               {datoContent.length !== 0 && (

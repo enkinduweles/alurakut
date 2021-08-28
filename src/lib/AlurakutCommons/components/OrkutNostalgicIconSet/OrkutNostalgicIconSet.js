@@ -1,4 +1,5 @@
-import { Link } from '../Link';
+import Image from 'next/image';
+
 import { OrkutNostalgicIconSetList } from './styled';
 
 export const OrkutNostalgicIconSet = (props) => {
@@ -22,10 +23,11 @@ export const OrkutNostalgicIconSet = (props) => {
             className="OrkutNostalgicIconSet__number"
             style={{ gridArea: 'number' }}
           >
-            <img
+            <Image
               key={`orkut__icon_set__${slug}_img`}
               className="OrkutNostalgicIconSet__iconSample"
               src={`https://alurakut.vercel.app/icons/${icon}.svg`}
+              alt=""
             />
             {props[slug] ? props[slug] : 0}
           </span>
@@ -47,13 +49,14 @@ export const OrkutNostalgicIconSet = (props) => {
               {[0, 1, 2].map((_, index) => {
                 const isHeartActive = index <= total - 1;
                 return (
-                  <img
+                  <Image
                     key={`orkut__icon_set__${slug}_img_${index}`}
                     src={`https://alurakut.vercel.app/icons/${icon}.svg`}
                     style={{
                       marginRight: '2px',
                       opacity: isHeartActive ? 1 : '0.5',
                     }}
+                    alt=""
                   />
                 );
               })}

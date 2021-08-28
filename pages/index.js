@@ -4,7 +4,7 @@ import { Box } from '../src/components/Box/Box';
 import { MainGrid } from '../src/components/MainGrid/MainGrid';
 import { ProfileRelations } from '../src/components/ProfileRelations/ProfileRelations';
 import { UserInfo } from '../src/components/UserInfo/UserInfo';
-import { Spinner } from '../src/components/Spinner/Spinner';
+import Spinner from '../src/components/Spinner/Spinner';
 import { ProfileRelationsContent } from '../src/components/ProfileRelationsContent/ProfileRelationsContent';
 import {
   AlurakutMenu,

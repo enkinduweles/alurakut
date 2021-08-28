@@ -1,19 +1,21 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 
 import { Box } from '../Box/Box';
 
 import { AlurakutProfileSidebarMenuDefault } from '../../lib/AlurakutCommons';
 
-export const UserInfo = memo((props) => {
+const UserInfo = (props) => {
   const { githubUser, id } = props;
 
   return (
     <Box>
       <figure>
-        <img
+        <Image
           src={`https://github.com/${githubUser}.png`}
           style={{ borderRadius: '8px' }}
+          alt={`Github user ${githubUser}`}
         />
       </figure>
 
@@ -29,9 +31,11 @@ export const UserInfo = memo((props) => {
       <AlurakutProfileSidebarMenuDefault user={githubUser} id={id} />
     </Box>
   );
-});
+};
 
 UserInfo.propTypes = {
   githubUser: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
 };
+
+export default memo(UserInfo);

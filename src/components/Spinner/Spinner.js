@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Wrapper } from './styled';
 
-export const Spinner = memo(() => {
+const Spinner = () => {
   return (
     <Wrapper>
       <div className="bounce1"></div>
@@ -9,4 +9,6 @@ export const Spinner = memo(() => {
       <div className="bounce3"></div>
     </Wrapper>
   );
-});
+};
+
+export default memo(Spinner);

@@ -1,7 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 import { LoginPageMain } from '../src/components/LoginPages/styled';
+import { Link } from '../src/lib/AlurakutCommons';
 
 import toast, { Toaster } from 'react-hot-toast';
 import { validateToken } from '../src/utils/auth';
@@ -47,7 +49,7 @@ const LoginScreen = (props) => {
     <LoginPageMain>
       <div className="loginScreen">
         <section className="logoArea">
-          <img src="https://alurakut.vercel.app/logo.svg" />
+          <Image src="https://alurakut.vercel.app/logo.svg" alt="Logo" />
 
           <p>
             <strong>Conecte-se</strong> aos seus amigos e familiares usando
@@ -94,18 +96,19 @@ const LoginScreen = (props) => {
           <footer className="box">
             <p>
               Ainda não é membro? <br />
-              <a href="/login">
+              <Link href="/login">
                 <strong>ENTRAR JÁ</strong>
-              </a>
+              </Link>
             </p>
           </footer>
         </section>
 
         <footer className="footerArea">
           <p>
-            © 2021 alura.com.br - <a href="/">Sobre o Orkut.br</a> -{' '}
-            <a href="/">Centro de segurança</a> - <a href="/">Privacidade</a> -{' '}
-            <a href="/">Termos</a> - <a href="/">Contato</a>
+            © 2021 alura.com.br - <Link href="/">Sobre o Orkut.br</Link> -{' '}
+            <Link href="/">Centro de segurança</Link> -{' '}
+            <Link href="/">Privacidade</Link> - <Link href="/">Termos</Link> -{' '}
+            <Link href="/">Contato</Link>
           </p>
         </footer>
       </div>

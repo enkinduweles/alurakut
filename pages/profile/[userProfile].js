@@ -9,7 +9,7 @@ import {
   ProfileGridItem,
 } from '../../src/components/ProfilePages/styled';
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
-import { Spinner } from '../../src/components/Spinner/Spinner';
+import Spinner from '../../src/components/Spinner/Spinner';
 
 import { validateToken } from '../../src/utils/auth';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
