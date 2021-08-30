@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Toaster } from 'react-hot-toast';
 
-import { MainGrid } from '../../src/components/MainGrid/MainGrid';
-import { UserInfo } from '../../src/components/UserInfo/UserInfo';
+import MainGrid from '../../src/components/MainGrid/MainGrid';
+import UserInfo from '../../src/components/UserInfo/UserInfo';
 import {
   Profile,
   ProfileGridItem,
@@ -42,7 +42,7 @@ const ProfilePages = (props) => {
       const fetchScraps = async () => {
         await getData({
           content: 'profile',
-          queryParams: { userId: `?userId=${9889}` },
+          queryParams: { userId: `?userId=${userId}` },
         });
 
         setFormProfile(datoContent);

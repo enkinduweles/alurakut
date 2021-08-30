@@ -9,7 +9,8 @@ export const AlurakutProfileSidebarMenuDefaultWrapper = styled.div`
     align-items: center;
     justify-content: flex-start;
     text-decoration: none;
-    img {
+    > div {
+      position: relative;
       width: 16px;
       height: 16px;
       margin-right: 5px;

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import styled from 'styled-components';
-import { Box } from '../Box/Box';
+import Box from '../Box/Box';
 
 export const ProfileGridItem = memo(styled.div`
   display: ${({ templateArea }) =>

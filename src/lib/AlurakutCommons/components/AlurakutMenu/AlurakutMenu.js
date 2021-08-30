@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 
-import { AlurakutMenuProfileSidebar } from '../AlurakutProfileSidebarMenu/AlurakutProfileSidebarMenu';
-import { Link } from '../Link';
+import AlurakutMenuProfileSidebar from '../AlurakutProfileSidebarMenu/AlurakutProfileSidebarMenu';
+import Link from '../Link';
 import { Logo, AlurakutMenuWrapper } from './styled';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
@@ -41,10 +41,22 @@ const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
 
         <button onClick={showMenu}>
           {isMenuOpened && (
-            <Image src={`${BASE_URL}/icons/menu-open.svg?v=${v}`} alt="" />
+            <div>
+              <Image
+                layout="fill"
+                src={`${BASE_URL}/icons/menu-open.svg?v=${v}`}
+                alt=""
+              />
+            </div>
           )}
           {!isMenuOpened && (
-            <Image src={`${BASE_URL}/icons/menu-closed.svg?v=${v}`} alt="" />
+            <div>
+              <Image
+                layout="fill"
+                src={`${BASE_URL}/icons/menu-closed.svg?v=${v}`}
+                alt=""
+              />
+            </div>
           )}
         </button>
       </div>

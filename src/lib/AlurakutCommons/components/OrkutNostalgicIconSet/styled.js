@@ -26,7 +26,20 @@ export const OrkutNostalgicIconSetList = styled.ul`
       display: flex;
       align-items: center;
       justify-content: flex-start;
+
+      .OrkutNostalgicIconSet__iconComplex {
+        position: relative;
+
+        min-width: 15px;
+        min-height: 15px;
+        margin-right: 5px;
+      }
+
       .OrkutNostalgicIconSet__iconSample {
+        position: relative;
+
+        min-width: 15px;
+        min-height: 15px;
         margin-right: 7px;
       }
     }

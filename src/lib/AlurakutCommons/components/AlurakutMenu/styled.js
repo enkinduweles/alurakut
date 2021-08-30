@@ -27,6 +27,12 @@ export const AlurakutMenuWrapper = styled.header`
       align-self: center;
       display: inline-block;
 
+      > div {
+        position: relative;
+        min-height: 25px;
+        min-width: 25px;
+      }
+
       @media (min-width: 860px) {
         display: none;
       }

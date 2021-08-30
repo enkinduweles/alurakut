@@ -1,14 +1,10 @@
 import PropTypes from 'prop-types';
 
-import { UserInfo } from '../../../../components/UserInfo/UserInfo';
+import UserInfo from '../../../../components/UserInfo/UserInfo';
 
 import { AlurakutMenuProfileSidebarWrapper } from './styled';
 
-export const AlurakutMenuProfileSidebar = ({
-  githubUser,
-  id,
-  isMenuOpened,
-}) => {
+const AlurakutMenuProfileSidebar = ({ githubUser, id, isMenuOpened }) => {
   return (
     <AlurakutMenuProfileSidebarWrapper isMenuOpened={isMenuOpened}>
       <UserInfo githubUser={githubUser} id={id} />
@@ -21,3 +17,5 @@ AlurakutMenuProfileSidebar.propTypes = {
   isMenuOpened: PropTypes.bool.isRequired,
   id: PropTypes.string.isRequired,
 };
+
+export default AlurakutMenuProfileSidebar;

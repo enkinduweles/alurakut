@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { List, ListItem, ScrapListWrapper } from './styled';
 
-export const ScrapList = ({ scraps, githubUser, onDeleteScrap }) => {
+const ScrapList = ({ scraps, githubUser, onDeleteScrap }) => {
   return (
     <ScrapListWrapper>
       <h2>
@@ -16,7 +16,15 @@ export const ScrapList = ({ scraps, githubUser, onDeleteScrap }) => {
           {scraps.map(({ id, author, message }) => {
             return (
               <ListItem key={id}>
-                <Image src={`https://github.com/${author}.png`} alt={author} />
+                <div>
+                  <Image
+                    layout="intrinsic"
+                    src={`https://github.com/${author}.png`}
+                    alt={author}
+                    width={80}
+                    height={80}
+                  />
+                </div>
                 <div className="userScrap">
                   <div className="header">
                     <h3>{author}</h3>
@@ -32,3 +40,5 @@ export const ScrapList = ({ scraps, githubUser, onDeleteScrap }) => {
     </ScrapListWrapper>
   );
 };
+
+export default ScrapList;

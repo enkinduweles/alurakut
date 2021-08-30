@@ -2,9 +2,9 @@ import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 
-import { Link } from '../../lib/AlurakutCommons/components/Link';
+import Link from '../../lib/AlurakutCommons/components/Link';
 
-export const ProfileRelationsContent = (props) => {
+const ProfileRelationsContent = (props) => {
   const { title, data, type } = props;
 
   console.log(data);
@@ -26,7 +26,15 @@ export const ProfileRelationsContent = (props) => {
           return (
             <li key={item.id}>
               <Link href={`/${type}/${item.name}?id=${item.id}`}>
-                <Image src={item.imageUrl} alt={item.name} />
+                <div>
+                  <Image
+                    layout="fill"
+                    objectFit="cover"
+                    src={item.imageUrl}
+                    alt={item.name}
+                    priority
+                  />
+                </div>
                 <span>{item.name}</span>
               </Link>
             </li>
@@ -46,3 +54,5 @@ ProfileRelationsContent.propTypes = {
   title: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(PropTypes.object),
 };
+
+export default ProfileRelationsContent;

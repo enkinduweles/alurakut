@@ -4,7 +4,7 @@ export const AlurakutMenuProfileSidebarWrapper = styled.div`
   background: white;
   position: fixed;
   z-index: 100;
-  padding: 46px;
+  padding: 23px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -26,6 +26,7 @@ export const AlurakutMenuProfileSidebarWrapper = styled.div`
 
     figure {
       text-align: center;
+      position: relative;
 
       img {
         display: inline-block;

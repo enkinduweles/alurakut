@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-import { LoginPageMain } from '../src/components/LoginPages/styled';
+import LoginPageMain from '../src/components/LoginPages/styled';
 import { Link } from '../src/lib/AlurakutCommons';
 
 import toast, { Toaster } from 'react-hot-toast';
@@ -49,7 +49,13 @@ const LoginScreen = (props) => {
     <LoginPageMain>
       <div className="loginScreen">
         <section className="logoArea">
-          <Image src="https://alurakut.vercel.app/logo.svg" alt="Logo" />
+          <div className="nextImage">
+            <Image
+              src="https://alurakut.vercel.app/logo.svg"
+              alt="Logo"
+              layout="fill"
+            />
+          </div>
 
           <p>
             <strong>Conecte-se</strong> aos seus amigos e familiares usando

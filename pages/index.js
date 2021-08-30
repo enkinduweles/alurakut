@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
 
-import { Box } from '../src/components/Box/Box';
-import { MainGrid } from '../src/components/MainGrid/MainGrid';
-import { ProfileRelations } from '../src/components/ProfileRelations/ProfileRelations';
-import { UserInfo } from '../src/components/UserInfo/UserInfo';
+import Box from '../src/components/Box/Box';
+import MainGrid from '../src/components/MainGrid/MainGrid';
+import ProfileRelations from '../src/components/ProfileRelations/ProfileRelations';
+import UserInfo from '../src/components/UserInfo/UserInfo';
 import Spinner from '../src/components/Spinner/Spinner';
-import { ProfileRelationsContent } from '../src/components/ProfileRelationsContent/ProfileRelationsContent';
+import ProfileRelationsContent from '../src/components/ProfileRelationsContent/ProfileRelationsContent';
 import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
@@ -94,9 +94,7 @@ const Home = (props) => {
       {!isFirstLoading ? (
         <MainGrid isMenuOpened={isMenuOpened}>
           <div className="profileArea" style={{ gridArea: 'profileArea' }}>
-            <Box as="aside">
-              <UserInfo githubUser={githubUser} id={id} />
-            </Box>
+            <UserInfo as="aside" githubUser={githubUser} id={id} />
           </div>
           <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
             <Box>

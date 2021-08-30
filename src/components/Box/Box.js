@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Box = styled.div`
+const Box = styled.div`
   background: #ffffff;
   border-radius: 8px;
   padding: 16px;
@@ -55,4 +55,11 @@ export const Box = styled.div`
     border-radius: 10000px;
     background-color: #6f92bb;
   }
+
+  .optimizedImage {
+    text-align: center;
+    position: relative;
+  }
 `;
+
+export default Box;

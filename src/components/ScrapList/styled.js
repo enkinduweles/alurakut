@@ -11,8 +11,7 @@ export const ListItem = styled.li`
   padding: 8px;
   background-color: var(--backgroundPrimary);
 
-  > img {
-    max-width: 60px;
+  > div {
     margin-right: 12px;
   }
 

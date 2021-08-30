@@ -1,5 +1,10 @@
 module.exports = {
   images: {
-    domains: ['https://alurakut.vercel.app', 'https://github.com'],
+    domains: [
+      'alurakut.vercel.app',
+      'avatars.githubusercontent.com',
+      'github.com',
+      'picsum.photos',
+    ],
   },
 };

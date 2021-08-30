@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import { OrkutNostalgicIconSetList } from './styled';
 
-export const OrkutNostalgicIconSet = (props) => {
+const OrkutNostalgicIconSet = (props) => {
   return (
     <OrkutNostalgicIconSetList>
       {[
@@ -23,12 +23,15 @@ export const OrkutNostalgicIconSet = (props) => {
             className="OrkutNostalgicIconSet__number"
             style={{ gridArea: 'number' }}
           >
-            <Image
-              key={`orkut__icon_set__${slug}_img`}
-              className="OrkutNostalgicIconSet__iconSample"
-              src={`https://alurakut.vercel.app/icons/${icon}.svg`}
-              alt=""
-            />
+            <div className="OrkutNostalgicIconSet__iconSample">
+              <Image
+                layout="fill"
+                key={`orkut__icon_set__${slug}_img`}
+                src={`https://alurakut.vercel.app/icons/${icon}.svg`}
+                alt=""
+                objectFit="contain"
+              />
+            </div>
             {props[slug] ? props[slug] : 0}
           </span>
         </li>
@@ -43,21 +46,27 @@ export const OrkutNostalgicIconSet = (props) => {
           <li key={`orkut__icon_set__${slug}`}>
             <span className="OrkutNostalgicIconSet__title">{name}</span>
             <span
-              className="OrkutNostalgicIconSet__iconComplex OrkutNostalgicIconSet__number"
+              className="OrkutNostalgicIconSet__number"
               style={{ gridArea: 'number' }}
             >
               {[0, 1, 2].map((_, index) => {
                 const isHeartActive = index <= total - 1;
                 return (
-                  <Image
+                  <div
                     key={`orkut__icon_set__${slug}_img_${index}`}
-                    src={`https://alurakut.vercel.app/icons/${icon}.svg`}
-                    style={{
-                      marginRight: '2px',
-                      opacity: isHeartActive ? 1 : '0.5',
-                    }}
-                    alt=""
-                  />
+                    className="OrkutNostalgicIconSet__iconComplex"
+                  >
+                    <Image
+                      layout="fill"
+                      src={`https://alurakut.vercel.app/icons/${icon}.svg`}
+                      style={{
+                        marginRight: '2px',
+                        opacity: isHeartActive ? 1 : '0.5',
+                      }}
+                      alt=""
+                      objectFit="contain"
+                    />
+                  </div>
                 );
               })}
             </span>
@@ -67,3 +76,5 @@ export const OrkutNostalgicIconSet = (props) => {
     </OrkutNostalgicIconSetList>
   );
 };
+
+export default OrkutNostalgicIconSet;

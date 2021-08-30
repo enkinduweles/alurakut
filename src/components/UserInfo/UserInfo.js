@@ -2,7 +2,7 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 
-import { Box } from '../Box/Box';
+import Box from '../Box/Box';
 
 import { AlurakutProfileSidebarMenuDefault } from '../../lib/AlurakutCommons';
 
@@ -11,11 +11,15 @@ const UserInfo = (props) => {
 
   return (
     <Box>
-      <figure>
+      <figure className="optimizedImage">
         <Image
+          layout="intrinsic"
+          objectFit="contain"
           src={`https://github.com/${githubUser}.png`}
           style={{ borderRadius: '8px' }}
           alt={`Github user ${githubUser}`}
+          width={250}
+          height={250}
         />
       </figure>
 

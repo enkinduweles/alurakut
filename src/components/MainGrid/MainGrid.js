@@ -21,7 +21,7 @@ const defineTypeGrid = (type) => {
   }
 };
 
-export const MainGrid = styled.main`
+const MainGrid = styled.main`
   width: 100%;
   grid-gap: 10px;
   margin-left: auto;
@@ -53,3 +53,5 @@ MainGrid.propTypes = {
   isMenuOpened: PropTypes.bool.isRequired,
   type: PropTypes.string,
 };
+
+export default MainGrid;

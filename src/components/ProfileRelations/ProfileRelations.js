@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { Box } from '../Box/Box';
+import Box from '../Box/Box';
 
-export const ProfileRelations = styled(Box)`
+const ProfileRelations = styled(Box)`
   ul {
     display: grid;
     grid-gap: 8px;
@@ -9,19 +9,20 @@ export const ProfileRelations = styled(Box)`
     max-height: 220px;
     list-style: none;
   }
-  img {
-    object-fit: cover;
-    background-position: center center;
-    width: 100%;
-    height: 100%;
-    position: relative;
-  }
+
   ul li a {
     display: inline-block;
     height: 102px;
     position: relative;
     overflow: hidden;
     border-radius: 8px;
+    width: 100%;
+    > div {
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+
     span {
       color: #ffffff;
       font-size: 10px;
@@ -50,3 +51,5 @@ export const ProfileRelations = styled(Box)`
     }
   }
 `;
+
+export default ProfileRelations;

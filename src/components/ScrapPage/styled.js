@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components';
 
-import { Box } from '../Box/Box';
+import Box from '../Box/Box';
 
 export const ScrapGridItem = memo(styled.div`
   display: ${({ templateArea }) =>
@@ -43,9 +43,10 @@ export const ScrapsWrapper = styled(Box)`
         margin-bottom: 8px;
         resize: none;
         border: none;
-        border-bottom: 2px solid black;
+        border-bottom: 2px solid gray;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
         outline: none;
+        background: whitesmoke;
       }
 
       button {

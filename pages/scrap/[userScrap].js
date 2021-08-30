@@ -4,11 +4,11 @@ import { Toaster } from 'react-hot-toast';
 import { FaSadCry } from 'react-icons/fa';
 
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
-import { MainGrid } from '../../src/components/MainGrid/MainGrid';
+import MainGrid from '../../src/components/MainGrid/MainGrid';
 import Spinner from '../../src/components/Spinner/Spinner';
-import { UserInfo } from '../../src/components/UserInfo/UserInfo';
+import UserInfo from '../../src/components/UserInfo/UserInfo';
 import { validateToken } from '../../src/utils/auth';
-import { ScrapList } from '../../src/components/ScrapList/ScrapList';
+import ScrapList from '../../src/components/ScrapList/ScrapList';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
 
 import {
@@ -88,11 +88,12 @@ const ScrapPage = ({ githubUser, ownerId }) => {
         showMenu={showMenuHandler}
         isMenuOpened={isMenuOpened}
       />
-      <MainGrid type="scrap" isMenuOpened={isMenuOpened}>
-        <ScrapGridItem templateArea="profileArea">
-          <UserInfo githubUser={githubUser} id={userId} />
-        </ScrapGridItem>
-        {!isFirstLoading ? (
+      {!isFirstLoading ? (
+        <MainGrid type="scrap" isMenuOpened={isMenuOpened}>
+          <ScrapGridItem templateArea="profileArea">
+            <UserInfo githubUser={githubUser} id={userId} />
+          </ScrapGridItem>
+
           <ScrapGridItem templateArea="mainArea">
             <ScrapsWrapper>
               <section className="sectionForm">
@@ -123,10 +124,10 @@ const ScrapPage = ({ githubUser, ownerId }) => {
               )}
             </ScrapsWrapper>
           </ScrapGridItem>
-        ) : (
-          <Spinner />
-        )}
-      </MainGrid>
+        </MainGrid>
+      ) : (
+        <Spinner />
+      )}
       <Toaster position="bottom-right" />
     </>
   );

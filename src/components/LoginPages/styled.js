@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const LoginPageMain = styled.main`
+const LoginPageMain = styled.main`
   display: flex;
   flex: 1;
   align-items: center;
@@ -49,7 +49,10 @@ export const LoginPageMain = styled.main`
           color: var(--colorQuarternary);
         }
       }
-      img {
+      .nextImage {
+        position: relative;
+        height: 100%;
+        width: 100%;
         max-height: 45px;
         margin-bottom: 36px;
       }
@@ -141,3 +144,5 @@ export const LoginPageMain = styled.main`
     }
   }
 `;
+
+export default LoginPageMain;

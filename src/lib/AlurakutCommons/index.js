@@ -1,8 +1,8 @@
 import { AlurakutStyles } from './AlurakutStyles';
-import { Link } from './components/Link';
-import { AlurakutMenu } from './components/AlurakutMenu/AlurakutMenu';
-import { AlurakutProfileSidebarMenuDefault } from './components/AlurakutProfileSidebarMenuDefault/AlurakutProfileSidebarMenuDefault';
-import { OrkutNostalgicIconSet } from './components/OrkutNostalgicIconSet/OrkutNostalgicIconSet';
+import Link from './components/Link';
+import AlurakutMenu from './components/AlurakutMenu/AlurakutMenu';
+import AlurakutProfileSidebarMenuDefault from './components/AlurakutProfileSidebarMenuDefault/AlurakutProfileSidebarMenuDefault';
+import OrkutNostalgicIconSet from './components/OrkutNostalgicIconSet/OrkutNostalgicIconSet';
 
 export {
   AlurakutMenu,
