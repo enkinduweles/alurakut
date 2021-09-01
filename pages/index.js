@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { FaSadCry } from 'react-icons/fa';
 
 import Box from '../src/components/Box/Box';
 import MainGrid from '../src/components/MainGrid/MainGrid';
@@ -16,32 +17,9 @@ import { useDatoCMS } from '../src/hooks/useDatoCMS';
 const Home = (props) => {
   const { githubUser, id } = props;
 
-  const [followingUsers, setFollowingUsers] = useState([]);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
 
   const { getData, data: datoContent, isFirstLoading } = useDatoCMS();
-
-  useEffect(() => {
-    const fetchDataGitHub = async () => {
-      const response = await fetch(
-        'https://api.github.com/users/enkinduweles/following'
-      );
-      const parsedResponse = await response.json();
-
-      const mappedResponse = parsedResponse.map((user) => {
-        const { id, avatar_url, login } = user;
-        return {
-          id,
-          name: login,
-          imageUrl: avatar_url,
-        };
-      });
-
-      setFollowingUsers(mappedResponse);
-    };
-
-    fetchDataGitHub();
-  }, []);
 
   useEffect(() => {
     if (isFirstLoading) {
@@ -133,18 +111,30 @@ const Home = (props) => {
             style={{ gridArea: 'profileRelationsArea' }}
           >
             <ProfileRelations>
-              <ProfileRelationsContent
-                title="Following"
-                data={followingUsers}
-                type="profile"
-              />
+              {false ? (
+                <ProfileRelationsContent
+                  title="Following"
+                  data={followingUsers}
+                  type="profile"
+                />
+              ) : (
+                <p className="noFriends">
+                  <FaSadCry /> you didn&apos;t add friends yet
+                </p>
+              )}
             </ProfileRelations>
             <ProfileRelations>
-              <ProfileRelationsContent
-                title="Communities"
-                data={datoContent}
-                type="community"
-              />
+              {datoContent && datoContent.length !== 0 ? (
+                <ProfileRelationsContent
+                  title="Communities"
+                  data={datoContent}
+                  type="community"
+                />
+              ) : (
+                <p className="noCommunities">
+                  <FaSadCry /> no communities yet
+                </p>
+              )}
             </ProfileRelations>
           </div>
         </MainGrid>

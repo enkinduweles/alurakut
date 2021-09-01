@@ -2,6 +2,18 @@ import styled from 'styled-components';
 import Box from '../Box/Box';
 
 const ProfileRelations = styled(Box)`
+  .noFriends,
+  .noCommunities {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    font-size: 20px;
+    color: #f368e0;
+    > svg {
+      margin-right: 8px;
+    }
+  }
   ul {
     display: grid;
     grid-gap: 8px;

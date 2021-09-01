@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
+import { SiteClient } from 'datocms-client';
+
+const USER_CONTENT = '1083247';
 
 export default async function sendRequest(request, response) {
   let token = null;
@@ -24,6 +27,30 @@ export default async function sendRequest(request, response) {
         expiresIn: '1h',
       }
     );
+
+    const TOKEN = process.env.READ_WRITE_TOKEN;
+    const client = new SiteClient(TOKEN);
+
+    const records = await client.items.all({
+      filter: {
+        type: USER_CONTENT,
+        fields: {
+          user_id: {
+            eq: `${parsedData.id}`,
+          },
+        },
+      },
+    });
+
+    if (records.length === 0) {
+      await client.items.create({
+        itemType: USER_CONTENT,
+        userId: parsedData.id,
+        scraps: null,
+        userProfile: null,
+        communities: null,
+      });
+    }
 
     response.setHeader(
       'Set-Cookie',

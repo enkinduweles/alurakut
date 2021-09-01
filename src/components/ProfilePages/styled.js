@@ -36,13 +36,6 @@ export const Profile = styled(Box)`
       padding-bottom: 8px;
     }
 
-   
-      .profileError {
-        flex-direction: column;
-        button {
-          margin-top: 12px;
-        }
-      }
     
 
     .userInfoForm {
@@ -87,7 +80,7 @@ export const Profile = styled(Box)`
           width: auto;
           margin: 0;
           padding: 8px;
-          background-color: transparent;
+          background-color: transparent !important;
           border-bottom: 2px solid #565857;
           border-radius: 0;
           color: black;

@@ -32,7 +32,6 @@ const ProfileRelationsContent = (props) => {
                     objectFit="cover"
                     src={item.imageUrl}
                     alt={item.name}
-                    priority
                   />
                 </div>
                 <span>{item.name}</span>

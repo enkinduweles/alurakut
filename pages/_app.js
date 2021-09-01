@@ -8,6 +8,9 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
 }
+html, body {
+  height: 100%;
+}
 
   body {
     font-family: sans-serif;
@@ -16,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
 
   #__next {
     display: flex;
-    min-height: 100vh;
+    height: 100%;
     flex-direction: column;
   }
 
@@ -26,6 +29,19 @@ const GlobalStyle = createGlobalStyle`
     display: block;
   }
 
+  .gbError {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f368e0;
+    font-size: 20px;
+  }
+
+.gbSadFace {
+  font-weight: bold;
+  font-size: 24px;
+}
 
   ${AlurakutStyles}
 `;

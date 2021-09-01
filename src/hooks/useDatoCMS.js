@@ -103,7 +103,7 @@ export const useDatoCMS = () => {
 
   const updateData = useCallback(async ({ content, queryParams, body }) => {
     let toastId = null;
-    toasId = toast.loading('Loading');
+    toastId = toast.loading('Loading');
     try {
       let response = await fetch(`/api/${content}${queryParams.userId}`, {
         method: 'PUT',

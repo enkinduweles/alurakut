@@ -43,10 +43,15 @@ export const ScrapsWrapper = styled(Box)`
         margin-bottom: 8px;
         resize: none;
         border: none;
-        border-bottom: 2px solid gray;
+        border-bottom: 2px solid transparent;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
         outline: none;
         background: whitesmoke;
+
+        &:hover,
+        &:focus {
+          border-bottom: 2px solid #f368e0;
+        }
       }
 
       button {

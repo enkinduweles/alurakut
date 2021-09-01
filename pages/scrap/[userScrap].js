@@ -28,6 +28,7 @@ const ScrapPage = ({ githubUser, ownerId }) => {
     deleteData,
     data: datoContent,
     isFirstLoading,
+    error,
   } = useDatoCMS();
 
   console.log(router.query);
@@ -89,42 +90,51 @@ const ScrapPage = ({ githubUser, ownerId }) => {
         isMenuOpened={isMenuOpened}
       />
       {!isFirstLoading ? (
-        <MainGrid type="scrap" isMenuOpened={isMenuOpened}>
-          <ScrapGridItem templateArea="profileArea">
-            <UserInfo githubUser={githubUser} id={userId} />
-          </ScrapGridItem>
+        error.status !== 404 ? (
+          <MainGrid type="scrap" isMenuOpened={isMenuOpened}>
+            <ScrapGridItem templateArea="profileArea">
+              <UserInfo githubUser={githubUser} id={userId} />
+            </ScrapGridItem>
 
-          <ScrapGridItem templateArea="mainArea">
-            <ScrapsWrapper>
-              <section className="sectionForm">
-                <form onSubmit={sendScrapHandler}>
-                  <textarea
-                    name="scrapInput"
-                    rows="4"
-                    value={message}
-                    onChange={(event) => setMessage(event.target.value)}
-                  ></textarea>
-                  <button>Enviar</button>
-                </form>
-              </section>
-            </ScrapsWrapper>
+            <ScrapGridItem templateArea="mainArea">
+              <ScrapsWrapper>
+                <section className="sectionForm">
+                  <form onSubmit={sendScrapHandler}>
+                    <textarea
+                      name="scrapInput"
+                      rows="4"
+                      value={message}
+                      onChange={(event) => setMessage(event.target.value)}
+                    ></textarea>
+                    <button>Enviar</button>
+                  </form>
+                </section>
+              </ScrapsWrapper>
 
-            <ScrapsWrapper>
-              {datoContent.length === 0 && (
-                <p className="noScrap">
-                  <FaSadCry /> you don&apos;t have scraps yet
-                </p>
-              )}
-              {datoContent.length !== 0 && (
-                <ScrapList
-                  scraps={datoContent}
-                  onDeleteScrap={deleteScrapHandler}
-                  githubUser={githubUser}
-                />
-              )}
-            </ScrapsWrapper>
-          </ScrapGridItem>
-        </MainGrid>
+              <ScrapsWrapper>
+                {datoContent.length === 0 && (
+                  <p className="noScrap">
+                    <FaSadCry /> you don&apos;t have scraps yet
+                  </p>
+                )}
+                {datoContent.length !== 0 && (
+                  <ScrapList
+                    scraps={datoContent}
+                    onDeleteScrap={deleteScrapHandler}
+                    githubUser={githubUser}
+                  />
+                )}
+              </ScrapsWrapper>
+            </ScrapGridItem>
+          </MainGrid>
+        ) : (
+          <div className="gbError">
+            <p>
+              <span className="gbSadFace">:( </span>
+              {error.message}
+            </p>
+          </div>
+        )
       ) : (
         <Spinner />
       )}

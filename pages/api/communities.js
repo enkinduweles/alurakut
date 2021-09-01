@@ -5,69 +5,53 @@ const USER_CONTENT = '1083247';
 export default async function sendRequest(request, response) {
   const { userId, communityId } = request.query;
 
-  if (request.method === 'PUT') {
-    const TOKEN = process.env.READ_WRITE_TOKEN;
-    const client = new SiteClient(TOKEN);
+  const TOKEN = process.env.READ_WRITE_TOKEN;
+  const client = new SiteClient(TOKEN);
 
-    try {
+  const record = await client.items.all({
+    filter: {
+      type: USER_CONTENT,
+      fields: {
+        user_id: {
+          eq: `${userId}`,
+        },
+      },
+    },
+  });
+
+  if (record.length !== 0) {
+    if (request.method === 'GET') {
+      const communities = await Promise.all(
+        record[0].communities.map(async (idCommunity) => {
+          return await client.items.find(idCommunity);
+        })
+      );
+
+      response.json({
+        data: communities,
+      });
+      return;
+    }
+
+    if (request.method === 'PUT') {
       const updatedRegister = await client.items.update(id, {
         ...request.body,
       });
 
       response.json({
-        message: 'Response from API',
         data: updatedRegister,
       });
-    } catch (error) {
-      response.status(404).json(error.statusText);
+
+      return;
     }
 
-    return;
-  }
-
-  if (request.method === 'GET') {
-    const TOKEN = process.env.READ_WRITE_TOKEN;
-    const client = new SiteClient(TOKEN);
-
-    const [records] = await client.items.all({
-      filter: {
-        type: USER_CONTENT,
-        fields: {
-          user_id: {
-            eq: `${userId}`,
-          },
-        },
-      },
-    });
-
-    const communities = await Promise.all(
-      records.communities.map(async (idCommunity) => {
-        return await client.items.find(idCommunity);
-      })
-    );
-
-    response.json({
-      message: 'Response from API',
-      data: communities,
-    });
-    return;
-  }
-
-  if (request.method === 'POST') {
-    const TOKEN = process.env.READ_WRITE_TOKEN;
-    const client = new SiteClient(TOKEN);
-    const newRegister = await client.items.create({
-      itemType: DATOCMS_DEFINITIONS[content].modelId,
-      ...request.body,
-    });
-    response.json({
-      message: 'Response from API',
-      data: newRegister,
+    response.status(501).json({
+      message: 'Sorry, method not implemented',
     });
     return;
   }
 
   response.status(404).json({
-    message: 'Sorry invald method',
+    message: 'Sorry, user not found!',
   });
 }

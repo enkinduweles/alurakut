@@ -83,26 +83,18 @@ const ProfilePages = (props) => {
     []
   );
 
-  const reFetchProfileInfo = () => {
-    getData({
-      content: 'profile',
-      queryParams: { userId: `?userId=${userId}` },
-      activeHotToast: true,
-    });
-  };
-
   return (
     <>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
         showMenu={showMenuHandler}
         githubUser={githubUser}
-        id={userId}
+        id={ownerId}
       />
       {!isFirstLoading ? (
         <MainGrid type="profile" isMenuOpened={isMenuOpened}>
           <ProfileGridItem templateArea="profileArea">
-            <UserInfo githubUser={githubUser} id={userId} />
+            <UserInfo githubUser={githubUser} id={ownerId} />
           </ProfileGridItem>
           <ProfileGridItem templateArea="mainArea">
             <Profile as="section" profileEditMode={profileEditMode}>
@@ -110,7 +102,7 @@ const ProfilePages = (props) => {
                 <div className="profileHeaderContainer">
                   <h2>Perfil</h2>
                   {ownerId.toString() === userId ? (
-                    true && !profileEditMode ? (
+                    !error.status && !profileEditMode ? (
                       <button onClick={changeProfileModeHandler}>Editar</button>
                     ) : null
                   ) : null}
@@ -201,9 +193,11 @@ const ProfilePages = (props) => {
                     )}
                   </form>
                 ) : (
-                  <div className="profileError">
-                    <p>{error.message}</p>
-                    <button onClick={reFetchProfileInfo}>Retry</button>
+                  <div className="gbError">
+                    <p>
+                      <span className="gbSadFace">:( </span>
+                      {error.message}
+                    </p>
                   </div>
                 )}
               </article>
