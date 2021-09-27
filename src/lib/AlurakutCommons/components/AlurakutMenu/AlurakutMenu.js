@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 
-import AlurakutMenuProfileSidebar from '../AlurakutProfileSidebarMenu/AlurakutProfileSidebarMenu';
 import Link from '../Link';
 import { Logo, AlurakutMenuWrapper } from './styled';
 
@@ -20,8 +19,11 @@ const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
         <nav style={{ flex: 1 }}>
           {[
             { name: 'Inicio', slug: '/' },
-            { name: 'Amigos', slug: '/amigos' },
-            { name: 'Comunidades', slug: '/comunidades' },
+            { name: 'Amigos', slug: `/friends/${githubUser}?id=${id}` },
+            {
+              name: 'Comunidades',
+              slug: `/communities/${githubUser}?id=${id}`,
+            },
           ].map((menuItem) => (
             <Link
               key={`key__${menuItem.name.toLocaleLowerCase()}`}
@@ -40,7 +42,7 @@ const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
         </nav>
 
         <button onClick={showMenu}>
-          {isMenuOpened && (
+          {/* {isMenuOpened && (
             <div>
               <Image
                 layout="fill"
@@ -48,7 +50,7 @@ const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
                 alt=""
               />
             </div>
-          )}
+          )} */}
           {!isMenuOpened && (
             <div>
               <Image
@@ -60,11 +62,6 @@ const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
           )}
         </button>
       </div>
-      <AlurakutMenuProfileSidebar
-        githubUser={githubUser}
-        id={id}
-        isMenuOpened={isMenuOpened}
-      />
     </AlurakutMenuWrapper>
   );
 };

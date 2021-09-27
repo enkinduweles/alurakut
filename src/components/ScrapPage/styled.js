@@ -1,62 +1,31 @@
-import { memo } from 'react';
 import styled from 'styled-components';
 
-import Box from '../Box/Box';
+import { ListItem } from '../UI/display/List/styled';
+import { Button } from '../UI/inputs/Button/styled';
+import { Form } from '../UI/layout/Form/styled';
 
-export const ScrapGridItem = memo(styled.div`
-  display: ${({ templateArea }) =>
-    templateArea === 'profileArea' ? 'none' : 'block'};
-  @media (min-width: 860px) {
-    grid-area: ${({ templateArea }) => templateArea};
-    display: block;
-  }
-`);
-
-export const ScrapsWrapper = styled(Box)`
-  padding: 12px;
-
-  > div {
-    display: flex;
-    justify-content: center;
+export const ScrapListItem = styled(ListItem)`
+  display: flex;
+  &:nth-child(even) {
+    background-color: var(--backgroundPrimary);
   }
 
-  .noScrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 50px;
-    font-size: 20px;
-    color: #f368e0;
-    > svg {
-      margin-right: 8px;
-    }
+  &:nth-child(odd) {
+    background-color: var(--backgroundQuarternary);
   }
-  .sectionForm {
-    form {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      textarea {
-        width: 100%;
-        font-size: 16px;
-        padding: 8px;
-        margin-bottom: 8px;
-        resize: none;
-        border: none;
-        border-bottom: 2px solid transparent;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-        outline: none;
-        background: whitesmoke;
+`;
 
-        &:hover,
-        &:focus {
-          border-bottom: 2px solid #f368e0;
-        }
-      }
+export const Header = styled.h2`
+  font-size: 2rem;
+  margin-bottom: 1.8rem;
+`;
 
-      button {
-        align-self: flex-end;
-      }
-    }
-  }
+export const SubmitButton = styled(Button)`
+  align-self: flex-end;
+  margin-top: 0.8rem;
+`;
+
+export const ScrapBox = styled(Form)`
+  display: flex;
+  flex-direction: column;
 `;

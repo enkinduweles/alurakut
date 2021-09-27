@@ -4,16 +4,24 @@ import { Toaster } from 'react-hot-toast';
 import { FaSadCry } from 'react-icons/fa';
 
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
-import MainGrid from '../../src/components/MainGrid/MainGrid';
+import { Box } from '../../src/components/UI/layout/Box/styled';
+import { Grid, GridItem } from '../../src/components/UI/layout/Grid/styled';
+import { List as ScrapList } from '../../src/components/UI/display/List/styled';
+import { UserMenu } from '../../src/components/UserMenu/styled';
+import Drawer from '../../src/components/UI/Navigation/Drawer/Drawer';
+import Input from '../../src/components/UI/inputs/Input/Input';
+import Sidebar from '../../src/components/Sidebar/Sidebar';
+import Scrap from '../../src/components/Scrap/Scrap';
 import Spinner from '../../src/components/Spinner/Spinner';
-import UserInfo from '../../src/components/UserInfo/UserInfo';
+
 import { validateToken } from '../../src/utils/auth';
-import ScrapList from '../../src/components/ScrapList/ScrapList';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
 
 import {
-  ScrapGridItem,
-  ScrapsWrapper,
+  ScrapListItem,
+  Header,
+  SubmitButton,
+  ScrapBox,
 } from '../../src/components/ScrapPage/styled';
 
 const ScrapPage = ({ githubUser, ownerId }) => {
@@ -31,17 +39,12 @@ const ScrapPage = ({ githubUser, ownerId }) => {
     error,
   } = useDatoCMS();
 
-  console.log(router.query);
   useEffect(() => {
     if (isFirstLoading) {
-      const fetchScraps = async () => {
-        await getData({
-          content: 'scrap',
-          queryParams: { userId: `?userId=${userId}` },
-        });
-      };
-
-      fetchScraps();
+      getData({
+        content: 'scrap',
+        queryParams: { userId: `?userId=${userId}` },
+      });
     }
   }, [getData, userId, isFirstLoading]);
 
@@ -50,7 +53,7 @@ const ScrapPage = ({ githubUser, ownerId }) => {
     []
   );
 
-  const sendScrapHandler = async (event) => {
+  const sendScrapHandler = (event) => {
     event.preventDefault();
 
     const mountedScrap = {
@@ -69,7 +72,7 @@ const ScrapPage = ({ githubUser, ownerId }) => {
   };
 
   const deleteScrapHandler = useCallback(
-    async (scrapId) => {
+    (scrapId) => {
       deleteData({
         content: 'scrap',
         queryParams: {
@@ -89,44 +92,79 @@ const ScrapPage = ({ githubUser, ownerId }) => {
         showMenu={showMenuHandler}
         isMenuOpened={isMenuOpened}
       />
+
+      {isMenuOpened && (
+        <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
+          <UserMenu
+            githubUser={githubUser}
+            id={userId}
+            width={50}
+            height={50}
+            src={`https://github.com/${githubUser}.png`}
+          />
+        </Drawer>
+      )}
+
       {!isFirstLoading ? (
         error.status !== 404 ? (
-          <MainGrid type="scrap" isMenuOpened={isMenuOpened}>
-            <ScrapGridItem templateArea="profileArea">
-              <UserInfo githubUser={githubUser} id={userId} />
-            </ScrapGridItem>
+          <Grid isMenuOpened={isMenuOpened}>
+            <GridItem templateArea="profileArea">
+              <Sidebar
+                githubUser={githubUser}
+                id={userId}
+                width={130}
+                height={130}
+                src={`https://github.com/${githubUser}.png`}
+              />
+            </GridItem>
 
-            <ScrapGridItem templateArea="mainArea">
-              <ScrapsWrapper>
-                <section className="sectionForm">
-                  <form onSubmit={sendScrapHandler}>
-                    <textarea
-                      name="scrapInput"
-                      rows="4"
-                      value={message}
-                      onChange={(event) => setMessage(event.target.value)}
-                    ></textarea>
-                    <button>Enviar</button>
-                  </form>
-                </section>
-              </ScrapsWrapper>
+            <GridItem templateArea="mainArea">
+              <Box>
+                <ScrapBox onSubmit={sendScrapHandler}>
+                  <Input
+                    as="textarea"
+                    name="scrapInput"
+                    rows="4"
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
+                  />
+                  <SubmitButton type="submit">Enviar</SubmitButton>
+                </ScrapBox>
+              </Box>
 
-              <ScrapsWrapper>
+              <Box>
                 {datoContent.length === 0 && (
                   <p className="noScrap">
                     <FaSadCry /> you don&apos;t have scraps yet
                   </p>
                 )}
+                <Header>
+                  Página de recados de {githubUser} ({datoContent.length})
+                </Header>
                 {datoContent.length !== 0 && (
-                  <ScrapList
-                    scraps={datoContent}
-                    onDeleteScrap={deleteScrapHandler}
-                    githubUser={githubUser}
-                  />
+                  <ScrapList githubUser={githubUser}>
+                    {datoContent.map(({ id, author, message }) => {
+                      return (
+                        <ScrapListItem key={id}>
+                          <Scrap
+                            layout="responsive"
+                            src={`https://github.com/${author}.png`}
+                            alt={author}
+                            width={60}
+                            height={60}
+                            scrapId={id}
+                            author={author}
+                            message={message}
+                            onDeleteScrap={() => deleteScrapHandler(id)}
+                          />
+                        </ScrapListItem>
+                      );
+                    })}
+                  </ScrapList>
                 )}
-              </ScrapsWrapper>
-            </ScrapGridItem>
-          </MainGrid>
+              </Box>
+            </GridItem>
+          </Grid>
         ) : (
           <div className="gbError">
             <p>

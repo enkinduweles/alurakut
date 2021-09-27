@@ -1,6 +1,10 @@
 import React from 'react';
 import { MdDelete } from 'react-icons/md';
-import Image from 'next/image';
+
+import Scrap from '../Scrap/Scrap';
+import Paper from '../UI/surfaces/Paper/PaperBase';
+import Avatar from '../UI/display/Avatar/AvatarBase';
+import Box from '../UI/layout/Box/Box';
 
 import { List, ListItem, ScrapListWrapper } from './styled';
 
@@ -16,22 +20,18 @@ const ScrapList = ({ scraps, githubUser, onDeleteScrap }) => {
           {scraps.map(({ id, author, message }) => {
             return (
               <ListItem key={id}>
-                <div>
-                  <Image
+                <Paper>
+                  <Scrap
                     layout="intrinsic"
                     src={`https://github.com/${author}.png`}
                     alt={author}
-                    width={80}
-                    height={80}
+                    width={250}
+                    height={250}
+                    scrapId={id}
+                    author={author}
+                    message={message}
                   />
-                </div>
-                <div className="userScrap">
-                  <div className="header">
-                    <h3>{author}</h3>
-                    <MdDelete onClick={() => onDeleteScrap(id)} />
-                  </div>
-                  <p>{message}</p>
-                </div>
+                </Paper>
               </ListItem>
             );
           })}

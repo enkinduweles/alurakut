@@ -1,22 +1,25 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FaSadCry } from 'react-icons/fa';
 
-import Box from '../src/components/Box/Box';
-import MainGrid from '../src/components/MainGrid/MainGrid';
+import { Box } from '../src/components/UI/layout/Box/styled';
+import { Grid, GridItem } from '../src/components/UI/layout/Grid/styled';
+import Drawer from '../src/Components/UI/Navigation/Drawer/Drawer';
+import Sidebar from '../src/components/Sidebar/Sidebar';
+import { NoContentMessage } from '../src/components/NoContentMessage/styled';
+import { UserMenu } from '../src/components/UserMenu/styled';
+
 import ProfileRelations from '../src/components/ProfileRelations/ProfileRelations';
-import UserInfo from '../src/components/UserInfo/UserInfo';
+
 import Spinner from '../src/components/Spinner/Spinner';
-import ProfileRelationsContent from '../src/components/ProfileRelationsContent/ProfileRelationsContent';
 import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
 } from '../src/lib/AlurakutCommons';
+
 import { validateToken } from '../src/utils/auth';
 import { useDatoCMS } from '../src/hooks/useDatoCMS';
 
-const Home = (props) => {
-  const { githubUser, id } = props;
-
+const Home = ({ githubUser, id: userId }) => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
 
   const { getData, data: datoContent, isFirstLoading } = useDatoCMS();
@@ -26,13 +29,13 @@ const Home = (props) => {
       const fetchData = async () => {
         await getData({
           content: 'communities',
-          queryParams: { userId: `?userId=${id}` },
+          queryParams: { userId: `?userId=${userId}` },
         });
       };
 
       fetchData();
     }
-  }, [getData, id, isFirstLoading]);
+  }, [getData, userId, isFirstLoading]);
 
   const addCommunityHandler = async (event) => {
     event.preventDefault();
@@ -61,87 +64,80 @@ const Home = (props) => {
     ]);
   };
 
+  const showMenuHandler = useCallback(
+    () => setIsMenuOpened((prevState) => !prevState),
+    []
+  );
+
   return (
-    <Fragment>
+    <>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
         githubUser={githubUser}
-        showMenu={() => setIsMenuOpened((prevState) => !prevState)}
-        id={id}
+        showMenu={showMenuHandler}
+        id={userId}
       />
+      {isMenuOpened && (
+        <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
+          <UserMenu
+            githubUser={githubUser}
+            id={userId}
+            width={50}
+            height={50}
+            src={`https://github.com/${githubUser}.png`}
+          />
+        </Drawer>
+      )}
       {!isFirstLoading ? (
-        <MainGrid isMenuOpened={isMenuOpened}>
-          <div className="profileArea" style={{ gridArea: 'profileArea' }}>
-            <UserInfo as="aside" githubUser={githubUser} id={id} />
-          </div>
-          <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
+        <Grid type="home" isMenuOpened={isMenuOpened}>
+          <GridItem templateArea="profileArea">
+            <Sidebar
+              githubUser={githubUser}
+              id={userId}
+              width={130}
+              height={130}
+              src={`https://github.com/${githubUser}.png`}
+            />
+          </GridItem>
+          <GridItem templateArea="mainArea">
             <Box>
               <h1 className="title">Bem vindo, {githubUser}</h1>
               <OrkutNostalgicIconSet recados={10} />
             </Box>
-
+          </GridItem>
+          <GridItem templateArea="profileRelationsArea">
             <Box>
-              <h2>O que você deseja fazer?</h2>
-
-              <form onSubmit={addCommunityHandler}>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Qual vai ser o nome da sua comunidade?"
-                    name="title"
-                    aria-label="Qual vai ser o nome da sua comunidade?"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Coloque uma URL para usarmos de capa."
-                    name="image"
-                    aria-label="Coloque uma URL para usarmos de capa."
-                  />
-                </div>
-
-                <button>Create</button>
-              </form>
-            </Box>
-          </div>
-
-          <div
-            className="profileRelationsArea"
-            style={{ gridArea: 'profileRelationsArea' }}
-          >
-            <ProfileRelations>
               {false ? (
-                <ProfileRelationsContent
+                <ProfileRelations
                   title="Following"
                   data={followingUsers}
                   type="profile"
                 />
               ) : (
-                <p className="noFriends">
+                <NoContentMessage>
                   <FaSadCry /> you didn&apos;t add friends yet
-                </p>
+                </NoContentMessage>
               )}
-            </ProfileRelations>
-            <ProfileRelations>
+            </Box>
+            <Box>
               {datoContent && datoContent.length !== 0 ? (
-                <ProfileRelationsContent
+                <ProfileRelations
                   title="Communities"
                   data={datoContent}
                   type="community"
                 />
               ) : (
-                <p className="noCommunities">
+                <NoContentMessage>
                   <FaSadCry /> no communities yet
-                </p>
+                </NoContentMessage>
               )}
-            </ProfileRelations>
-          </div>
-        </MainGrid>
+            </Box>
+          </GridItem>
+        </Grid>
       ) : (
         <Spinner />
       )}
-    </Fragment>
+    </>
   );
 };
 

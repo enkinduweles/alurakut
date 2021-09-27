@@ -1,67 +1,51 @@
-import styled from 'styled-components';
-import Box from '../Box/Box';
+import React from 'react';
+import Image from 'next/image';
 
-const ProfileRelations = styled(Box)`
-  .noFriends,
-  .noCommunities {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 50px;
-    font-size: 20px;
-    color: #f368e0;
-    > svg {
-      margin-right: 8px;
-    }
-  }
-  ul {
-    display: grid;
-    grid-gap: 8px;
-    grid-template-columns: 1fr 1fr 1fr;
-    max-height: 220px;
-    list-style: none;
+import SeeAllLink from '../UI/Navigation/Link/Link';
+import { ProfileList, Link, Label, ImageWrapper, Header } from './styled';
+import { ListItem } from '../UI/display/List/styled';
+
+const ProfileRelations = ({ title, data, type }) => {
+  console.log(data);
+
+  let dataLimitedBy = [...data];
+
+  if (data.length > 6) {
+    dataLimitedBy.splice(6, data.length - 5);
   }
 
-  ul li a {
-    display: inline-block;
-    height: 102px;
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    width: 100%;
-    > div {
-      height: 100%;
-      width: 100%;
-      position: relative;
-    }
+  return (
+    <>
+      <Header className="smallTitle">
+        {title} ({data.length})
+      </Header>
 
-    span {
-      color: #ffffff;
-      font-size: 10px;
-      position: absolute;
-      left: 0;
-      bottom: 10px;
-      z-index: 2;
-      padding: 0 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-    }
-    &:after {
-      content: '';
-      display: block;
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-      z-index: 1;
-      background-image: linear-gradient(0deg, #00000073, transparent);
-    }
-  }
-`;
+      <ProfileList>
+        {dataLimitedBy.map((item) => {
+          return (
+            <ListItem key={item.id}>
+              <Link href={`/${type}/${item.name}?id=${item.id}`}>
+                <ImageWrapper>
+                  <Image
+                    layout="fill"
+                    objectFit="cover"
+                    src={item.imageUrl}
+                    alt={item.name}
+                  />
+                </ImageWrapper>
+                <Label>{item.name}</Label>
+              </Link>
+            </ListItem>
+          );
+        })}
+      </ProfileList>
+      {data.length > 6 && (
+        <SeeAllLink className="boxLink" href="#">
+          See All
+        </SeeAllLink>
+      )}
+    </>
+  );
+};
 
 export default ProfileRelations;

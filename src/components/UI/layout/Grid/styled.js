@@ -1,35 +1,31 @@
+import { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const defineTypeGrid = (type) => {
   switch (type) {
-    case 'profile':
+    case 'home':
       return {
-        templateArea: "'profileArea mainArea'",
-        columnsSize: '160px 1fr',
+        templateArea: "'profileArea mainArea profileRelationsArea'",
+        columnsSize: '160px 1fr 312px',
       };
-    case 'scrap':
+    default:
       return {
         templateArea: "'profileArea mainArea mainArea'",
         columnsSize: '160px 1fr 1fr',
       };
-    default:
-      return {
-        templateArea: "'profileArea welcomeArea profileRelationsArea'",
-        columnsSize: '160px 1fr 312px',
-      };
   }
 };
 
-const MainGrid = styled.main`
+export const Grid = styled.main`
   width: 100%;
-  grid-gap: 10px;
+  grid-gap: 1rem;
   margin-left: auto;
   margin-right: auto;
-  max-width: 600px;
-  padding: 16px;
+  max-width: 60rem;
+  padding: 1.6rem;
 
-  display: ${({ isMenuOpened }) => (isMenuOpened ? 'none' : 'initial')};
+  /* display: ${({ isMenuOpened }) => (isMenuOpened ? 'none' : null)}; */
 
   .profileArea {
     display: none;
@@ -38,7 +34,7 @@ const MainGrid = styled.main`
     }
   }
   @media (min-width: 860px) {
-    max-width: 1110px;
+    max-width: 111rem;
     display: grid;
     grid-template-areas: ${(props) => {
       return defineTypeGrid(props.type).templateArea;
@@ -49,9 +45,16 @@ const MainGrid = styled.main`
   }
 `;
 
-MainGrid.propTypes = {
+export const GridItem = memo(styled.div`
+  display: ${({ templateArea }) =>
+    templateArea === 'profileArea' ? 'none' : 'block'};
+  @media (min-width: 860px) {
+    grid-area: ${({ templateArea }) => templateArea};
+    display: block;
+  }
+`);
+
+Grid.propTypes = {
   isMenuOpened: PropTypes.bool.isRequired,
   type: PropTypes.string,
 };
-
-export default MainGrid;

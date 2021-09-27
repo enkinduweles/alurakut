@@ -6,8 +6,6 @@ export const AlurakutMenuWrapper = styled.header`
   width: 100%;
   background-color: #308bc5;
 
-  position: ${({ isMenuOpen }) => (isMenuOpen ? 'fixed' : 'initial')};
-
   .container {
     background-color: #308bc5;
     padding: 7px 16px;

@@ -2,12 +2,21 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Toaster } from 'react-hot-toast';
 
-import MainGrid from '../../src/components/MainGrid/MainGrid';
-import UserInfo from '../../src/components/UserInfo/UserInfo';
+import { Box } from '../../src/components/UI/layout/Box/styled';
+import { Button } from '../../src/components/UI/inputs/Button/styled';
+import { Divider } from '../../src/components/UI/display/Divider/styled';
+import { Form } from '../../src/components/UI/layout/Form/styled';
+import { Grid, GridItem } from '../../src/components/UI/layout/Grid/styled';
+import { UserMenu } from '../../src/components/UserMenu/styled';
+import Drawer from '../../src/components/UI/Navigation/Drawer/Drawer';
+import Sidebar from '../../src/components/Sidebar/Sidebar';
+
 import {
-  Profile,
-  ProfileGridItem,
-} from '../../src/components/ProfilePages/styled';
+  HeaderWrapper,
+  Header,
+  Input,
+  FormControls,
+} from '../../src/components/ProfilePage/styled';
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
 import Spinner from '../../src/components/Spinner/Spinner';
 
@@ -15,8 +24,7 @@ import { validateToken } from '../../src/utils/auth';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
 import { shallowEqual } from '../../src/utils/shallowEquality';
 
-const ProfilePages = (props) => {
-  const { githubUser, ownerId } = props;
+const ProfilePages = ({ githubUser, ownerId }) => {
   const [profileEditMode, setProfileEditMode] = useState(false);
   const [formProfile, setFormProfile] = useState({
     id: '',
@@ -26,9 +34,9 @@ const ProfilePages = (props) => {
     contact: '',
   });
   const [isMenuOpened, setIsMenuOpened] = useState(false);
+
   const router = useRouter();
   const { id: userId } = router.query;
-
   const {
     getData,
     updateData,
@@ -58,7 +66,7 @@ const ProfilePages = (props) => {
     }
   }, [datoContent]);
 
-  const changeProfileModeHandler = async () => {
+  const changeProfileModeHandler = () => {
     setProfileEditMode((prevState) => !prevState);
   };
 
@@ -91,119 +99,129 @@ const ProfilePages = (props) => {
         githubUser={githubUser}
         id={ownerId}
       />
-      {!isFirstLoading ? (
-        <MainGrid type="profile" isMenuOpened={isMenuOpened}>
-          <ProfileGridItem templateArea="profileArea">
-            <UserInfo githubUser={githubUser} id={ownerId} />
-          </ProfileGridItem>
-          <ProfileGridItem templateArea="mainArea">
-            <Profile as="section" profileEditMode={profileEditMode}>
-              <header>
-                <div className="profileHeaderContainer">
-                  <h2>Perfil</h2>
-                  {ownerId.toString() === userId ? (
-                    !error.status && !profileEditMode ? (
-                      <button onClick={changeProfileModeHandler}>Editar</button>
-                    ) : null
-                  ) : null}
-                </div>
-                {/* breadcrumbe */}
-              </header>
-              <article>
-                {error.status !== 404 ? (
-                  <form
-                    className="userInfoForm"
-                    onSubmit={submitProfileInfoHandler}
-                  >
-                    <div>
-                      <label htmlFor="">Cidade</label>
-                      <input
-                        type="text"
-                        name="city"
-                        disabled={!profileEditMode}
-                        className={!profileEditMode ? 'viewMode' : ''}
-                        value={formProfile ? formProfile.city : ''}
-                        onChange={(event) =>
-                          setFormProfile((prevState) => ({
-                            ...prevState,
-                            city: event.target.value,
-                          }))
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="">Estado</label>
-                      <input
-                        type="text"
-                        name="state"
-                        disabled={!profileEditMode}
-                        className={!profileEditMode ? 'viewMode' : ''}
-                        value={formProfile ? formProfile.state : ''}
-                        onChange={(event) =>
-                          setFormProfile((prevState) => ({
-                            ...prevState,
-                            state: event.target.value,
-                          }))
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="">Profissão</label>
-                      <input
-                        type="text"
-                        name="profession"
-                        disabled={!profileEditMode}
-                        className={!profileEditMode ? 'viewMode' : ''}
-                        value={formProfile ? formProfile.profession : ''}
-                        onChange={(event) =>
-                          setFormProfile((prevState) => ({
-                            ...prevState,
-                            profession: event.target.value,
-                          }))
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="">Contato</label>
-                      <input
-                        type="text"
-                        name="contact"
-                        disabled={!profileEditMode}
-                        className={!profileEditMode ? 'viewMode' : ''}
-                        value={formProfile ? formProfile.contact : ''}
-                        onChange={(event) =>
-                          setFormProfile((prevState) => ({
-                            ...prevState,
-                            contact: event.target.value,
-                          }))
-                        }
-                      />
-                    </div>
+      {isMenuOpened && (
+        <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
+          <UserMenu
+            githubUser={githubUser}
+            id={userId}
+            width={50}
+            height={50}
+            src={`https://github.com/${githubUser}.png`}
+          />
+        </Drawer>
+      )}
 
-                    {profileEditMode && (
-                      <div className="formControls">
-                        <button
-                          type="reset"
-                          onClick={() => setProfileEditMode(false)}
-                        >
-                          Cancelar
-                        </button>
-                        <button type="submit">Salvar</button>
-                      </div>
-                    )}
-                  </form>
-                ) : (
-                  <div className="gbError">
-                    <p>
-                      <span className="gbSadFace">:( </span>
-                      {error.message}
-                    </p>
-                  </div>
-                )}
-              </article>
-            </Profile>
-          </ProfileGridItem>
-        </MainGrid>
+      {!isFirstLoading ? (
+        <Grid isMenuOpened={isMenuOpened}>
+          <GridItem templateArea="profileArea">
+            <Sidebar
+              githubUser={githubUser}
+              id={ownerId}
+              layout="intrinsic"
+              width={130}
+              height={130}
+              src={`https://github.com/${githubUser}.png`}
+            />
+          </GridItem>
+
+          <GridItem templateArea="mainArea">
+            <Box>
+              <HeaderWrapper>
+                <Header>Perfil</Header>
+                {ownerId.toString() === userId
+                  ? !profileEditMode && (
+                      <Button onClick={changeProfileModeHandler}>Editar</Button>
+                    )
+                  : null}
+                {/* breadcrumbe */}
+              </HeaderWrapper>
+              <Divider />
+              {error.status !== 404 ? (
+                <Form onSubmit={submitProfileInfoHandler}>
+                  <Input
+                    label="cidade"
+                    type="text"
+                    name="city"
+                    disabled={!profileEditMode}
+                    className={!profileEditMode ? 'viewMode' : ''}
+                    value={formProfile ? formProfile.city : ''}
+                    onChange={(event) =>
+                      setFormProfile((prevState) => ({
+                        ...prevState,
+                        city: event.target.value,
+                      }))
+                    }
+                  />
+
+                  <Input
+                    label="estado"
+                    type="text"
+                    name="state"
+                    disabled={!profileEditMode}
+                    className={!profileEditMode ? 'viewMode' : ''}
+                    value={formProfile ? formProfile.state : ''}
+                    onChange={(event) =>
+                      setFormProfile((prevState) => ({
+                        ...prevState,
+                        state: event.target.value,
+                      }))
+                    }
+                  />
+
+                  <Input
+                    label="profissão"
+                    type="text"
+                    name="profession"
+                    disabled={!profileEditMode}
+                    className={!profileEditMode ? 'viewMode' : ''}
+                    value={formProfile ? formProfile.profession : ''}
+                    onChange={(event) =>
+                      setFormProfile((prevState) => ({
+                        ...prevState,
+                        profession: event.target.value,
+                      }))
+                    }
+                  />
+
+                  <Input
+                    label="contato"
+                    type="text"
+                    name="contact"
+                    disabled={!profileEditMode}
+                    className={!profileEditMode ? 'viewMode' : ''}
+                    value={formProfile ? formProfile.contact : ''}
+                    onChange={(event) =>
+                      setFormProfile((prevState) => ({
+                        ...prevState,
+                        contact: event.target.value,
+                      }))
+                    }
+                  />
+
+                  {profileEditMode && (
+                    <FormControls>
+                      <Button
+                        outline
+                        type="reset"
+                        onClick={() => setProfileEditMode(false)}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button type="submit">Salvar</Button>
+                    </FormControls>
+                  )}
+                </Form>
+              ) : (
+                <div className="gbError">
+                  <p>
+                    <span className="gbSadFace">:( </span>
+                    {error.message}
+                  </p>
+                </div>
+              )}
+            </Box>
+          </GridItem>
+        </Grid>
       ) : (
         <Spinner />
       )}

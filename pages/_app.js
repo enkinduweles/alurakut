@@ -8,8 +8,14 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
 }
+
+html {
+ font-size: 62.5%;
+}
+
 html, body {
   height: 100%;
+  width: 100%;
 }
 
   body {
@@ -17,17 +23,17 @@ html, body {
     background-color: #D9E6F6;
   }
 
-  #__next {
+  /* #__next {
     display: flex;
     height: 100%;
     flex-direction: column;
-  }
+  } */
 
-  img {
+  /* img {
     max-width: 100%;
     height: auto;
     display: block;
-  }
+  } */
 
   .gbError {
     height: 100%;
