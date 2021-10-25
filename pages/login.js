@@ -1,28 +1,43 @@
-import React from 'react';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
-
-import LoginPageMain from '../src/components/LoginPages/styled';
-import { Link } from '../src/lib/AlurakutCommons';
-
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
+
+import { Button } from '../src/components/ui/inputs/Button/styled';
+import { Grid, GridItem } from '../src/components/ui/layout/Grid/styled';
+import Link from '../src/components/ui/navigation/Link/Link';
+import Input from '../src/components/ui/inputs/Input/Input';
+
 import { validateToken } from '../src/utils/auth';
 
-const LoginScreen = (props) => {
+import {
+  DescribeWrapper,
+  FooterWrapper,
+  Highlight,
+  JoinUs,
+  Login,
+  LogoWrapper,
+  MemberLogin,
+  MemberWrapper,
+  PageWrapper,
+  Typograph,
+} from '../src/components/LoginPages/styled';
+
+const LoginScreen = () => {
+  const [userName, setUserName] = useState('');
   const router = useRouter();
-  const [githubUser, setGithubUser] = React.useState('');
-  const [isFocused, setIsFocused] = React.useState(false);
 
   const submitLoginForm = async (event) => {
     event.preventDefault();
+
     const toastId = toast.loading('Loading...');
 
-    const response = await fetch('/api/login', {
+    const response = await fetch('/api/authentication', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ githubUser: githubUser }),
+      body: JSON.stringify({ userName }),
     });
 
     const { error } = await response.json();
@@ -31,94 +46,85 @@ const LoginScreen = (props) => {
       toast.error('User not found', { id: toastId });
     } else {
       toast.remove();
+
       router.push('/');
     }
   };
 
-  const inputFocusHandler = () => {
-    setIsFocused(true);
-  };
-  const inputBlurHandler = () => {
-    setIsFocused(false);
-  };
-
-  const invalidClass =
-    isFocused && githubUser.length === 0 ? 'inputFieldInvalid' : '';
-
   return (
-    <LoginPageMain>
-      <div className="loginScreen">
-        <section className="logoArea">
-          <div className="nextImage">
-            <Image
-              src="https://alurakut.vercel.app/logo.svg"
-              alt="Logo"
-              layout="fill"
-            />
-          </div>
-
-          <p>
-            <strong>Conecte-se</strong> aos seus amigos e familiares usando
-            recados e mensagens instantâneas
-          </p>
-          <p>
-            <strong>Conheça</strong> novas pessoas através de amigos de seus
-            amigos e comunidades
-          </p>
-          <p>
-            <strong>Compartilhe</strong> seus vídeos, fotos e paixões em um só
-            lugar
-          </p>
-        </section>
-
-        <section className="formArea">
-          <form className="box" onSubmit={submitLoginForm}>
-            <p>
-              Acesse agora mesmo com seu usuário do <strong>GitHub</strong>!
-            </p>
-            <div>
-              <input
-                className={invalidClass}
-                placeholder="Usuário"
-                value={githubUser}
-                onChange={(evento) => {
-                  setGithubUser(evento.target.value);
-                }}
-                onFocus={inputFocusHandler}
-                onBlur={inputBlurHandler}
+    <PageWrapper>
+      <Grid type="login">
+        <GridItem templateArea="logoArea" as="section">
+          <DescribeWrapper>
+            <LogoWrapper>
+              <Image
+                src="https://alurakut.vercel.app/logo.svg"
+                alt="Logo"
+                layout="fill"
               />
-              {githubUser.length === 0 && isFocused ? (
-                <span>Preencha o campo</span>
-              ) : (
-                ''
-              )}
-            </div>
-            <button type="submit" disabled={githubUser.length === 0}>
-              Login
-            </button>
-            <Toaster position="bottom-right" />
-          </form>
+            </LogoWrapper>
 
-          <footer className="box">
-            <p>
-              Ainda não é membro? <br />
-              <Link href="/login">
-                <strong>ENTRAR JÁ</strong>
-              </Link>
-            </p>
-          </footer>
-        </section>
+            <Typograph>
+              <Highlight>Conecte-se</Highlight> aos seus amigos e familiares
+              usando recados e mensagens instantâneas
+            </Typograph>
+            <Typograph>
+              <Highlight>Conheça</Highlight> novas pessoas através de amigos de
+              seus amigos e comunidades
+            </Typograph>
+            <Typograph>
+              <Highlight>Compartilhe</Highlight> seus vídeos, fotos e paixões em
+              um só lugar
+            </Typograph>
+          </DescribeWrapper>
+        </GridItem>
 
-        <footer className="footerArea">
-          <p>
-            © 2021 alura.com.br - <Link href="/">Sobre o Orkut.br</Link> -{' '}
-            <Link href="/">Centro de segurança</Link> -{' '}
-            <Link href="/">Privacidade</Link> - <Link href="/">Termos</Link> -{' '}
-            <Link href="/">Contato</Link>
-          </p>
-        </footer>
-      </div>
-    </LoginPageMain>
+        <GridItem templateArea="mainArea" as="section">
+          <MemberWrapper>
+            <MemberLogin>
+              <Login onSubmit={submitLoginForm}>
+                <Typograph>
+                  Acesse agora mesmo com seu usuário do{' '}
+                  <Highlight>GitHub</Highlight>!
+                </Typograph>
+
+                <Input
+                  placeholder="Usuário"
+                  value={userName}
+                  onChange={(evento) => {
+                    setUserName(evento.target.value);
+                  }}
+                />
+                <Button type="submit" disabled={userName.length === 0}>
+                  Login
+                </Button>
+              </Login>
+            </MemberLogin>
+
+            <JoinUs>
+              <Typograph>
+                Ainda não é membro? <br />
+                <Link href="/login">
+                  <Highlight>ENTRAR JÁ</Highlight>
+                </Link>
+              </Typograph>
+            </JoinUs>
+          </MemberWrapper>
+        </GridItem>
+
+        <GridItem templateArea="footerArea" as="footer">
+          <FooterWrapper>
+            <Typograph>
+              © 2021 alura.com.br - <Link href="/">Sobre o Orkut.br</Link> -{' '}
+              <Link href="/">Centro de segurança</Link> -{' '}
+              <Link href="/">Privacidade</Link> - <Link href="/">Termos</Link> -{' '}
+              <Link href="/">Contato</Link>
+            </Typograph>
+          </FooterWrapper>
+        </GridItem>
+      </Grid>
+      <Toaster position="bottom-right" />
+    </PageWrapper>
   );
 };
 
