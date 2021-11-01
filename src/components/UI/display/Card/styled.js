@@ -1,10 +1,31 @@
 import styled from 'styled-components';
 
 import { Box } from '../../layout/Box/styled';
-import Link from '../../Navigation/Link/Link';
+import Link from '../../navigation/Link/Link';
+import Input from '../../inputs/Input/Input';
+
+export const Checkbox = styled(Input)`
+  width: auto;
+  align-self: center;
+  margin-right: 1.6rem;
+  z-index: 101;
+  > input {
+    box-shadow: none;
+  }
+`;
 
 export const CardWrapper = styled.div`
   display: flex;
+`;
+
+export const Overlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.15);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
 `;
 
 export const CardContent = styled(Box)`

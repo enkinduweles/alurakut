@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from '../UI/layout/Box/styled';
+import { Box } from '../ui/layout/Box/styled';
 
 export const MessageWrapper = styled(Box)`
   background-color: inherit;

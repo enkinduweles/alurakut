@@ -7,11 +7,10 @@ import { BreadcrumbWrapper, Crumb } from './styled';
 const Breadcrumb = () => {
   const { pathname } = useRouter();
   const splitedPathName = pathname.split('/');
-  console.log(splitedPathName);
+
   const filteredPath = splitedPathName.filter((item) => {
     return !item.includes('[');
   });
-  console.log(filteredPath);
 
   const crumbs = filteredPath.map((item) => {
     if (item === '') {
@@ -19,7 +18,7 @@ const Breadcrumb = () => {
     }
     return item;
   });
-  console.log(crumbs);
+
   return (
     <nav>
       <BreadcrumbWrapper>

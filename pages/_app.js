@@ -13,7 +13,7 @@ html {
  font-size: 62.5%;
 }
 
-html, body {
+html, body, #__next {
   height: 100%;
   width: 100%;
 }
@@ -35,20 +35,7 @@ html, body {
     display: block;
   } */
 
-  .gbError {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #f368e0;
-    font-size: 20px;
-  }
-
-.gbSadFace {
-  font-weight: bold;
-  font-size: 24px;
-}
-
+ 
   ${AlurakutStyles}
 `;
 

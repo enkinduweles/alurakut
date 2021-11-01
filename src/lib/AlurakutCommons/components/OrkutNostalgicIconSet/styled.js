@@ -1,22 +1,12 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const OrkutNostalgicIconSetList = styled.ul`
-  margin-top: 32px;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+const listItemStyle = css`
   li {
-    font-size: 12px;
+    font-size: 1.4rem;
     color: #5a5a5a;
-    display: grid;
-    grid-template-areas:
-      'title title'
-      'number number';
+    display: flex;
+    flex-direction: column;
 
-    &:not(:last-child) {
-      margin-right: 5px;
-    }
     .OrkutNostalgicIconSet__title {
       display: block;
       font-style: italic;
@@ -30,18 +20,45 @@ export const OrkutNostalgicIconSetList = styled.ul`
       .OrkutNostalgicIconSet__iconComplex {
         position: relative;
 
-        min-width: 15px;
-        min-height: 15px;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
         margin-right: 5px;
       }
 
       .OrkutNostalgicIconSet__iconSample {
         position: relative;
 
-        min-width: 15px;
-        min-height: 15px;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
         margin-right: 7px;
       }
     }
+  }
+`;
+
+export const OrkutNostalgicIconSetList = styled.ul`
+  list-style: none;
+  display: flex;
+  gap: 20px;
+
+  ${listItemStyle}
+`;
+
+export const PersonalityIconSet = styled.ul`
+  display: flex;
+  gap: 20px;
+  cursor: pointer;
+  ${listItemStyle}
+`;
+
+export const IconsSetContainer = styled.div`
+  margin-top: 3.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+
+  @media (min-width: 860px) {
+    justify-content: initial;
   }
 `;

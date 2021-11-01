@@ -2,6 +2,7 @@ import { css } from 'styled-components';
 
 export const AlurakutStyles = css`
   :root {
+    --infoText: #F368E0;
     --backgroundPrimary: #d9e6f6;
     --backgroundSecondary: #f1f9fe;
     --backgroundTertiary: #ffffff;

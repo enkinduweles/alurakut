@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { ListItem } from '../UI/display/List/styled';
-import { Button } from '../UI/inputs/Button/styled';
-import { Form } from '../UI/layout/Form/styled';
+import { ListItem } from '../ui/display/List/styled';
+import { Button } from '../ui/inputs/Button/styled';
+import { Form } from '../ui/layout/Form/styled';
 
 export const ScrapListItem = styled(ListItem)`
   display: flex;

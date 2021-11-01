@@ -4,16 +4,16 @@ import UserInfo from '../../../../components/UserInfo/UserInfo';
 
 import { AlurakutMenuProfileSidebarWrapper } from './styled';
 
-const AlurakutMenuProfileSidebar = ({ githubUser, id, isMenuOpened }) => {
+const AlurakutMenuProfileSidebar = ({ userName, id, isMenuOpened }) => {
   return (
     <AlurakutMenuProfileSidebarWrapper isMenuOpened={isMenuOpened}>
-      <UserInfo githubUser={githubUser} id={id} />
+      <UserInfo userName={userName} id={id} />
     </AlurakutMenuProfileSidebarWrapper>
   );
 };
 
 AlurakutMenuProfileSidebar.propTypes = {
-  githubUser: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
   isMenuOpened: PropTypes.bool.isRequired,
   id: PropTypes.string.isRequired,
 };

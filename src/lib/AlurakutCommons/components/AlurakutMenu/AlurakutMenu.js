@@ -2,13 +2,13 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 
-import Link from '../Link';
+import Link from '../../../../components/ui/navigation/Link/Link';
 import { Logo, AlurakutMenuWrapper } from './styled';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
-const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
+const AlurakutMenu = ({ userName, showMenu, isMenuOpened, id }) => {
   return (
     <AlurakutMenuWrapper isMenuOpen={isMenuOpened}>
       <div className="container">
@@ -19,10 +19,10 @@ const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
         <nav style={{ flex: 1 }}>
           {[
             { name: 'Inicio', slug: '/' },
-            { name: 'Amigos', slug: `/friends/${githubUser}?id=${id}` },
+            { name: 'Amigos', slug: `/friends/${userName}?id=${id}` },
             {
               name: 'Comunidades',
-              slug: `/communities/${githubUser}?id=${id}`,
+              slug: `/communities/${userName}?id=${id}`,
             },
           ].map((menuItem) => (
             <Link
@@ -67,7 +67,7 @@ const AlurakutMenu = ({ githubUser, showMenu, isMenuOpened, id }) => {
 };
 
 AlurakutMenu.propTypes = {
-  githubUser: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
   showMenu: PropTypes.func.isRequired,
   isMenuOpened: PropTypes.bool.isRequired,
   id: PropTypes.string.isRequired,

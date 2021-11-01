@@ -1,6 +1,6 @@
 import React from 'react';
 import { MdDelete } from 'react-icons/md';
-import Avatar from '../UI/display/Avatar/AvatarBase';
+import Avatar from '../ui/display/Avatar/Avatar';
 
 import { MessageWrapper, HeaderWrapper, Message, Username } from './styled';
 

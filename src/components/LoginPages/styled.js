@@ -1,4 +1,117 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+import { Box } from '../ui/layout/Box/styled';
+import { Form } from '../ui/layout/Form/styled';
+
+const flexConfig = css``;
+
+export const PageWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+export const DescribeWrapper = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 26.3rem;
+  padding: 1.6rem;
+  height: 100%;
+
+  > div {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 860px) {
+    min-height: 36rem;
+  }
+`;
+
+export const LogoWrapper = styled.figure`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  max-height: 4.5rem;
+  margin-bottom: 3.6rem;
+`;
+
+export const MemberWrapper = styled.div`
+  height: 100%;
+
+  min-height: 26.3rem;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    padding: 1.6rem 5rem;
+    background-color: var(--backgroundSecondary);
+  }
+
+  p {
+    font-size: 1.4rem;
+  }
+
+  @media (min-width: 860px) {
+    min-height: 36rem;
+  }
+`;
+
+export const MemberLogin = styled(Box)`
+  min-height: 22.4rem;
+  /* padding: 1.6rem 5rem; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 860px) {
+    min-height: 28.2rem;
+  }
+`;
+
+export const Login = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  div {
+    margin: 2.4rem 0 1.6rem 0;
+  }
+
+  button {
+    padding: 1.2rem;
+  }
+`;
+
+export const JoinUs = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin-bottom: 0;
+  text-align: center;
+`;
+
+export const FooterWrapper = styled(Box)`
+  background-color: var(--backgroundQuarternary);
+  text-align: center;
+`;
+
+export const Typograph = styled.p`
+  font-size: 1.2rem;
+  line-height: 1.2;
+  &:not(:last-child) {
+    margin-bottom: 1.2rem;
+  }
+`;
+
+export const Highlight = styled.strong`
+  color: var(--colorQuarternary);
+`;
 
 const LoginPageMain = styled.main`
   display: flex;

@@ -46,7 +46,6 @@ const LoginScreen = () => {
       toast.error('User not found', { id: toastId });
     } else {
       toast.remove();
-
       router.push('/');
     }
   };

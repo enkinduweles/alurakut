@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Toaster } from 'react-hot-toast';
 
-import { Box } from '../../src/components/UI/layout/Box/styled';
-import { Button } from '../../src/components/UI/inputs/Button/styled';
-import { Divider } from '../../src/components/UI/display/Divider/styled';
-import { Form } from '../../src/components/UI/layout/Form/styled';
-import { Grid, GridItem } from '../../src/components/UI/layout/Grid/styled';
+import { Box } from '../../src/components/ui/layout/Box/styled';
+import { Button } from '../../src/components/ui/inputs/Button/styled';
+import { Divider } from '../../src/components/ui/display/Divider/styled';
+import { Form } from '../../src/components/ui/layout/Form/styled';
+import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
 import { UserMenu } from '../../src/components/UserMenu/styled';
-import Drawer from '../../src/components/UI/Navigation/Drawer/Drawer';
+import Drawer from '../../src/components/ui/navigation/Drawer/Drawer';
 import Sidebar from '../../src/components/Sidebar/Sidebar';
 
 import {
@@ -47,16 +47,10 @@ const ProfilePages = ({ githubUser, ownerId }) => {
 
   useEffect(() => {
     if (isFirstLoading) {
-      const fetchScraps = async () => {
-        await getData({
-          content: 'profile',
-          queryParams: { userId: `?userId=${userId}` },
-        });
-
-        setFormProfile(datoContent);
-      };
-
-      fetchScraps();
+      getData({
+        content: 'profile',
+        queryParams: { userId: `?userId=${userId}` },
+      });
     }
   }, [getData, userId, datoContent, isFirstLoading]);
 
@@ -78,6 +72,7 @@ const ProfilePages = ({ githubUser, ownerId }) => {
         content: 'profile',
         queryParams: {
           userId: `?userId=${userId}`,
+          activeToast: true,
         },
         body: formProfile,
       });
@@ -96,17 +91,17 @@ const ProfilePages = ({ githubUser, ownerId }) => {
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
         showMenu={showMenuHandler}
-        githubUser={githubUser}
+        userName={userName}
         id={ownerId}
       />
       {isMenuOpened && (
         <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
           <UserMenu
-            githubUser={githubUser}
+            userName={userName}
             id={userId}
             width={50}
             height={50}
-            src={`https://github.com/${githubUser}.png`}
+            src={`https://github.com/${userName}.png`}
           />
         </Drawer>
       )}
@@ -115,12 +110,12 @@ const ProfilePages = ({ githubUser, ownerId }) => {
         <Grid isMenuOpened={isMenuOpened}>
           <GridItem templateArea="profileArea">
             <Sidebar
-              githubUser={githubUser}
+              userName={userName}
               id={ownerId}
               layout="intrinsic"
               width={130}
               height={130}
-              src={`https://github.com/${githubUser}.png`}
+              src={`https://github.com/${userName}.png`}
             />
           </GridItem>
 
@@ -143,8 +138,7 @@ const ProfilePages = ({ githubUser, ownerId }) => {
                     type="text"
                     name="city"
                     disabled={!profileEditMode}
-                    className={!profileEditMode ? 'viewMode' : ''}
-                    value={formProfile ? formProfile.city : ''}
+                    value={formProfile.city}
                     onChange={(event) =>
                       setFormProfile((prevState) => ({
                         ...prevState,
@@ -241,7 +235,7 @@ const ProfilePages = ({ githubUser, ownerId }) => {
 export default ProfilePages;
 
 export async function getServerSideProps(context) {
-  const { isAuthorized, githubUser, id } = validateToken(
+  const { isAuthorized, userName, userId } = validateToken(
     context.req.headers.cookie
   );
 

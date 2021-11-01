@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { useRouter } from 'next/router';
 import { PageCountWrapper } from './styled';
 
-const PageCount = () => {
+const PageCount = ({
+  counters: { firstCountMark, lastCountMark, totalFriends },
+}) => {
+  //final - ((page * limitBy) - 5 ) + (totalFriendsPage - 1)
+  //inicio ---> (page * limitBy) - 5
+
   return (
     <PageCountWrapper>
-      <span>mostrando 1-6 de 6</span>
+      <span>
+        mostrando {firstCountMark}-{lastCountMark} de {totalFriends}
+      </span>
     </PageCountWrapper>
   );
 };
 
-export default PageCount;
+export default memo(PageCount);

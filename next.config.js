@@ -5,6 +5,7 @@ module.exports = {
       'avatars.githubusercontent.com',
       'github.com',
       'picsum.photos',
+      'www.datocms-assets.com',
     ],
   },
 };

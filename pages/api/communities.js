@@ -1,57 +1,149 @@
 import { SiteClient } from 'datocms-client';
+import sendRequest from '../../src/utils/requestHandler';
+import axios from '../../src/utils/axiosConfig';
 
-const USER_CONTENT = '1083247';
+const TOKEN = process.env.PRIVATE_KEY;
+const client = new SiteClient(TOKEN);
 
-export default async function sendRequest(request, response) {
-  const { userId, communityId } = request.query;
+const USER = '1317096';
+const COMMUNITIES = '975326';
 
-  const TOKEN = process.env.READ_WRITE_TOKEN;
-  const client = new SiteClient(TOKEN);
+sendRequest.get(async (request, response) => {
+  const { userId, limitBy, page = 1 } = request.query;
 
-  const record = await client.items.all({
+  const start = page ? (page - 1) * limitBy : 0;
+
+  const { data: responseData } = await axios.post('/', {
+    query: `query {
+      allCommunities(filter: {githubId: {eq: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
+        id
+        name
+        thumbnail {
+          url
+        }
+      }
+      _allCommunitiesMeta(filter: {githubId: {eq: "${userId}"}}) {
+        count
+      }
+    }`,
+  });
+
+  if (responseData.errors) {
+    const error = new Error('Ops something went wrong');
+    error.status = 400;
+
+    throw error;
+  }
+  console.log(responseData.data.allCommunities);
+  const { allCommunities, _allCommunitiesMeta } = responseData.data;
+  const communities = allCommunities;
+  const total = _allCommunitiesMeta.count;
+  const lastPage = Math.ceil(total / limitBy);
+  const firstCountMark = page * limitBy - 5;
+  const lastCountMark = page * limitBy - 5 + (total - 1);
+
+  const data = {
+    communities,
+    counters: {
+      total,
+      firstCountMark,
+      lastCountMark,
+      lastPage,
+    },
+  };
+
+  response.json(data);
+});
+
+sendRequest.post(async (request, response) => {
+  const { name: communityName } = request.body;
+
+  const community = await client.items.all({
     filter: {
-      type: USER_CONTENT,
+      type: COMMUNITIES,
       fields: {
-        user_id: {
-          eq: `${userId}`,
+        name: {
+          matches: { pattern: communityName },
         },
       },
     },
   });
 
-  if (record.length !== 0) {
-    if (request.method === 'GET') {
-      const communities = await Promise.all(
-        record[0].communities.map(async (idCommunity) => {
-          return await client.items.find(idCommunity);
-        })
-      );
-
-      response.json({
-        data: communities,
-      });
-      return;
-    }
-
-    if (request.method === 'PUT') {
-      const updatedRegister = await client.items.update(id, {
-        ...request.body,
-      });
-
-      response.json({
-        data: updatedRegister,
-      });
-
-      return;
-    }
-
-    response.status(501).json({
-      message: 'Sorry, method not implemented',
+  if (communities.length !== 0) {
+    const updatedCommunityMembers = await client.items.update(community.id, {
+      member: community.member + 1,
     });
-    return;
+
+    // await client.items.update(record[0].id, {
+    //     communities: [...record[0].communities, community.id]
+    // })
   }
 
-  response.status(404).json({
-    message: 'Sorry, user not found!',
+  // if (request.body.githubId === userId) {
+  //   response.status(400).json({
+  //     message: 'Why do you want add yourself as a friend?',
+  //   });
+  //   return;
+  // }
+
+  // const allFriends = await client.items.all({
+  //   filter: {
+  //     type: FRIENDS,
+  //   },
+  // });
+
+  // const parsedAllFriends = allFriends.map((friend) => {
+  //   return {
+  //     id: friend.id,
+  //     githubId: friend.githubId,
+  //   };
+  // });
+
+  // const [foundUser] = parsedAllFriends.filter((item) => {
+  //   return request.body.githubId === item.githubId;
+  // });
+
+  // let newRegister = null;
+
+  // if (foundUser) {
+  //   const isFriendExists = record[0].friends.some((friend) => {
+  //     return friend === foundUser.id;
+  //   });
+
+  //   if (isFriendExists) {
+  //     response.status(400).json({
+  //       message: 'You already added this user!',
+  //     });
+  //     return;
+  //   }
+
+  //   newRegister = await client.items.find(foundUser.id);
+  // } else {
+  //   newRegister = await client.items.create({
+  //     itemType: FRIENDS,
+  //     ...request.body,
+  //   });
+  // }
+
+  // const updatedRecords = await client.items.update(record[0].id, {
+  //   friends: [...record[0].friends, newRegister.id],
+  // });
+
+  response.status(201).json({
+    data: communities,
   });
-}
+  // }
+});
+
+sendRequest.delete(async (request, response) => {
+  const parsedItems = items.split(',');
+  const deletedRegisters = await client.items.bulkDestroy({
+    items: parsedItems,
+  });
+
+  response.json({
+    data: deletedRegisters,
+  });
+});
+
+export default sendRequest;

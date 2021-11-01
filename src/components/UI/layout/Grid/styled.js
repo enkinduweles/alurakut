@@ -9,6 +9,12 @@ const defineTypeGrid = (type) => {
         templateArea: "'profileArea mainArea profileRelationsArea'",
         columnsSize: '160px 1fr 312px',
       };
+    case 'login':
+      return {
+        templateArea:
+          "'logoArea logoArea mainArea' 'footerArea footerArea footerArea'",
+        columnsSize: '1fr 1fr 1fr',
+      };
     default:
       return {
         templateArea: "'profileArea mainArea mainArea'",
@@ -18,24 +24,17 @@ const defineTypeGrid = (type) => {
 };
 
 export const Grid = styled.main`
+  display: grid;
   width: 100%;
   grid-gap: 1rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   max-width: 60rem;
   padding: 1.6rem;
 
   /* display: ${({ isMenuOpened }) => (isMenuOpened ? 'none' : null)}; */
 
-  .profileArea {
-    display: none;
-    @media (min-width: 860px) {
-      display: block;
-    }
-  }
   @media (min-width: 860px) {
     max-width: 111rem;
-    display: grid;
     grid-template-areas: ${(props) => {
       return defineTypeGrid(props.type).templateArea;
     }};
@@ -55,6 +54,6 @@ export const GridItem = memo(styled.div`
 `);
 
 Grid.propTypes = {
-  isMenuOpened: PropTypes.bool.isRequired,
+  isMenuOpened: PropTypes.bool,
   type: PropTypes.string,
 };

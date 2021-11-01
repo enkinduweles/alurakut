@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button } from '../UI/inputs/Button/styled';
+import { Button } from '../ui/inputs/Button/styled';
 
 export const Separator = styled.span`
   color: #999;

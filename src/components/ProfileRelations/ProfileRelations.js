@@ -1,19 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
 
-import SeeAllLink from '../UI/Navigation/Link/Link';
-import { ProfileList, Link, Label, ImageWrapper, Header } from './styled';
-import { ListItem } from '../UI/display/List/styled';
+import SeeAllLink from '../ui/navigation/Link/Link';
+import { ListItem } from '../ui/display/List/styled';
+import Cover from '../ui/display/Avatar/Avatar';
+import { ProfileList, Link, Label, Header } from './styled';
 
-const ProfileRelations = ({ title, data, type }) => {
-  console.log(data);
-
-  let dataLimitedBy = [...data];
-
-  if (data.length > 6) {
-    dataLimitedBy.splice(6, data.length - 5);
-  }
-
+const ProfileRelations = ({ title, data, destination, type, totalData }) => {
   return (
     <>
       <Header className="smallTitle">
@@ -21,25 +14,30 @@ const ProfileRelations = ({ title, data, type }) => {
       </Header>
 
       <ProfileList>
-        {dataLimitedBy.map((item) => {
+        {data.map((item) => {
           return (
             <ListItem key={item.id}>
-              <Link href={`/${type}/${item.name}?id=${item.id}`}>
-                <ImageWrapper>
-                  <Image
-                    layout="fill"
-                    objectFit="cover"
-                    src={item.imageUrl}
-                    alt={item.name}
-                  />
-                </ImageWrapper>
+              <Link
+                href={`/${destination}/${item.name}${
+                  title.toLowerCase() === 'communities'
+                    ? `?id=${item.id}`
+                    : `?userId=${item.githubId}`
+                } `}
+              >
+                <Cover
+                  layout="fill"
+                  src={item.avatar}
+                  alt={item.name}
+                  type={type}
+                />
+
                 <Label>{item.name}</Label>
               </Link>
             </ListItem>
           );
         })}
       </ProfileList>
-      {data.length > 6 && (
+      {totalData > 6 && (
         <SeeAllLink className="boxLink" href="#">
           See All
         </SeeAllLink>

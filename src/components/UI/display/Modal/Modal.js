@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Button } from '../../inputs/Button/styled';
 
-import { DrawerWrapper, DrawerContent, DrawerHeader } from './styled';
+import { ModalWrapper, ModalContent, ModalHeader } from './styled';
 
-const Drawer = ({ children, showMenu }) => {
+const Modal = ({ children, showModal }) => {
   const [activeTransition, setActiveTransition] = useState(false);
   const modalContentRef = useRef();
 
@@ -15,7 +15,7 @@ const Drawer = ({ children, showMenu }) => {
 
       console.log(isClickInsideElement);
       if (!isClickInsideElement) {
-        showMenu();
+        showModal();
       }
     };
 
@@ -27,20 +27,22 @@ const Drawer = ({ children, showMenu }) => {
   }, []);
 
   useEffect(() => {
+    console.log('Render cycle finished Modal.js');
+  });
+
+  useEffect(() => {
     setActiveTransition(true);
   }, []);
   return (
-    <>
-      <DrawerWrapper isTransitionActived={activeTransition}>
-        <DrawerContent ref={modalContentRef}>
-          <DrawerHeader>
-            <Button onClick={() => showMenu()}>X</Button>
-          </DrawerHeader>
-          {children}
-        </DrawerContent>
-      </DrawerWrapper>
-    </>
+    <ModalWrapper isTransitionActived={activeTransition}>
+      <ModalContent ref={modalContentRef}>
+        <ModalHeader>
+          <Button onClick={() => showModal()}>X</Button>
+        </ModalHeader>
+        {children}
+      </ModalContent>
+    </ModalWrapper>
   );
 };
 
-export default Drawer;
+export default Modal;

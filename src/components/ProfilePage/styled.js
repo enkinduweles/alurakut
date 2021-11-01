@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components';
 
-import InputBase from '../UI/inputs/Input/Input';
+import InputBase from '../ui/inputs/Input/Input';
 
 export const HeaderWrapper = styled.div`
   display: flex;

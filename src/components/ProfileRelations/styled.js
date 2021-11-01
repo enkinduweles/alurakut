@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { List, ListItem } from '../UI/display/List/styled';
-import LinkBase from '../UI/Navigation/Link/Link';
+import { List, ListItem } from '../ui/display/List/styled';
+import LinkBase from '../ui/navigation/Link/Link';
 
 export const ProfileList = styled(List)`
   display: grid;
@@ -46,12 +46,8 @@ export const Label = styled.label`
   -webkit-box-orient: vertical;
 `;
 
-export const ImageWrapper = styled.figure`
-  height: 100%;
-  width: 100%;
-  position: relative;
-`;
-
 export const Header = styled.h3`
   font-size: 1.8rem;
+  padding-left: 0.8rem;
+  margin-bottom: 0.8rem;
 `;

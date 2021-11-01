@@ -1,7 +1,11 @@
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
+import axios from '../../src/utils/axiosConfig';
 import { SiteClient } from 'datocms-client';
 import sendRequest from '../../src/utils/requestHandler';
+
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const client = new SiteClient(PRIVATE_KEY);
 
 const USER = '1317096';
 
@@ -23,39 +27,41 @@ sendRequest.post(async (request, response) => {
 
     const parsedData = await responseGithub.json();
 
-    token = jwt.sign(
-      { userName: parsedData.login, userId: parsedData.id },
-      process.env.SECRET,
-      {
-        expiresIn: '1h',
+    const { data } = await axios.post('/', {
+      query: `
+    query {
+      user(filter: {githubId: {eq: "${parsedData.id}"}}) {
+        id
       }
-    );
-
-    response.setHeader(
-      'Set-Cookie',
-      cookie.serialize('TOKEN', token, {
-        maxAge: 3600,
-        httpOnly: true,
-        path: '/',
-      })
-    );
-
-    const PRIVATE_KEY = process.env.PRIVATE_KEY;
-    const client = new SiteClient(PRIVATE_KEY);
-
-    const user = await client.items.all({
-      filter: {
-        type: USER,
-        fields: {
-          github_id: {
-            eq: `${parsedData.id}`,
-          },
-        },
-      },
+    }
+    `,
     });
 
-    if (user.length === 0) {
-      await client.items.create({
+    let slug = null;
+
+    if (data.data.user) {
+      slug = data.data.user.id;
+
+      token = jwt.sign(
+        { userName: parsedData.login, userId: parsedData.id, slug },
+        process.env.SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      response.setHeader(
+        'Set-Cookie',
+        cookie.serialize('TOKEN', token, {
+          maxAge: 3600,
+          httpOnly: true,
+          path: '/',
+        })
+      );
+
+      response.json({ error: null });
+    } else {
+      const newUser = await client.items.create({
         itemType: USER,
         name: parsedData.login,
         avatar: `https://github.com/${parsedData.login}.png`,
@@ -67,16 +73,27 @@ sendRequest.post(async (request, response) => {
         communities: null,
       });
 
-      response
-        .status(201)
-        .json({ status: 'User successfuly created', error: null });
+      slug = newUser.id;
 
-      return;
+      token = jwt.sign(
+        { userName: parsedData.login, userId: parsedData.id, slug },
+        process.env.SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      response.setHeader(
+        'Set-Cookie',
+        cookie.serialize('TOKEN', token, {
+          maxAge: 3600,
+          httpOnly: true,
+          path: '/',
+        })
+      );
+
+      response.status(201).json({ error: null });
     }
-
-    response.json({ error: null });
-
-    return;
   }
 });
 

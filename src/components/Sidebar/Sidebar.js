@@ -1,10 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
-import Link from '../UI/Navigation/Link/Link';
-import Avatar from '../UI/display/Avatar/AvatarBase';
-import { List, ListItem } from '../UI/display/List/styled';
-import { Box } from '../UI/layout/Box/styled';
-import { Divider } from '../UI/display/Divider/styled';
+import Link from '../ui/navigation/Link/Link';
+import Avatar from '../ui/display/Avatar/Avatar';
+import { List } from '../ui/display/List/styled';
+import { Box } from '../ui/layout/Box/styled';
+import { Divider } from '../ui/display/Divider/styled';
 
 import {
   NavigationItem,
@@ -15,27 +15,27 @@ import {
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 
-const Sidebar = ({ githubUser, id, layout, width, height, src, className }) => {
+const Sidebar = ({ userName, id, layout, width, height, src, className }) => {
   return (
     <Box className={className}>
       <UserWrapper>
         <Avatar
           layout={layout}
           src={src}
-          alt={githubUser}
+          alt={userName}
           width={width}
           height={height}
           src={src}
         />
-        <UsernameLink href={`https://github.com/${githubUser}`}>
-          @{githubUser}
+        <UsernameLink href={`https://github.com/${userName}`}>
+          @{userName}
         </UsernameLink>
       </UserWrapper>
       <Divider as="hr" />
       <nav>
         <List>
           <NavigationItem>
-            <Link href={`/profile/${githubUser}?id=${id}`}>
+            <Link href={`/profile/${userName}?id=${id}`}>
               <IconWrapper>
                 <Image
                   layout="intrinsic"
@@ -49,7 +49,7 @@ const Sidebar = ({ githubUser, id, layout, width, height, src, className }) => {
             </Link>
           </NavigationItem>
           <NavigationItem>
-            <Link href={`/scrap/${githubUser}?id=${id}`}>
+            <Link href={`/scrap/${userName}?id=${id}`}>
               <IconWrapper>
                 <Image
                   layout="intrinsic"

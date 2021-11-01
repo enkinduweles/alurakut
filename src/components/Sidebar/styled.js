@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { ListItem } from '../UI/display/List/styled';
-import Link from '../UI/Navigation/Link/Link';
+import { ListItem } from '../ui/display/List/styled';
+import Link from '../ui/navigation/Link/Link';
 
 export const NavigationItem = styled(ListItem)`
   padding: 0;

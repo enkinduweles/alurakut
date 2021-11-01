@@ -4,12 +4,12 @@ import { Toaster } from 'react-hot-toast';
 import { FaSadCry } from 'react-icons/fa';
 
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
-import { Box } from '../../src/components/UI/layout/Box/styled';
-import { Grid, GridItem } from '../../src/components/UI/layout/Grid/styled';
-import { List as ScrapList } from '../../src/components/UI/display/List/styled';
+import { Box } from '../../src/components/ui/layout/Box/styled';
+import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
+import { List as ScrapList } from '../../src/components/ui/display/List/styled';
 import { UserMenu } from '../../src/components/UserMenu/styled';
-import Drawer from '../../src/components/UI/Navigation/Drawer/Drawer';
-import Input from '../../src/components/UI/inputs/Input/Input';
+import Drawer from '../../src/components/ui/navigation/Drawer/Drawer';
+import Input from '../../src/components/ui/inputs/Input/Input';
 import Sidebar from '../../src/components/Sidebar/Sidebar';
 import Scrap from '../../src/components/Scrap/Scrap';
 import Spinner from '../../src/components/Spinner/Spinner';
@@ -83,12 +83,12 @@ const ScrapPage = ({ githubUser, ownerId }) => {
     },
     [deleteData, userId]
   );
-
+  console.log(datoContent);
   return (
     <>
       <AlurakutMenu
         id={userId}
-        githubUser={githubUser}
+        userName={userName}
         showMenu={showMenuHandler}
         isMenuOpened={isMenuOpened}
       />
@@ -96,11 +96,11 @@ const ScrapPage = ({ githubUser, ownerId }) => {
       {isMenuOpened && (
         <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
           <UserMenu
-            githubUser={githubUser}
+            userName={userName}
             id={userId}
             width={50}
             height={50}
-            src={`https://github.com/${githubUser}.png`}
+            src={`https://github.com/${userName}.png`}
           />
         </Drawer>
       )}
@@ -110,11 +110,11 @@ const ScrapPage = ({ githubUser, ownerId }) => {
           <Grid isMenuOpened={isMenuOpened}>
             <GridItem templateArea="profileArea">
               <Sidebar
-                githubUser={githubUser}
+                userName={userName}
                 id={userId}
                 width={130}
                 height={130}
-                src={`https://github.com/${githubUser}.png`}
+                src={`https://github.com/${userName}.png`}
               />
             </GridItem>
 
@@ -139,10 +139,10 @@ const ScrapPage = ({ githubUser, ownerId }) => {
                   </p>
                 )}
                 <Header>
-                  Página de recados de {githubUser} ({datoContent.length})
+                  Página de recados de {userName} ({datoContent.length})
                 </Header>
                 {datoContent.length !== 0 && (
-                  <ScrapList githubUser={githubUser}>
+                  <ScrapList userName={userName}>
                     {datoContent.map(({ id, author, message }) => {
                       return (
                         <ScrapListItem key={id}>
@@ -184,7 +184,7 @@ const ScrapPage = ({ githubUser, ownerId }) => {
 export default ScrapPage;
 
 export async function getServerSideProps(context) {
-  const { isAuthorized, githubUser, id } = validateToken(
+  const { isAuthorized, userName, userId } = validateToken(
     context.req.headers.cookie
   );
 

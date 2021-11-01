@@ -15,6 +15,7 @@ export const Label = styled.label`
   text-transform: capitalize;
   font-weight: bold;
   font-size: 1.3rem;
+  display: inline-block;
   margin-bottom: 0.4rem;
 `;
 
@@ -33,7 +34,7 @@ export const InputBase = styled.input`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 
   &:disabled {
-    background-color: transparent;
+    background-color: transparent !important;
     box-shadow: none;
   }
 
