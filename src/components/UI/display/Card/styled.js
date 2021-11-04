@@ -16,6 +16,7 @@ export const Checkbox = styled(Input)`
 
 export const CardWrapper = styled.div`
   display: flex;
+  width: 100%;
 `;
 
 export const Overlay = styled.div`

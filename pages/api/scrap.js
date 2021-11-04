@@ -1,110 +1,109 @@
 import { SiteClient } from 'datocms-client';
-import { validateToken } from '../../src/utils/auth';
+import sendRequest from '../../src/utils/requestHandler';
+import axios from '../../src/utils/axiosConfig';
 
 const USER_CONTENT = '1083247';
 const SCRAPS = '1070396';
 
-export default async function sendRequest(request, response) {
-  const { scrapId, userId } = request.query;
-  const { isAuthorized, id: githubUserId } = validateToken(
-    request.headers.cookie
-  );
+const TOKEN = process.env.PRIVATE_KEY;
+const client = new SiteClient(TOKEN);
 
-  if (isAuthorized) {
-    const TOKEN = process.env.READ_WRITE_TOKEN;
-    const client = new SiteClient(TOKEN);
+sendRequest.get(async (request, response) => {
+  const { userId, slug, limitBy, page = 1 } = request.query;
+  const start = page ? (page - 1) * limitBy : 0;
 
-    let record = await client.items.all({
-      filter: {
-        type: USER_CONTENT,
-        fields: {
-          user_id: {
-            eq: `${userId}`,
-          },
-        },
+  const { data: responseData } = await axios.post('/', {
+    query: `query {
+      user(filter: {githubId: {eq: "${userId}"}}) {
+        avatar
       },
-    });
-    if (record.length !== 0) {
-      switch (request.method) {
-        case 'GET':
-          record = await Promise.all(
-            record[0].scraps.map(async (scrap) => {
-              return await client.items.find(scrap);
-            })
-          );
-
-          const scraps = record.map((scrap) => {
-            const { id, author, message, userId, createdAt } = scrap;
-            return {
-              id,
-              author,
-              message,
-              userId,
-              posted: createdAt,
-            };
-          });
-
-          scraps.sort((a, b) => {
-            if (b.posted < a.posted) {
-              return -1;
-            }
-
-            if (b.posted > a.posted) {
-              return 1;
-            }
-
-            return 0;
-          });
-
-          response.json({
-            data: scraps,
-          });
-          return;
-
-        case 'POST':
-          const newRegister = await client.items.create({
-            itemType: SCRAPS,
-            ...request.body,
-          });
-
-          const updatedRecords = await client.items.update(record[0].id, {
-            scraps: [...record[0].scraps, newRegister.id],
-          });
-
-          response.json({
-            data: updatedRecords,
-          });
-          return;
-
-        case 'DELETE':
-          if (userId === githubUserId) {
-            const deletedRegister = await client.items.destroy(scrapId);
-
-            response.json({
-              data: deletedRegister,
-            });
-            return;
-          }
-
-          response
-            .status(403)
-            .json({ message: 'Sorry you tried to do somenthing not allowed!' });
-          return;
-
-        default:
-          response.status(501).json({
-            message: 'Sorry, method not implemented',
-          });
-          return;
+      allScraps(filter: {reader: {eq: "${slug}"}},first: "${limitBy}", skip: "${start}") {
+        id
+        writer {
+          avatar
+          githubId
+          id
+          name
+        }
+        message
       }
+      _allScrapsMeta(filter: {reader: {eq: "${slug}"}}) {
+        count
+      }
+    }`,
+  });
+
+  if (responseData.errors) {
+    const error = new Error('Ops something went wrong');
+    error.status = 400;
+
+    throw error;
+  }
+
+  const { allScraps, _allScrapsMeta, user } = responseData.data;
+  const avatar = user.avatar;
+  const scraps = allScraps;
+  const total = _allScrapsMeta.count;
+  const firstCountMark = page * limitBy - 5;
+  const lastCountMark = page * limitBy - 5 + (total - 1);
+  const lastPage = Math.ceil(total / limitBy);
+
+  const data = {
+    avatar,
+    scraps,
+    counters: {
+      firstCountMark,
+      lastCountMark,
+      lastPage,
+      total,
+    },
+  };
+  response.json(data);
+});
+
+sendRequest.post(async (request, response) => {
+  const { slug } = request.query;
+
+  const newRegister = await client.items.create({
+    itemType: SCRAPS,
+    ...request.body,
+  });
+
+  const { data: responseData } = await axios.post('/', {
+    query: `query {
+    allScraps(filter: {reader: {eq: "${slug}"}}) {
+      id
     }
-    response.status(404).json({
-      message: 'Sorry, user not found!',
+  }`,
+  });
+
+  const { allScraps } = responseData.data;
+  const idsAlreadyExists = allScraps.map((item) => item.id);
+
+  await client.items.update(slug, {
+    scraps: [...idsAlreadyExists, newRegister.id],
+  });
+
+  response.status(201).json({
+    data: 'Scrap successfully added',
+  });
+  return;
+});
+
+sendRequest.delete(async (request, response) => {
+  const { userId, githubId, items } = request.query;
+  const idsToDelete = items.split(/\s*(?:,|$)\s*/); //regex to remove space preceding a comma
+  console.log(idsToDelete);
+  if (githubId === userId) {
+    const deletedRegister = await client.item.bulkDestroy({
+      items: idsToDelete,
+    });
+
+    response.json({
+      data: deletedRegister,
     });
     return;
   }
+});
 
-  response.status(401).json({
-    message: 'Access denied, authentication failed',
-  });
-}
+export default sendRequest;

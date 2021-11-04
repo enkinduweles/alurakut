@@ -4,36 +4,41 @@ import { Button } from '../ui/inputs/Button/styled';
 import { Message, ControlsWrapper } from './styled';
 
 const DialogBox = ({
-  showModal,
-  onDeleteFriend,
+  onShowModal,
+  onDelete,
   items,
   userId,
-  cleanUsersToDelete,
+  githubId,
+  onCleanItemsToDelete,
+  content,
+  slug,
 }) => {
-  const deleteFriendHandler = async () => {
-    await onDeleteFriend({
-      content: 'friends',
+  const deleteItemHandler = async () => {
+    await onDelete({
+      content: content,
       queryParams: {
         userId,
+        githubId,
         limitBy: 6,
-        items,
+        slug,
       },
+      items,
     });
 
-    cleanUsersToDelete([]);
-    showModal();
+    onCleanItemsToDelete([]);
+    onShowModal();
   };
 
   return (
     <div>
       <Message>
-        Você tem certeza que deseja deletar o(s) usuário(s) selecionado(s) ?
+        Você tem certeza que deseja deletar o(s) item(s) selecionado(s) ?
       </Message>
       <ControlsWrapper>
-        <Button outline onClick={showModal}>
+        <Button outline onClick={onShowModal}>
           Cancelar
         </Button>
-        <Button onClick={deleteFriendHandler}>Confirmar</Button>
+        <Button onClick={deleteItemHandler}>Confirmar</Button>
       </ControlsWrapper>
     </div>
   );

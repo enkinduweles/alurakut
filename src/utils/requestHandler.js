@@ -2,6 +2,7 @@ import nextConnect from 'next-connect';
 
 export default nextConnect({
   onError: (error, request, response) => {
+    console.log(error);
     let message = null;
     switch (error.statusCode) {
       case 422:

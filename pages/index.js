@@ -22,7 +22,7 @@ import {
 import { validateToken } from '../src/utils/auth';
 import { useDatoCMS } from '../src/hooks/useDatoCMS';
 
-const Home = ({ userName, userId, slug }) => {
+const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const router = useRouter();
 
@@ -37,9 +37,12 @@ const Home = ({ userName, userId, slug }) => {
   useEffect(() => {
     getData({
       content: 'home',
-      queryParams: { userId, limitBy: 6, slug },
+      queryParams: {
+        userId: loggedInUserId,
+        slug: loggedInUserSlug,
+      },
     });
-  }, [getData, userId, slug]);
+  }, [getData, loggedInUserId, loggedInUserSlug]);
 
   const showMenuHandler = useCallback(
     () => setIsMenuOpened((prevState) => !prevState),
@@ -53,7 +56,10 @@ const Home = ({ userName, userId, slug }) => {
 
     updateData({
       content: 'home',
-      queryParams: { userId, slug, limitBy: 6 },
+      queryParams: {
+        userId: loggedInUserName,
+        slug: loggedInUserSlug,
+      },
       body: { personalityName: name, value },
     });
   };
@@ -62,18 +68,19 @@ const Home = ({ userName, userId, slug }) => {
     <>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
-        userName={userName}
+        userName={loggedInUserName}
         showMenu={showMenuHandler}
-        id={userId}
+        id={loggedInUserId}
       />
       {isMenuOpened && (
         <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
           <UserMenu
-            userName={userName}
-            id={userId}
+            userName={loggedInUserName}
+            id={loggedInUserId}
             width={50}
             height={50}
-            src={`https://github.com/${userName}.png`}
+            src={datoContent.avatar}
+            slug={loggedInUserSlug}
           />
         </Drawer>
       )}
@@ -81,20 +88,21 @@ const Home = ({ userName, userId, slug }) => {
         <Grid type="home" isMenuOpened={isMenuOpened}>
           <GridItem templateArea="profileArea">
             <Sidebar
-              userName={userName}
-              id={userId}
+              userName={loggedInUserName}
+              id={loggedInUserId}
               width={130}
               height={130}
-              src={`https://github.com/${userName}.png`}
+              src={datoContent.avatar}
             />
           </GridItem>
           <GridItem templateArea="mainArea">
             <Box>
-              <h1 className="title">Bem vindo, {userName}</h1>
+              <h1 className="title">Bem vindo, {loggedInUserName}</h1>
               <Divider />
               <OrkutNostalgicIconSet
-                userName={userName}
-                id={userId}
+                userName={loggedInUserName}
+                id={loggedInUserId}
+                slug={loggedInUserSlug}
                 scraps={datoContent.counters.totalScraps}
                 reliable={datoContent.personalityStatus.reliable}
                 sexy={datoContent.personalityStatus.sexy}
@@ -161,9 +169,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      userName,
-      userId,
-      slug,
+      loggedInUserName: userName,
+      loggedInUserId: userId,
+      loggedInUserSlug: slug,
     },
   };
 }

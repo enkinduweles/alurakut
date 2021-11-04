@@ -1,18 +1,26 @@
 import React, { memo } from 'react';
-import { useRouter } from 'next/router';
-import { PageCountWrapper } from './styled';
+import { MdDelete } from 'react-icons/md';
+
+import { PageCountWrapper, ButtonWrapper, Badge, DeleteItem } from './styled';
 
 const PageCount = ({
-  counters: { firstCountMark, lastCountMark, totalFriends },
+  counters: { firstCountMark, lastCountMark, total },
+  selectedItems,
+  onShowModal,
 }) => {
-  //final - ((page * limitBy) - 5 ) + (totalFriendsPage - 1)
-  //inicio ---> (page * limitBy) - 5
-
   return (
     <PageCountWrapper>
       <span>
-        mostrando {firstCountMark}-{lastCountMark} de {totalFriends}
+        mostrando {firstCountMark}-{lastCountMark} de {total}
       </span>
+      {selectedItems.length > 0 && (
+        <ButtonWrapper onClick={onShowModal}>
+          <Badge>{selectedItems.length}</Badge>
+          <DeleteItem>
+            <MdDelete />
+          </DeleteItem>
+        </ButtonWrapper>
+      )}
     </PageCountWrapper>
   );
 };

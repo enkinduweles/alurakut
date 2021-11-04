@@ -14,6 +14,7 @@ sendRequest.get(async (request, response) => {
   const { data: responseData } = await axios.post('/', {
     query: `query {
       user(filter: {githubId: {eq: "${userId}"}}) {
+        avatar
         reliable
         sexy
         nice
@@ -62,14 +63,15 @@ sendRequest.get(async (request, response) => {
     _allScrapsMeta,
   } = responseData.data;
 
+  const { avatar, ...personalityStatus } = user;
   const friends = allUsers[0].friends;
   const totalFriends = _allUsersMeta.count;
   const communities = allCommunities;
   const totalCommunities = _allCommunitiesMeta.count;
   const totalScraps = _allScrapsMeta.count;
-  const personalityStatus = user;
 
   response.json({
+    avatar,
     communities,
     friends,
     personalityStatus,

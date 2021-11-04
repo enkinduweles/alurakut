@@ -4,14 +4,20 @@ import { Toaster } from 'react-hot-toast';
 import { FaSadCry } from 'react-icons/fa';
 
 import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
+import Breadcrumb from '../../src/components/Breadcrumb/Breadcrumb';
 import { Box } from '../../src/components/ui/layout/Box/styled';
+import Card from '../../src/components/ui/display/Card/Card';
 import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
 import { List as ScrapList } from '../../src/components/ui/display/List/styled';
 import { UserMenu } from '../../src/components/UserMenu/styled';
 import Drawer from '../../src/components/ui/navigation/Drawer/Drawer';
 import Input from '../../src/components/ui/inputs/Input/Input';
 import Sidebar from '../../src/components/Sidebar/Sidebar';
-import Scrap from '../../src/components/Scrap/Scrap';
+// import Scrap from '../../src/components/Scrap/Scrap';
+import DialogBox from '../../src/components/DialogBox/DialogBox';
+import PageCount from '../../src/components/Pagination/PageCount';
+import PageControls from '../../src/components/Pagination/PageControls';
+import Modal from '../../src/components/ui/display/Modal/Modal';
 import Spinner from '../../src/components/Spinner/Spinner';
 
 import { validateToken } from '../../src/utils/auth';
@@ -23,156 +29,181 @@ import {
   SubmitButton,
   ScrapBox,
 } from '../../src/components/ScrapPage/styled';
+import { usePageOperations } from '../../src/hooks/usePageOperations';
 
-const ScrapPage = ({ githubUser, ownerId }) => {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
+const ScrapPage = ({
+  loggedInUserName,
+  loggedInUserId,
+  loggedInSlug,
+  page,
+}) => {
   const [message, setMessage] = useState('');
 
   const router = useRouter();
-  const { id: userId, userScrap } = router.query;
+  const { userId, userScrap: userName, slug } = router.query;
+
   const {
     getData,
     createData,
     deleteData,
     data: datoContent,
     isFirstLoading,
-    error,
+    status,
   } = useDatoCMS();
+
+  const {
+    isMenuOpened,
+    isModalOpened,
+    itemsToDelete,
+    onShowMenu,
+    onShowModal,
+    onCheckCard,
+    onCleanItemsToDelete,
+  } = usePageOperations();
 
   useEffect(() => {
     if (isFirstLoading) {
       getData({
         content: 'scrap',
-        queryParams: { userId: `?userId=${userId}` },
+        queryParams: { userId, slug },
       });
     }
   }, [getData, userId, isFirstLoading]);
 
-  const showMenuHandler = useCallback(
-    () => setIsMenuOpened((prevState) => !prevState),
-    []
-  );
-
   const sendScrapHandler = (event) => {
     event.preventDefault();
 
-    const mountedScrap = {
-      author: userScrap,
-      message,
-      userId,
-    };
+    if (message.trim() !== '') {
+      const mountedScrap = {
+        reader: slug,
+        message,
+        writer: loggedInSlug,
+      };
 
-    createData({
-      content: 'scrap',
-      queryParams: { userId: `?userId=${userId}` },
-      body: mountedScrap,
-    });
+      createData({
+        content: 'scrap',
+        queryParams: { userId, slug },
+        body: mountedScrap,
+      });
 
-    setMessage('');
+      setMessage('');
+    }
   };
 
-  const deleteScrapHandler = useCallback(
-    (scrapId) => {
-      deleteData({
-        content: 'scrap',
-        queryParams: {
-          scrapId,
-          userId,
-        },
-      });
-    },
-    [deleteData, userId]
-  );
   console.log(datoContent);
   return (
     <>
       <AlurakutMenu
-        id={userId}
-        userName={userName}
-        showMenu={showMenuHandler}
+        id={loggedInUserId}
+        userName={loggedInUserName}
+        showMenu={onShowMenu}
         isMenuOpened={isMenuOpened}
       />
 
       {isMenuOpened && (
-        <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
+        <Drawer showMenu={onShowMenu} isMenuOpened={isMenuOpened}>
           <UserMenu
-            userName={userName}
-            id={userId}
+            userName={loggedInUserName}
+            id={loggedInUserId}
+            slug={loggedInSlug}
             width={50}
             height={50}
-            src={`https://github.com/${userName}.png`}
+            src={datoContent.avatar}
           />
         </Drawer>
       )}
 
       {!isFirstLoading ? (
-        error.status !== 404 ? (
-          <Grid isMenuOpened={isMenuOpened}>
-            <GridItem templateArea="profileArea">
-              <Sidebar
-                userName={userName}
-                id={userId}
-                width={130}
-                height={130}
-                src={`https://github.com/${userName}.png`}
-              />
-            </GridItem>
+        <Grid isMenuOpened={isMenuOpened}>
+          <GridItem templateArea="profileArea">
+            <Sidebar
+              userName={loggedInUserName}
+              id={loggedInUserId}
+              width={130}
+              height={130}
+              src={datoContent.avatar}
+            />
+          </GridItem>
 
-            <GridItem templateArea="mainArea">
-              <Box>
-                <ScrapBox onSubmit={sendScrapHandler}>
-                  <Input
-                    as="textarea"
-                    name="scrapInput"
-                    rows="4"
-                    value={message}
-                    onChange={(event) => setMessage(event.target.value)}
+          <GridItem templateArea="mainArea">
+            <Box>
+              {isModalOpened && (
+                <Modal showModal={onShowModal}>
+                  <DialogBox
+                    onShowModal={onShowModal}
+                    onDelete={deleteData}
+                    content="scrap"
+                    userId={userId}
+                    githubId={loggedInUserId}
+                    items={itemsToDelete}
+                    onCleanItemsToDelete={onCleanItemsToDelete}
+                    slug={slug}
                   />
-                  <SubmitButton type="submit">Enviar</SubmitButton>
-                </ScrapBox>
-              </Box>
+                </Modal>
+              )}
 
-              <Box>
-                {datoContent.length === 0 && (
-                  <p className="noScrap">
-                    <FaSadCry /> you don&apos;t have scraps yet
-                  </p>
-                )}
-                <Header>
-                  Página de recados de {userName} ({datoContent.length})
-                </Header>
-                {datoContent.length !== 0 && (
-                  <ScrapList userName={userName}>
-                    {datoContent.map(({ id, author, message }) => {
+              <Breadcrumb />
+              <ScrapBox onSubmit={sendScrapHandler}>
+                <Input
+                  as="textarea"
+                  name="scrapInput"
+                  rows="4"
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                />
+                <SubmitButton type="submit" disabled={message.length === 0}>
+                  Enviar
+                </SubmitButton>
+              </ScrapBox>
+            </Box>
+
+            <Box>
+              {datoContent.length === 0 && (
+                <p className="noScrap">
+                  <FaSadCry /> you don&apos;t have scraps yet
+                </p>
+              )}
+              <Header>
+                Página de recados de {loggedInUserName} (
+                {datoContent.scraps.length})
+              </Header>
+
+              <PageCount
+                counters={datoContent.counters}
+                selectedItems={itemsToDelete}
+                onShowModal={onShowModal}
+              />
+              {datoContent.length !== 0 && (
+                <ScrapList>
+                  {datoContent.scraps.map(
+                    ({ writer: { name, avatar }, message, id }) => {
                       return (
                         <ScrapListItem key={id}>
-                          <Scrap
-                            layout="responsive"
-                            src={`https://github.com/${author}.png`}
-                            alt={author}
+                          <Card
+                            title={name}
+                            bodyContent={message}
                             width={60}
                             height={60}
-                            scrapId={id}
-                            author={author}
-                            message={message}
-                            onDeleteScrap={() => deleteScrapHandler(id)}
+                            src={avatar}
+                            contentId={id}
+                            onCheckCard={onCheckCard}
                           />
                         </ScrapListItem>
                       );
-                    })}
-                  </ScrapList>
-                )}
-              </Box>
-            </GridItem>
-          </Grid>
-        ) : (
-          <div className="gbError">
-            <p>
-              <span className="gbSadFace">:( </span>
-              {error.message}
-            </p>
-          </div>
-        )
+                    }
+                  )}
+                </ScrapList>
+              )}
+              <PageControls
+                requestProcess={status}
+                currentPage={page}
+                userName={userName}
+                userId={userId}
+                lastPage={datoContent.counters.lastPage}
+              />
+            </Box>
+          </GridItem>
+        </Grid>
       ) : (
         <Spinner />
       )}
@@ -183,8 +214,8 @@ const ScrapPage = ({ githubUser, ownerId }) => {
 
 export default ScrapPage;
 
-export async function getServerSideProps(context) {
-  const { isAuthorized, userName, userId } = validateToken(
+export async function getServerSideProps({ query: { page = 1 }, ...context }) {
+  const { isAuthorized, userName, userId, slug } = validateToken(
     context.req.headers.cookie
   );
 
@@ -199,8 +230,10 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      githubUser,
-      ownerId: id,
+      loggedInUserName: userName,
+      loggedInUserId: userId,
+      loggedInSlug: slug,
+      page: Number(page),
     },
   };
 }

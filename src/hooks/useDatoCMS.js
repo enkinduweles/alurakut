@@ -2,6 +2,8 @@ import { useCallback, useReducer } from 'react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
+axios.defaults.params = { limitBy: 6 };
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SEND':
@@ -89,32 +91,20 @@ export const useDatoCMS = () => {
     fullQueryParams = fullQueryParams.slice(0, fullQueryParams.length - 1);
 
     try {
-      const createResponse = await fetch(`/api/${content}${fullQueryParams}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
+      dispatch({ type: 'SEND' });
 
-      if (!createResponse.ok) {
-        const { message } = await createResponse.json();
-        throw new Error(message);
-      }
+      await axios.post(`/api/${content}${fullQueryParams}`, body);
 
-      const getResponse = await fetch(`/api/${content}${fullQueryParams}`);
-      const { data } = await getResponse.json();
+      const { data } = await axios.get(`/api/${content}${fullQueryParams}`);
 
-      dispatch({
-        type: 'SUCCESS',
-        data,
-      });
+      dispatch({ type: 'SUCCESS', data });
 
-      toast.success(`${content.slice(0, content.length - 1)} added`, {
-        id: toastId,
-      });
+      toast.success(`${content} updated successfully`, { id: toastId });
     } catch (error) {
-      dispatch({ type: 'FAIL', error });
-
-      toast.error(error.message, { id: toastId });
+      console.log(error.response);
+      const { data, status } = error.response;
+      dispatch({ type: 'FAIL', error: { message: data, status } });
+      toast.error(data, { id: toastId });
     }
   }, []);
 
@@ -147,37 +137,32 @@ export const useDatoCMS = () => {
     }
   }, []);
 
-  const deleteData = useCallback(async ({ content, queryParams }) => {
+  const deleteData = useCallback(async ({ content, queryParams, items }) => {
     const toastId = toast.loading('Loading');
     let fullQueryParams = '?';
+    const itemsString = items.join(',');
 
     for (const key in queryParams) {
       fullQueryParams += `${key}=${queryParams[key]}&`;
     }
-
     fullQueryParams = fullQueryParams.slice(0, fullQueryParams.length - 1);
 
     try {
-      const deleteResponse = await fetch(`/api/${content}${fullQueryParams}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      dispatch({ type: 'SEND' });
 
-      if (!deleteResponse.ok) {
-        const { message } = await createResponse.json();
-        throw new Error(message);
-      }
+      await axios.delete(
+        `/api/${content}${fullQueryParams}&items=${itemsString}`
+      );
 
-      const getResponse = await fetch(`/api/${content}${fullQueryParams}`);
-      const { data } = await getResponse.json();
+      const { data } = await axios.get(`/api/${content}${fullQueryParams}`);
+
       dispatch({ type: 'SUCCESS', data });
 
-      toast.success(`${content.slice(0, content.length - 1)} deleted`, {
-        id: toastId,
-      });
+      toast.success(`${content} deleted successfully`, { id: toastId });
     } catch (error) {
-      dispatch({ type: 'FAIL', error });
-      toast.error(error.message, { id: toastId });
+      const { data, status } = error.response;
+      dispatch({ type: 'FAIL', error: { message: data, status } });
+      toast.error(data, { id: toastId });
     }
   }, []);
 

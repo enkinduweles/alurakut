@@ -5,6 +5,7 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
+  position: relative;
   margin-bottom: 0.8rem;
   padding: 0.8rem;
 `;

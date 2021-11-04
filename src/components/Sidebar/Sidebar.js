@@ -15,13 +15,21 @@ import {
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 
-const Sidebar = ({ userName, id, layout, width, height, src, className }) => {
+const Sidebar = ({
+  userName,
+  id,
+  layout,
+  width,
+  height,
+  src,
+  className,
+  slug,
+}) => {
   return (
     <Box className={className}>
       <UserWrapper>
         <Avatar
           layout={layout}
-          src={src}
           alt={userName}
           width={width}
           height={height}
@@ -49,7 +57,7 @@ const Sidebar = ({ userName, id, layout, width, height, src, className }) => {
             </Link>
           </NavigationItem>
           <NavigationItem>
-            <Link href={`/scrap/${userName}?id=${id}`}>
+            <Link href={`/scraps/${userName}?userId=${id}&slug=${slug}`}>
               <IconWrapper>
                 <Image
                   layout="intrinsic"

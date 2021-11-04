@@ -28,4 +28,5 @@ export const SubmitButton = styled(Button)`
 export const ScrapBox = styled(Form)`
   display: flex;
   flex-direction: column;
+  margin-top: 1.6rem;
 `;
