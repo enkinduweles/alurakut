@@ -6,6 +6,9 @@ import { List } from '../ui/display/List/styled';
 import { Box } from '../ui/layout/Box/styled';
 import { Divider } from '../ui/display/Divider/styled';
 
+import friendsIcon from '.././../../public/friends_icon.svg';
+import communityIcon from '.././../../public/community_icon.svg';
+
 import {
   NavigationItem,
   IconWrapper,
@@ -100,6 +103,34 @@ const Sidebar = ({
             </Link>
           </NavigationItem>
           <Divider />
+          <NavigationItem>
+            <Link href={`friends/${userName}?userId=${id}&slug=${slug}`}>
+              <IconWrapper>
+                <Image
+                  layout="intrinsic"
+                  src={friendsIcon}
+                  alt=""
+                  width={15}
+                  height={15}
+                />
+              </IconWrapper>
+              Amigos
+            </Link>
+          </NavigationItem>
+          <NavigationItem>
+            <Link href={`communities/${userName}?userId=${id}&slug=${slug}`}>
+              <IconWrapper>
+                <Image
+                  layout="intrinsic"
+                  src={communityIcon}
+                  alt=""
+                  width={15}
+                  height={15}
+                />
+              </IconWrapper>
+              Comunidades
+            </Link>
+          </NavigationItem>
         </List>
       </nav>
     </Box>
