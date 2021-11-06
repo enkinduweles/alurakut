@@ -60,7 +60,7 @@ const Sidebar = ({
             </Link>
           </NavigationItem>
           <NavigationItem>
-            <Link href={`/scraps/${userName}?userId=${id}&slug=${slug}`}>
+            <Link href={`/scraps/${userName}?userId=${id}`}>
               <IconWrapper>
                 <Image
                   layout="intrinsic"
@@ -104,7 +104,7 @@ const Sidebar = ({
           </NavigationItem>
           <Divider />
           <NavigationItem>
-            <Link href={`friends/${userName}?userId=${id}&slug=${slug}`}>
+            <Link href={`/friends/${userName}?userId=${id}`}>
               <IconWrapper>
                 <Image
                   layout="intrinsic"
@@ -118,7 +118,7 @@ const Sidebar = ({
             </Link>
           </NavigationItem>
           <NavigationItem>
-            <Link href={`communities/${userName}?userId=${id}&slug=${slug}`}>
+            <Link href={`/communities/${userName}?userId=${id}`}>
               <IconWrapper>
                 <Image
                   layout="intrinsic"

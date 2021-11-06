@@ -1,46 +1,60 @@
 import sendRequest from '../../src/utils/requestHandler';
 import axios from '../../src/utils/axiosConfig';
 import { SiteClient } from 'datocms-client';
+import { validateToken } from '../../src/utils/auth';
 
 const TOKEN = process.env.PRIVATE_KEY;
 const client = new SiteClient(TOKEN);
 
 const USER_MODEL = '1317096';
 
+sendRequest.use(async (request, response, next) => {
+  const { isAuthorized, githubId, userId } = validateToken(
+    request.headers.cookie
+  );
+  console.log(isAuthorized);
+  if (isAuthorized) {
+    request.userLoggedIn = { userId, githubId };
+    next();
+    return;
+  }
+  const error = { statusCode: 401 };
+  throw error;
+});
+
 sendRequest.get(async (request, response) => {
-  const { userId, limitBy, page = 1, slug } = request.query;
+  const { userId, limitBy, page = 1 } = request.query;
   const start = page ? (page - 1) * limitBy : 0;
 
   const { data: responseData } = await axios.post('/', {
     query: `query {
-      user(filter: {githubId: {eq: "${userId}"}}) {
-        avatar
+      allUsers(filter: {id: {eq: "${userId}"}} first: "${limitBy}", skip: "${start}") {
+       
         reliable
         sexy
         nice
-      }
-      _allUsersMeta(filter: {friends: {allIn: "${slug}"}}) {
-        count
-      }
-      allUsers(filter: {githubId: {eq: "${userId}"}} first: "${limitBy}", skip: "${start}") {
+        avatar
         friends {
           name
           id
           avatar
           githubId
         }
+        communities {
+          id
+          name
+          thumbnail {
+            url
+          }
+        }
       }
-      _allCommunitiesMeta(filter: {members: {anyIn: "${slug}"}}) {
+    _allUsersMeta(filter: {friends: {allIn: "${userId}"}}) {
+      count
+    }
+      _allCommunitiesMeta(filter: {members: {anyIn: "${userId}"}}) {
         count
       }
-      allCommunities(filter: {githubId: {eq: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
-        name
-        thumbnail {
-          url
-        }
-        id
-      }
-      _allScrapsMeta(filter: {reader: {in: "${slug}"}}) {
+      _allScrapsMeta(filter: {reader: {in: "${userId}"}}) {
         count
       }
     }
@@ -53,24 +67,22 @@ sendRequest.get(async (request, response) => {
 
     throw error;
   }
-
   const {
-    user,
     allUsers,
-    allCommunities,
     _allUsersMeta,
     _allCommunitiesMeta,
     _allScrapsMeta,
   } = responseData.data;
 
-  const { avatar, ...personalityStatus } = user;
+  console.log(allUsers[0].friends);
+  const { avatar, ...personalityStatus } = allUsers[0];
   const friends = allUsers[0].friends;
   const totalFriends = _allUsersMeta.count;
-  const communities = allCommunities;
+  const communities = allUsers[0].communities;
   const totalCommunities = _allCommunitiesMeta.count;
   const totalScraps = _allScrapsMeta.count;
 
-  response.json({
+  const data = {
     avatar,
     communities,
     friends,
@@ -80,33 +92,41 @@ sendRequest.get(async (request, response) => {
       totalFriends,
       totalScraps,
     },
-  });
+  };
+
+  response.json(data);
 });
 
 sendRequest.put(async (request, response) => {
-  const { userId, slug } = request.query;
-  const { personalityName, value: countPersonality } = request.body;
+  const { userLoggedIn } = request;
+  const { userId } = request.query;
 
-  const { data: responseData } = await axios.post('/', {
-    query: `query {
-      user(filter: {githubId: {eq: "${userId}"}}) {
+  if (userLoggedIn === userId) {
+    const { personalityName, value: countPersonality } = request.body;
+
+    const { data: responseData } = await axios.post('/', {
+      query: `query {
+      user(filter: {id: {eq: "${userId}"}}) {
         ${personalityName}
       }
     }`,
-  });
+    });
 
-  if (responseData.errors) {
-    const error = new Error('We could not get resources requested');
-    error.statusCode = 422;
+    if (responseData.errors) {
+      const error = new Error('We could not get resources requested');
+      error.statusCode = 422;
 
-    throw error;
+      throw error;
+    }
+
+    await client.items.update(userId, {
+      [personalityName]: countPersonality,
+    });
+
+    response.json();
   }
 
-  await client.items.update(slug, {
-    [personalityName]: countPersonality,
-  });
-
-  response.json({ message: 'Successfuly updated' });
+  throw { statusCode: 403 };
 });
 
 export default sendRequest;

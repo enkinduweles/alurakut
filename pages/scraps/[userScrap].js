@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Toaster } from 'react-hot-toast';
 import { FaSadCry } from 'react-icons/fa';
@@ -13,7 +13,6 @@ import { UserMenu } from '../../src/components/UserMenu/styled';
 import Drawer from '../../src/components/ui/navigation/Drawer/Drawer';
 import Input from '../../src/components/ui/inputs/Input/Input';
 import Sidebar from '../../src/components/Sidebar/Sidebar';
-// import Scrap from '../../src/components/Scrap/Scrap';
 import DialogBox from '../../src/components/DialogBox/DialogBox';
 import PageCount from '../../src/components/Pagination/PageCount';
 import PageControls from '../../src/components/Pagination/PageControls';
@@ -31,16 +30,11 @@ import {
 } from '../../src/components/ScrapPage/styled';
 import { usePageOperations } from '../../src/hooks/usePageOperations';
 
-const ScrapPage = ({
-  loggedInUserName,
-  loggedInUserId,
-  loggedInSlug,
-  page,
-}) => {
+const ScrapPage = ({ githubName, githubId, userId, page }) => {
   const [message, setMessage] = useState('');
 
   const router = useRouter();
-  const { userId, userScrap: userName, slug } = router.query;
+  const { userId: slug, userScrap: userName } = router.query;
 
   const {
     getData,
@@ -65,7 +59,7 @@ const ScrapPage = ({
     if (isFirstLoading) {
       getData({
         content: 'scrap',
-        queryParams: { userId, slug },
+        queryParams: { userId, page },
       });
     }
   }, [getData, userId, isFirstLoading]);
@@ -77,12 +71,12 @@ const ScrapPage = ({
       const mountedScrap = {
         reader: slug,
         message,
-        writer: loggedInSlug,
+        writer: userId,
       };
 
       createData({
         content: 'scrap',
-        queryParams: { userId, slug },
+        queryParams: { userId },
         body: mountedScrap,
       });
 
@@ -94,8 +88,8 @@ const ScrapPage = ({
   return (
     <>
       <AlurakutMenu
-        id={loggedInUserId}
-        userName={loggedInUserName}
+        id={userId}
+        userName={githubName}
         showMenu={onShowMenu}
         isMenuOpened={isMenuOpened}
       />
@@ -103,9 +97,8 @@ const ScrapPage = ({
       {isMenuOpened && (
         <Drawer showMenu={onShowMenu} isMenuOpened={isMenuOpened}>
           <UserMenu
-            userName={loggedInUserName}
-            id={loggedInUserId}
-            slug={loggedInSlug}
+            userName={githubName}
+            id={userId}
             width={50}
             height={50}
             src={datoContent.avatar}
@@ -117,8 +110,8 @@ const ScrapPage = ({
         <Grid isMenuOpened={isMenuOpened}>
           <GridItem templateArea="profileArea">
             <Sidebar
-              userName={loggedInUserName}
-              id={loggedInUserId}
+              userName={githubName}
+              id={userId}
               width={130}
               height={130}
               src={datoContent.avatar}
@@ -134,10 +127,8 @@ const ScrapPage = ({
                     onDelete={deleteData}
                     content="scrap"
                     userId={userId}
-                    githubId={loggedInUserId}
                     items={itemsToDelete}
                     onCleanItemsToDelete={onCleanItemsToDelete}
-                    slug={slug}
                   />
                 </Modal>
               )}
@@ -164,8 +155,7 @@ const ScrapPage = ({
                 </p>
               )}
               <Header>
-                Página de recados de {loggedInUserName} (
-                {datoContent.scraps.length})
+                Página de recados de {userName} ({datoContent.scraps.length})
               </Header>
 
               <PageCount
@@ -195,11 +185,13 @@ const ScrapPage = ({
                 </ScrapList>
               )}
               <PageControls
+                rootPath="scraps"
                 requestProcess={status}
                 currentPage={page}
                 userName={userName}
                 userId={userId}
                 lastPage={datoContent.counters.lastPage}
+                getData={getData}
               />
             </Box>
           </GridItem>
@@ -215,7 +207,7 @@ const ScrapPage = ({
 export default ScrapPage;
 
 export async function getServerSideProps({ query: { page = 1 }, ...context }) {
-  const { isAuthorized, userName, userId, slug } = validateToken(
+  const { isAuthorized, githubName, userId, githubId } = validateToken(
     context.req.headers.cookie
   );
 
@@ -230,9 +222,9 @@ export async function getServerSideProps({ query: { page = 1 }, ...context }) {
 
   return {
     props: {
-      loggedInUserName: userName,
-      loggedInUserId: userId,
-      loggedInSlug: slug,
+      githubName,
+      userId,
+      githubId,
       page: Number(page),
     },
   };

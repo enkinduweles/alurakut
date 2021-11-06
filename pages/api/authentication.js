@@ -43,7 +43,7 @@ sendRequest.post(async (request, response) => {
       slug = data.data.user.id;
 
       token = jwt.sign(
-        { userName: parsedData.login, userId: parsedData.id, slug },
+        { githubName: parsedData.login, githubId: parsedData.id, userId: slug },
         process.env.SECRET,
         {
           expiresIn: '1h',
@@ -73,10 +73,12 @@ sendRequest.post(async (request, response) => {
         communities: null,
       });
 
-      slug = newUser.id;
-
       token = jwt.sign(
-        { userName: parsedData.login, userId: parsedData.id, slug },
+        {
+          githubName: parsedData.login,
+          userId: newUser.id,
+          githubId: parsedData.id,
+        },
         process.env.SECRET,
         {
           expiresIn: '1h',

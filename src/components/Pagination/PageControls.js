@@ -10,6 +10,8 @@ const PageControls = ({
   currentPage,
   lastPage,
   requestProcess,
+  rootPath,
+  getData,
 }) => {
   const [buttonsDisabled, setButtonsDisabled] = useState({
     previous: false,
@@ -19,52 +21,51 @@ const PageControls = ({
   const router = useRouter();
   useEffect(() => {
     if (requestProcess === 'pending') {
-      console.log('if true');
       toast.loading('Loading...');
     } else {
-      console.log('if false');
-
       setButtonsDisabled({
         previous: currentPage === 1,
         next: currentPage === lastPage,
       });
     }
     return () => {
-      console.log('cleanup');
-
       toast.dismiss();
     };
-  }, [requestProcess]);
+  }, [requestProcess, currentPage, lastPage]);
 
-  // useEffect(() => {
-  //   if (requestProcess === 'completed') {
-  //     console.log('entrei');
-  //     setButtonsDisabled({
-  //       previous: currentPage === 1,
-  //       next: currentPage === lastPage,
-  //     });
-  //   }
-  // }, [currentPage, lastPage, requestProcess]);
-
-  const nextPageHandler = () => {
-    toast.loading('Loading...');
-    router.push(`/friends/${userName}?id=${userId}&page=${currentPage + 1}`);
+  const nextPageHandler = (isLastPage) => {
+    getData({
+      content: rootPath.slice(0, rootPath.length - 1),
+      queryParams: { userId, page: isLastPage ? lastPage : currentPage + 1 },
+    });
+    router.push(
+      `/${rootPath}/${userName}?userId=${userId}&page=${currentPage + 1}`
+    );
   };
-  console.log('Page Control Rendered');
+  const previousPageHandler = (isFirstPage) => {
+    getData({
+      content: rootPath.slice(0, rootPath.length - 1),
+      queryParams: { userId, page: isFirstPage ? 1 : currentPage + 1 },
+    });
+    router.push(
+      `/${rootPath}/${userName}?userId=${userId}&page=${currentPage - 1}`
+    );
+  };
+
   return (
     <ControlsWrapper>
-      <ControlButton outline disabled={buttonsDisabled.previous}>
+      <ControlButton
+        outline
+        disabled={buttonsDisabled.previous}
+        onClick={() => previousPageHandler(true)}
+      >
         primeira
       </ControlButton>
       <Separator>|</Separator>
       <ControlButton
         outline
         disabled={buttonsDisabled.previous}
-        onClick={() =>
-          router.push(
-            `/friends/${userName}?id=${userId}&page=${currentPage - 1}`
-          )
-        }
+        onClick={previousPageHandler}
       >
         anterior
       </ControlButton>
@@ -77,7 +78,11 @@ const PageControls = ({
         próxima
       </ControlButton>
       <Separator>|</Separator>
-      <ControlButton outline disabled={buttonsDisabled.next}>
+      <ControlButton
+        outline
+        disabled={buttonsDisabled.next}
+        onClick={() => nextPageHandler(true)}
+      >
         última
       </ControlButton>
     </ControlsWrapper>

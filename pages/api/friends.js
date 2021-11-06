@@ -5,29 +5,28 @@ import axios from '../../src/utils/axiosConfig';
 const TOKEN = process.env.PRIVATE_KEY;
 const client = new SiteClient(TOKEN);
 
-const USER_CONTENT = '1083247';
-const FRIENDS = '1210491';
+const USER = '1317096';
 
 sendRequest.get(async (request, response) => {
-  // console.log(request.query);
-  const { userId, limitBy, page = 1, items = '', slug } = request.query;
+  const { userId, limitBy, page = 1, items = '' } = request.query;
   const start = page ? (page - 1) * limitBy : 0;
 
   const { data: responseData } = await axios.post('/', {
     query: `query {
-        allUsers(filter: {githubId: {eq: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
+        allUsers(filter: {githubId: {id: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
           friends {
             id
+            githubId
             name
             avatar
+            location
           }
         }
-        _allUsersMeta(filter: {friends: {allIn: "${slug}"}}) {
+        _allUsersMeta(filter: {friends: {allIn: "${userId}"}}) {
           count
         }
       }`,
   });
-  console.log(responseData);
 
   if (responseData.errors) {
     const error = new Error('Ops something went wrong');
@@ -36,8 +35,8 @@ sendRequest.get(async (request, response) => {
     throw error;
   }
 
-  const { user, _allUsersMeta } = responseData.data;
-  const friends = user;
+  const { allUsers, _allUsersMeta } = responseData.data;
+  const friends = allUsers[0].friends;
   const total = _allUsersMeta.count;
   const lastPage = Math.ceil(total / limitBy);
   const firstCountMark = page * limitBy - 5;
@@ -53,200 +52,119 @@ sendRequest.get(async (request, response) => {
     },
   };
 
-  response.json({ data });
+  response.json(data);
 });
 
 sendRequest.post(async (request, response) => {
-  if (request.body.githubId === userId) {
-    response.status(400).json({
-      message: 'Why do you want add yourself as a friend?',
+  const { userLoggedIn } = request;
+  const { userId, slug } = request.query;
+
+  if (slug === userLoggedIn.slug) {
+    const { githubId } = request.body;
+
+    if (userLoggedIn.githubId === githubId) {
+      const error = new Error('Why do you want add yourself as a friend?');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const { data: responseData } = await axios.post('/', {
+      query: `query {
+      allUsers(filter: {githubId: {eq: "${githubId}"}}) {
+        id
+        name
+        friends {
+          id
+        }
+      }
+      user(filter: {id: {eq: "${userId}"}}) {
+        id
+        friends {
+          id
+        }
+      }
+    }`,
     });
+
+    const {
+      allUsers: [userToAdd],
+      user,
+    } = responseData.data;
+
+    const updateListFriends = async (
+      friends,
+      friendsPersonToAdd,
+      slug,
+      idPersonToAdd
+    ) => {
+      let idsAlreadyExist = friendsPersonToAdd.map((item) => {
+        return item.id;
+      });
+
+      await client.items.update(idPersonToAdd, {
+        friends: [...idsAlreadyExist, slug],
+      });
+
+      idsAlreadyExist = friends.map((item) => {
+        return item.id;
+      });
+
+      await client.items.update(slug, {
+        friends: [...idsAlreadyExist, idPersonToAdd],
+      });
+    };
+
+    if (userToAdd) {
+      const foundUser = user.friends.some((user) => {
+        return user.id === userToAdd.id;
+      });
+
+      if (foundUser) {
+        const error = new Error('You already added this user!');
+        error.statusCode = 400;
+        throw error;
+      } else {
+        await updateListFriends(
+          user.friends,
+          userToAdd.friends,
+          slug,
+          userToAdd.id
+        );
+
+        response.json();
+        return;
+      }
+    }
+
+    const newUser = await client.items.create({
+      itemType: USER,
+      ...request.body,
+    });
+
+    await updateListFriends(user.friends, newUser.friends, slug, newUser.id);
+
+    response.status(201).json();
+  }
+
+  throw { statusCode: 403 };
+});
+
+sendRequest.delete(async (request, response) => {
+  const { userLoggedIn } = request;
+  const { slug, items } = request.query;
+
+  if (slug === userLoggedIn.slug) {
+    const idsToDelete = items.split(/\s*(?:,|$)\s*/); //regex to remove space preceding a comma
+
+    await client.item.bulkDestroy({
+      items: idsToDelete,
+    });
+
+    response.json();
     return;
   }
 
-  const allFriends = await client.items.all({
-    filter: {
-      type: FRIENDS,
-    },
-  });
-
-  const parsedAllFriends = allFriends.map((friend) => {
-    return {
-      id: friend.id,
-      githubId: friend.githubId,
-    };
-  });
-
-  const [foundUser] = parsedAllFriends.filter((item) => {
-    return request.body.githubId === item.githubId;
-  });
-
-  let newRegister = null;
-
-  if (foundUser) {
-    const isFriendExists = record[0].friends.some((friend) => {
-      return friend === foundUser.id;
-    });
-
-    if (isFriendExists) {
-      response.status(400).json({
-        message: 'You already added this user!',
-      });
-      return;
-    }
-
-    newRegister = await client.items.find(foundUser.id);
-  } else {
-    newRegister = await client.items.create({
-      itemType: FRIENDS,
-      ...request.body,
-    });
-  }
-
-  const updatedRecords = await client.items.update(record[0].id, {
-    friends: [...record[0].friends, newRegister.id],
-  });
-
-  response.status(201).json({
-    data: updatedRecords,
-  });
-  return;
-  // }
+  throw { statusCode: 403 };
 });
-
-// const record = await client.items.all({
-//   filter: {
-//     type: USER_CONTENT,
-//     fields: {
-//       user_id: {
-//         eq: `${userId}`,
-//       },
-//     },
-//   },
-// });
-
-//   if (false) {
-//     if (request.method === 'GET') {
-//       const lastPage = Math.ceil(record[0].friends.length / limitBy);
-//       const firstCountMark = page * limitBy - 5;
-
-//       let filteredFriends = [...record[0].friends];
-//       filteredFriends = filteredFriends.splice(start, limitBy);
-
-//       const lastCountMark = page * limitBy - 5 + (filteredFriends.length - 1);
-
-//       const friends = await Promise.all(
-//         filteredFriends.map(async (friendId) => {
-//           return await client.items.find(friendId);
-//         })
-//       );
-
-//       const parsedFriends = friends.map((friend) => {
-//         const { name, avatar, githubId, location, id } = friend;
-
-//         return {
-//           id,
-//           name,
-//           avatar,
-//           githubId,
-//           location,
-//         };
-//       });
-
-//       response.json({
-//         data: {
-//           friends: parsedFriends,
-//           counters: {
-//             firstCountMark,
-//             lastCountMark,
-//             lastPage,
-//             totalFriends: record[0].friends.length,
-//           },
-//         },
-//       });
-//       return;
-//     }
-
-//     if (request.method === 'POST') {
-//       if (request.body.githubId === userId) {
-//         response.status(400).json({
-//           message: 'Why do you want add yourself as a friend?',
-//         });
-//         return;
-//       }
-
-//       const allFriends = await client.items.all({
-//         filter: {
-//           type: FRIENDS,
-//         },
-//       });
-
-//       const parsedAllFriends = allFriends.map((friend) => {
-//         return {
-//           id: friend.id,
-//           githubId: friend.githubId,
-//         };
-//       });
-
-//       const [foundUser] = parsedAllFriends.filter((item) => {
-//         return request.body.githubId === item.githubId;
-//       });
-
-//       let newRegister = null;
-
-//       if (foundUser) {
-//         const isFriendExists = record[0].friends.some((friend) => {
-//           return friend === foundUser.id;
-//         });
-
-//         if (isFriendExists) {
-//           response.status(400).json({
-//             message: 'You already added this user!',
-//           });
-//           return;
-//         }
-
-//         newRegister = await client.items.find(foundUser.id);
-//       } else {
-//         newRegister = await client.items.create({
-//           itemType: FRIENDS,
-//           ...request.body,
-//         });
-//       }
-
-//       const updatedRecords = await client.items.update(record[0].id, {
-//         friends: [...record[0].friends, newRegister.id],
-//       });
-
-//       response.status(201).json({
-//         data: updatedRecords,
-//       });
-//       return;
-//       // }
-//     }
-
-//     if (request.method === 'DELETE') {
-//       const parsedItems = items.split(',');
-//       const deletedRegisters = await client.items.bulkDestroy({
-//         items: parsedItems,
-//       });
-
-//       response.json({
-//         data: deletedRegisters,
-//       });
-
-//       return;
-//     }
-
-//     response.status(501).json({
-//       message: 'Sorry, method not implemented',
-//     });
-//     return;
-//   }
-
-//   response.status(404).json({
-//     message: 'Sorry, user not found!',
-//   });
-// }
 
 export default sendRequest;

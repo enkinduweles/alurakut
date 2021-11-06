@@ -11,7 +11,6 @@ const OrkutNostalgicIconSet = ({
   onChangePersonalityStatus,
   userName,
   id,
-  slug: userSlug,
   ...props
 }) => {
   return (
@@ -25,7 +24,7 @@ const OrkutNostalgicIconSet = ({
           // { name: 'Mensagens', slug: 'mensagens', icon: 'email' },
         ].map(({ name, slug, icon }) => (
           <li key={`orkut__icon_set__${slug}`}>
-            <Link href={`${slug}/${userName}?userId=${id}&slug=${userSlug}`}>
+            <Link href={`${slug}/${userName}?userId=${id}`}>
               <span
                 style={{ gridArea: 'title' }}
                 className="OrkutNostalgicIconSet__title"

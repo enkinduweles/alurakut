@@ -8,19 +8,14 @@ const DialogBox = ({
   onDelete,
   items,
   userId,
-  githubId,
   onCleanItemsToDelete,
   content,
-  slug,
 }) => {
   const deleteItemHandler = async () => {
     await onDelete({
       content: content,
       queryParams: {
         userId,
-        githubId,
-        limitBy: 6,
-        slug,
       },
       items,
     });

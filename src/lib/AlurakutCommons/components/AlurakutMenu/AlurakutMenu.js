@@ -19,10 +19,10 @@ const AlurakutMenu = ({ userName, showMenu, isMenuOpened, id }) => {
         <nav style={{ flex: 1 }}>
           {[
             { name: 'Inicio', slug: '/' },
-            { name: 'Amigos', slug: `/friends/${userName}?id=${id}` },
+            { name: 'Amigos', slug: `/friends/${userName}?userId=${id}` },
             {
               name: 'Comunidades',
-              slug: `/communities/${userName}?id=${id}`,
+              slug: `/communities/${userName}?userId=${id}`,
             },
           ].map((menuItem) => (
             <Link
@@ -42,15 +42,6 @@ const AlurakutMenu = ({ userName, showMenu, isMenuOpened, id }) => {
         </nav>
 
         <button onClick={showMenu}>
-          {/* {isMenuOpened && (
-            <div>
-              <Image
-                layout="fill"
-                src={`${BASE_URL}/icons/menu-open.svg?v=${v}`}
-                alt=""
-              />
-            </div>
-          )} */}
           {!isMenuOpened && (
             <div>
               <Image

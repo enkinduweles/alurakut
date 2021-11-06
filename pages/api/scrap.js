@@ -1,23 +1,37 @@
 import { SiteClient } from 'datocms-client';
 import sendRequest from '../../src/utils/requestHandler';
 import axios from '../../src/utils/axiosConfig';
+import { validateToken } from '../../src/utils/auth';
 
-const USER_CONTENT = '1083247';
 const SCRAPS = '1070396';
 
 const TOKEN = process.env.PRIVATE_KEY;
 const client = new SiteClient(TOKEN);
 
+sendRequest.use(async (request, response, next) => {
+  const { isAuthorized, githubId, userId } = validateToken(
+    request.headers.cookie
+  );
+
+  if (isAuthorized) {
+    request.userLoggedIn = { userId, githubId };
+    next();
+    return;
+  }
+  const error = { statusCode: 401 };
+  throw error;
+});
+
 sendRequest.get(async (request, response) => {
-  const { userId, slug, limitBy, page = 1 } = request.query;
+  const { userId, limitBy, page = 1 } = request.query;
   const start = page ? (page - 1) * limitBy : 0;
 
   const { data: responseData } = await axios.post('/', {
     query: `query {
-      user(filter: {githubId: {eq: "${userId}"}}) {
+      user(filter: {id: {eq: "${userId}"}}) {
         avatar
       },
-      allScraps(filter: {reader: {eq: "${slug}"}},first: "${limitBy}", skip: "${start}") {
+      allScraps(filter: {reader: {eq: "${userId}"}},first: "${limitBy}", skip: "${start}") {
         id
         writer {
           avatar
@@ -27,7 +41,7 @@ sendRequest.get(async (request, response) => {
         }
         message
       }
-      _allScrapsMeta(filter: {reader: {eq: "${slug}"}}) {
+      _allScrapsMeta(filter: {reader: {eq: "${userId}"}}) {
         count
       }
     }`,
@@ -45,7 +59,8 @@ sendRequest.get(async (request, response) => {
   const scraps = allScraps;
   const total = _allScrapsMeta.count;
   const firstCountMark = page * limitBy - 5;
-  const lastCountMark = page * limitBy - 5 + (total - 1);
+  const lastCountMark =
+    page * limitBy < total ? firstCountMark + scraps.length - 1 : total;
   const lastPage = Math.ceil(total / limitBy);
 
   const data = {
@@ -62,7 +77,7 @@ sendRequest.get(async (request, response) => {
 });
 
 sendRequest.post(async (request, response) => {
-  const { slug } = request.query;
+  const { userId } = request.query;
 
   const newRegister = await client.items.create({
     itemType: SCRAPS,
@@ -71,7 +86,7 @@ sendRequest.post(async (request, response) => {
 
   const { data: responseData } = await axios.post('/', {
     query: `query {
-    allScraps(filter: {reader: {eq: "${slug}"}}) {
+    allScraps(filter: {reader: {eq: "${userId}"}}) {
       id
     }
   }`,
@@ -80,7 +95,7 @@ sendRequest.post(async (request, response) => {
   const { allScraps } = responseData.data;
   const idsAlreadyExists = allScraps.map((item) => item.id);
 
-  await client.items.update(slug, {
+  await client.items.update(userId, {
     scraps: [...idsAlreadyExists, newRegister.id],
   });
 
@@ -91,10 +106,12 @@ sendRequest.post(async (request, response) => {
 });
 
 sendRequest.delete(async (request, response) => {
-  const { userId, githubId, items } = request.query;
+  const { userId, items } = request.query;
+  const { loggedInUser } = request;
+
   const idsToDelete = items.split(/\s*(?:,|$)\s*/); //regex to remove space preceding a comma
-  console.log(idsToDelete);
-  if (githubId === userId) {
+
+  if (loggedInUser.userId === userId) {
     const deletedRegister = await client.item.bulkDestroy({
       items: idsToDelete,
     });

@@ -21,6 +21,7 @@ import DialogBox from '../../src/components/DialogBox/DialogBox';
 
 import { validateToken } from '../../src/utils/auth';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
+import { usePageOperations } from '../../src/hooks/usePageOperations';
 
 import {
   Header,
@@ -32,20 +33,30 @@ import {
   ButtonWrapper,
 } from '../../src/components/FriendsPage/styled';
 
-const FriendsPage = ({ ownerId, githubUser, page }) => {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [usersToDelete, setUsersToDelete] = useState([]);
-  const [modalContent, setModalContent] = useState(null);
+const FriendsPage = ({
+  loggedInUserName,
+  loggedInUserId,
+  loggedInSlug,
+  page,
+}) => {
+  const {
+    isMenuOpened,
+    isModalOpened,
+    itemsToDelete,
+    onShowMenu,
+    onShowModal,
+    onCheckCard,
+    onCleanItemsToDelete,
+  } = usePageOperations();
 
   const router = useRouter();
-  const { id: userId } = router.query;
+  const { userId, userFriends: userName, slug } = router.query;
 
   const {
     getData,
     createData,
     cleanErrors,
-    data,
+    data: datoContent,
     status,
     isFirstLoading,
     error,
@@ -55,21 +66,16 @@ const FriendsPage = ({ ownerId, githubUser, page }) => {
   useEffect(() => {
     getData({
       content: 'friends',
-      queryParams: { userId, limitBy: 6, page },
+      queryParams: { userId, page, slug },
     });
-  }, [getData, userId, page]);
-
-  const showMenuHandler = useCallback(
-    () => setIsMenuOpened((prevState) => !prevState),
-    []
-  );
+  }, [getData, userId, page, slug]);
 
   const returnModalContent = (componentName) => {
     switch (componentName) {
       case 'PREVIEW':
         return (
           <Preview
-            showModal={showModalHandler}
+            showModal={onShowModal}
             addFriendHandler={createData}
             cleanErrors={cleanErrors}
             currentPage={page}
@@ -81,54 +87,36 @@ const FriendsPage = ({ ownerId, githubUser, page }) => {
       case 'DIALOGBOX':
         return (
           <DialogBox
-            showModal={showModalHandler}
-            onDeleteFriend={deleteData}
+            showModal={onShowModal}
+            onDelete={deleteData}
             userId={userId}
-            items={usersToDelete}
-            cleanUsersToDelete={setUsersToDelete}
+            items={itemsToDelete}
+            cleanUsersToDelete={onCleanItemsToDelete}
+            githubId={loggedInUserId}
+            slug={slug}
           />
         );
     }
 
     return null;
   };
-
-  const showModalHandler = (componentName) => {
-    setIsModalOpened((prevState) => !prevState);
-    setModalContent(componentName);
-  };
-
-  const checkCardHandler = useCallback(
-    (contentId, isCardChecked) => {
-      if (!isCardChecked) {
-        const filteredUsers = usersToDelete.filter((user) => {
-          return contentId !== user;
-        });
-
-        setUsersToDelete(filteredUsers);
-      } else {
-        setUsersToDelete((prevState) => [...prevState, contentId]);
-      }
-    },
-    [usersToDelete]
-  );
-
+  console.log(datoContent);
   return (
     <>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
-        showMenu={showMenuHandler}
-        userName={userName}
-        id={ownerId}
+        showMenu={onShowMenu}
+        userName={loggedInUserName}
+        id={loggedInUserId}
       />
       {isMenuOpened && (
-        <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
+        <Drawer showMenu={onShowMenu} isMenuOpened={isMenuOpened}>
           <UserMenu
-            userName={userName}
-            id={userId}
+            userName={loggedInUserName}
+            id={loggedInUserId}
             width={50}
             height={50}
-            src={`https://github.com/${userName}.png`}
+            src={datoContent.avatar}
           />
         </Drawer>
       )}
@@ -136,46 +124,34 @@ const FriendsPage = ({ ownerId, githubUser, page }) => {
         <Grid isMenuOpened={isMenuOpened}>
           <GridItem templateArea="profileArea">
             <Sidebar
-              userName={userName}
-              id={ownerId}
+              userName={loggedInUserName}
+              id={loggedInUserId}
               width={130}
               height={130}
-              src={`https://github.com/${userName}.png`}
+              src={datoContent.avatar}
             />
           </GridItem>
           <GridItem templateArea="mainArea">
             <Box>
               {isModalOpened && (
-                <Modal showModal={showModalHandler}>
+                <Modal showModal={onShowModal}>
                   {returnModalContent(modalContent)}
-                  {/* <Preview
-                    showModal={showModalHandler}
-                    addFriendHandler={createData}
-                    cleanErrors={cleanErrors}
-                    currentPage={page}
-                    error={error}
-                  /> */}
                 </Modal>
               )}
               <Header>Amigos</Header>
               <Breadcrumb />
-              <AddFriend onClick={() => showModalHandler('PREVIEW')}>
+              <AddFriend onClick={() => onShowModal('PREVIEW')}>
                 Adicionar
               </AddFriend>
 
-              <CounterWrapper>
-                <PageCount counters={data.counters} />
-                {usersToDelete.length > 0 && (
-                  <ButtonWrapper>
-                    <Badge>{usersToDelete.length}</Badge>
-                    <DeleteFriend onClick={() => showModalHandler('DIALOGBOX')}>
-                      <MdDelete />
-                    </DeleteFriend>
-                  </ButtonWrapper>
-                )}
-              </CounterWrapper>
+              <PageCount
+                counters={datoContent.counters}
+                selectedItems={itemsToDelete}
+                onShowModal={onShowModal}
+              />
+
               <List>
-                {data.friends.map(
+                {datoContent.friends.map(
                   ({ name, avatar, githubId, location, id }) => {
                     return (
                       <ListItemFriend key={githubId}>
@@ -186,7 +162,7 @@ const FriendsPage = ({ ownerId, githubUser, page }) => {
                           height={60}
                           src={avatar}
                           contentId={id}
-                          onCheckCard={checkCardHandler}
+                          onCheckCard={onCheckCard}
                         />
                       </ListItemFriend>
                     );
@@ -198,7 +174,7 @@ const FriendsPage = ({ ownerId, githubUser, page }) => {
                 currentPage={page}
                 userName={userName}
                 userId={userId}
-                lastPage={data.counters.lastPage}
+                lastPage={datoContent.counters.lastPage}
               />
             </Box>
           </GridItem>
@@ -215,7 +191,7 @@ const FriendsPage = ({ ownerId, githubUser, page }) => {
 export default FriendsPage;
 
 export async function getServerSideProps({ query: { page = 1 }, ...context }) {
-  const { isAuthorized, userName, userId } = validateToken(
+  const { isAuthorized, userName, userId, slug } = validateToken(
     context.req.headers.cookie
   );
 
@@ -230,8 +206,9 @@ export async function getServerSideProps({ query: { page = 1 }, ...context }) {
 
   return {
     props: {
-      githubUser,
-      ownerId: id,
+      loggedInUserName: userName,
+      loggedInUserId: userId,
+      loggedInSlug: slug,
       page: Number(page),
     },
   };

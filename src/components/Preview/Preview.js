@@ -73,12 +73,11 @@ const Preview = ({
     setFoundUser({});
   };
 
-  const onAddFriend = async () => {
-    await addFriendHandler({
+  const onAddFriend = () => {
+    addFriendHandler({
       content: 'friends',
       queryParams: {
         userId,
-        limitBy: 6,
         page: currentPage,
       },
       body: foundUser,

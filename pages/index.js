@@ -10,10 +10,9 @@ import Drawer from '../src/components/ui/navigation/Drawer/Drawer';
 import Sidebar from '../src/components/Sidebar/Sidebar';
 import { NoContentMessage } from '../src/components/NoContentMessage/styled';
 import { UserMenu } from '../src/components/UserMenu/styled';
-
 import ProfileRelations from '../src/components/ProfileRelations/ProfileRelations';
-
 import Spinner from '../src/components/Spinner/Spinner';
+
 import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
@@ -21,11 +20,9 @@ import {
 
 import { validateToken } from '../src/utils/auth';
 import { useDatoCMS } from '../src/hooks/useDatoCMS';
+import { usePageOperations } from '../src/hooks/usePageOperations';
 
-const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const router = useRouter();
-
+const Home = ({ githubName, githubId, userId }) => {
   const {
     getData,
     data: datoContent,
@@ -34,20 +31,16 @@ const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
   } = useDatoCMS();
   console.log(datoContent);
 
+  const { onShowMenu, isMenuOpened } = usePageOperations();
+
   useEffect(() => {
     getData({
       content: 'home',
       queryParams: {
-        userId: loggedInUserId,
-        slug: loggedInUserSlug,
+        userId,
       },
     });
-  }, [getData, loggedInUserId, loggedInUserSlug]);
-
-  const showMenuHandler = useCallback(
-    () => setIsMenuOpened((prevState) => !prevState),
-    []
-  );
+  }, [getData, userId]);
 
   const changePersonalityStatusHandler = (name, value) => {
     if (datoContent.personalityStatus[name] === value) {
@@ -57,8 +50,7 @@ const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
     updateData({
       content: 'home',
       queryParams: {
-        userId: loggedInUserName,
-        slug: loggedInUserSlug,
+        userId,
       },
       body: { personalityName: name, value },
     });
@@ -68,19 +60,18 @@ const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
     <>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
-        userName={loggedInUserName}
-        showMenu={showMenuHandler}
-        id={loggedInUserId}
+        userName={githubName}
+        showMenu={onShowMenu}
+        id={userId}
       />
       {isMenuOpened && (
-        <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
+        <Drawer showMenu={onShowMenu} isMenuOpened={isMenuOpened}>
           <UserMenu
-            userName={loggedInUserName}
-            id={loggedInUserId}
+            userName={githubName}
+            id={userId}
             width={50}
             height={50}
             src={datoContent.avatar}
-            slug={loggedInUserSlug}
           />
         </Drawer>
       )}
@@ -88,8 +79,8 @@ const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
         <Grid type="home" isMenuOpened={isMenuOpened}>
           <GridItem templateArea="profileArea">
             <Sidebar
-              userName={loggedInUserName}
-              id={loggedInUserId}
+              userName={githubName}
+              id={userId}
               width={130}
               height={130}
               src={datoContent.avatar}
@@ -97,12 +88,11 @@ const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
           </GridItem>
           <GridItem templateArea="mainArea">
             <Box>
-              <h1 className="title">Bem vindo, {loggedInUserName}</h1>
+              <h1 className="title">Bem vindo, {githubName}</h1>
               <Divider />
               <OrkutNostalgicIconSet
-                userName={loggedInUserName}
-                id={loggedInUserId}
-                slug={loggedInUserSlug}
+                userName={githubName}
+                id={userId}
                 scraps={datoContent.counters.totalScraps}
                 reliable={datoContent.personalityStatus.reliable}
                 sexy={datoContent.personalityStatus.sexy}
@@ -154,7 +144,7 @@ const Home = ({ loggedInUserName, loggedInUserId, loggedInUserSlug }) => {
 export default Home;
 
 export async function getServerSideProps(context) {
-  const { isAuthorized, userName, userId, slug } = validateToken(
+  const { isAuthorized, githubName, userId, githubId } = validateToken(
     context.req.headers.cookie
   );
 
@@ -169,9 +159,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      loggedInUserName: userName,
-      loggedInUserId: userId,
-      loggedInUserSlug: slug,
+      githubName,
+      userId,
+      githubId,
     },
   };
 }
