@@ -75,10 +75,8 @@ sendRequest.get(async (request, response) => {
   } = responseData.data;
 
   console.log(allUsers[0].friends);
-  const { avatar, ...personalityStatus } = allUsers[0];
-  const friends = allUsers[0].friends;
+  const { avatar, friends, communities, ...personalityStatus } = allUsers[0];
   const totalFriends = _allUsersMeta.count;
-  const communities = allUsers[0].communities;
   const totalCommunities = _allCommunitiesMeta.count;
   const totalScraps = _allScrapsMeta.count;
 
@@ -101,7 +99,7 @@ sendRequest.put(async (request, response) => {
   const { userLoggedIn } = request;
   const { userId } = request.query;
 
-  if (userLoggedIn === userId) {
+  if (userLoggedIn.userId === userId) {
     const { personalityName, value: countPersonality } = request.body;
 
     const { data: responseData } = await axios.post('/', {
@@ -124,6 +122,7 @@ sendRequest.put(async (request, response) => {
     });
 
     response.json();
+    return;
   }
 
   throw { statusCode: 403 };
