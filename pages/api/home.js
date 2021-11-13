@@ -6,15 +6,13 @@ import { validateToken } from '../../src/utils/auth';
 const TOKEN = process.env.PRIVATE_KEY;
 const client = new SiteClient(TOKEN);
 
-const USER_MODEL = '1317096';
-
 sendRequest.use(async (request, response, next) => {
   const { isAuthorized, githubId, userId } = validateToken(
     request.headers.cookie
   );
-  console.log(isAuthorized);
+
   if (isAuthorized) {
-    request.userLoggedIn = { userId, githubId };
+    request.loggedInUser = { userId, githubId };
     next();
     return;
   }
@@ -28,25 +26,24 @@ sendRequest.get(async (request, response) => {
 
   const { data: responseData } = await axios.post('/', {
     query: `query {
-      allUsers(filter: {id: {eq: "${userId}"}} first: "${limitBy}", skip: "${start}") {
-       
-        reliable
-        sexy
-        nice
+      user(filter: {id: {eq: "${userId}"}}) {
         avatar
-        friends {
-          name
-          id
-          avatar
-          githubId
+        nice
+        sexy
+        reliable
+      }
+      allUsers(filter: {friends: {allIn: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
+        name
+        avatar
+        githubId
+        id
+      }
+      allCommunities(filter: {members: {allIn: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
+        id
+        thumbnail {
+          url
         }
-        communities {
-          id
-          name
-          thumbnail {
-            url
-          }
-        }
+        name
       }
     _allUsersMeta(filter: {friends: {allIn: "${userId}"}}) {
       count
@@ -62,20 +59,21 @@ sendRequest.get(async (request, response) => {
   });
 
   if (responseData.errors) {
-    const error = new Error('Ops something went wrong');
-    error.status = 400;
-
-    throw error;
+    throw { status: 400 };
   }
+
   const {
+    user,
     allUsers,
+    allCommunities,
     _allUsersMeta,
     _allCommunitiesMeta,
     _allScrapsMeta,
   } = responseData.data;
 
-  console.log(allUsers[0].friends);
-  const { avatar, friends, communities, ...personalityStatus } = allUsers[0];
+  const { avatar, ...personalityStatus } = user;
+  const friends = allUsers;
+  const communities = allCommunities;
   const totalFriends = _allUsersMeta.count;
   const totalCommunities = _allCommunitiesMeta.count;
   const totalScraps = _allScrapsMeta.count;
@@ -96,10 +94,10 @@ sendRequest.get(async (request, response) => {
 });
 
 sendRequest.put(async (request, response) => {
-  const { userLoggedIn } = request;
+  const { loggedInUser } = request;
   const { userId } = request.query;
 
-  if (userLoggedIn.userId === userId) {
+  if (loggedInUser.userId === userId) {
     const { personalityName, value: countPersonality } = request.body;
 
     const { data: responseData } = await axios.post('/', {

@@ -9,11 +9,11 @@ const DialogBox = ({
   items,
   userId,
   onCleanItemsToDelete,
-  content,
+  rootPath,
 }) => {
   const deleteItemHandler = async () => {
     await onDelete({
-      content: content,
+      content: rootPath,
       queryParams: {
         userId,
       },

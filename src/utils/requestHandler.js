@@ -1,31 +1,37 @@
 import nextConnect from 'next-connect';
-import { validateToken } from './auth';
 
 export default nextConnect({
   onError: (error, request, response) => {
     console.log(error);
-    let message = null;
-    switch (error.statusCode) {
+    let responseError = { status: 0, message: '' };
+
+    if (error.response) {
+      responseError.status = error.response.status;
+    } else {
+      responseError.status = error.status;
+    }
+
+    switch (responseError.status) {
       case 422:
-        message = "We couldn't process your request!";
+        responseError.message = "We couldn't process your request!";
         break;
       case 404:
-        message = 'Resource not found!';
+        responseError.message = 'Resource not found!';
         break;
       case 403:
-        message = 'Forbidden operation!';
+        responseError.message = 'Forbidden operation!';
         break;
       case 401:
-        message = 'You must have a valid credential';
+        responseError.message = 'You must have a valid credential';
         break;
       case 400:
-        message = error.message;
+        responseError.message = error.message;
         break;
       default:
-        message = 'Sorry, something went wrong!';
+        responseError.message = 'Sorry, something went wrong!';
         break;
     }
-    response.status(error.statusCode).json({ message });
+    response.status(responseError.status).json(responseError.message);
   },
   onNoMatch: (request, response) => {
     response.status(405).end(`Method ${request.method} not allowed`);

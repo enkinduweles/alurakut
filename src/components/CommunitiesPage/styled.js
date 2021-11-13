@@ -52,7 +52,8 @@ export const CounterWrapper = styled.div`
 
 export const ListItemCommunity = styled(ListItem)`
   margin-bottom: 0;
-  position: relative;
+
+  /* position: relative; */
 
   &:nth-child(even) {
     background-color: var(--backgroundPrimary);

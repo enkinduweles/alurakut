@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { Button } from '../../../../components/ui/inputs/Button/styled';
+
 const BASE_URL = 'http://alurakut.vercel.app/';
 
 export const AlurakutMenuWrapper = styled.header`
@@ -19,7 +21,7 @@ export const AlurakutMenuWrapper = styled.header`
       justify-content: flex-start;
     }
 
-    button {
+    .mobileMenu {
       border: 0;
       background: transparent;
       align-self: center;
@@ -85,4 +87,8 @@ export const Logo = styled.img`
   padding: 9px 14px;
   border-radius: 1000px;
   height: 34px;
+`;
+
+export const LogoutButton = styled(Button)`
+  color: white;
 `;

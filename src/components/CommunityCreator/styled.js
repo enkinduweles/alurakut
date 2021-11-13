@@ -1,7 +1,13 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Form } from '../ui/layout/Form/styled';
 import { Button } from '../ui/inputs/Button/styled';
+
+const centralizeButton = css`
+  position: absolute;
+  bottom: 0.8rem;
+  right: 0.8rem;
+`;
 
 export const PreviewWrapper = styled.div`
   display: flex;
@@ -14,10 +20,23 @@ export const PreviewPickedImage = styled.div`
   height: 15rem;
   align-self: center;
   ${({ hasImage }) => (!hasImage ? 'background-color: #ced4da' : null)};
-
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  > figure {
+    opacity: ${({ hasImage, isLoading }) =>
+      hasImage && isLoading ? '0.7' : '1'};
+  }
 `;
 
 export const FileInputWrapper = styled.label`
@@ -36,11 +55,12 @@ export const FileInputWrapper = styled.label`
   justify-content: center;
   align-items: center;
   z-index: 1;
+  ${({ hasImage }) => (hasImage ? centralizeButton : null)}
 
   > svg {
     font-size: 2.4rem;
     align-self: flex-end;
-    margin-left: 0.8rem;
+    margin-left: ${({ hasImage }) => (hasImage ? 0 : '0.8rem')};
   }
 
   input[type='file'] {
@@ -59,7 +79,11 @@ export const WarningMessage = styled.p`
 export const RegisterCommunityForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  padding: 0 4.5rem;
+  padding: 0;
+
+  @media (min-width: 768px) {
+    padding: 0 4.5rem;
+  }
 
   > div {
     margin-bottom: 2rem;

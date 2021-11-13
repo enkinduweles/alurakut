@@ -21,6 +21,7 @@ import {
 import { validateToken } from '../src/utils/auth';
 import { useDatoCMS } from '../src/hooks/useDatoCMS';
 import { usePageOperations } from '../src/hooks/usePageOperations';
+import rootPath from '../src/utils/apiPaths';
 
 const Home = ({ githubName, githubId, userId }) => {
   const {
@@ -28,8 +29,10 @@ const Home = ({ githubName, githubId, userId }) => {
     data: datoContent,
     updateData,
     isFirstLoading,
+    error,
   } = useDatoCMS();
   console.log(datoContent);
+  console.log(error);
 
   const { onShowMenu, isMenuOpened } = usePageOperations();
 
@@ -103,13 +106,16 @@ const Home = ({ githubName, githubId, userId }) => {
           </GridItem>
           <GridItem templateArea="profileRelationsArea">
             <Box>
-              {datoContent && datoContent.length !== 0 ? (
+              {datoContent && datoContent.friends.length !== 0 ? (
                 <ProfileRelations
                   title="Friends"
                   data={datoContent.friends}
                   type="avatar"
                   destination="friends"
                   total={datoContent.counters.totalFriends}
+                  rootPath={rootPath.friend.page}
+                  userName={githubName}
+                  userId={userId}
                 />
               ) : (
                 <NoContentMessage>
@@ -118,12 +124,15 @@ const Home = ({ githubName, githubId, userId }) => {
               )}
             </Box>
             <Box>
-              {datoContent && datoContent.length !== 0 ? (
+              {datoContent && datoContent.friends.length !== 0 ? (
                 <ProfileRelations
                   title="Communities"
                   data={datoContent.communities}
                   destination="communities"
                   total={datoContent.counters.totalCommunities}
+                  rootPath={rootPath.community.page}
+                  userName={githubName}
+                  userId={userId}
                 />
               ) : (
                 <NoContentMessage>

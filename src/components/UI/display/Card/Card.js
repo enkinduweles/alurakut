@@ -41,7 +41,7 @@ const Card = memo(
           value={checkboxValue}
           onChange={selectCardHandler}
         />
-        <Cover src={src} layout={layout} width={width} height={height} type />
+        <Cover src={src} width={width} height={height} type />
         <CardContent>
           <TitleWrapper>
             <CardTitle href="/">{title}</CardTitle>

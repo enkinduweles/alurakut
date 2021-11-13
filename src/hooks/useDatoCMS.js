@@ -2,7 +2,9 @@ import { useCallback, useReducer } from 'react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
-axios.defaults.params = { limitBy: 6 };
+const axiosCustom = axios.create();
+
+axiosCustom.defaults.params = { limitBy: 6 };
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -17,6 +19,11 @@ const reducer = (state, action) => {
         data: action.data,
         error: null,
         status: 'completed',
+      };
+    case 'DONE':
+      return {
+        ...state,
+        status: null,
       };
     case 'FAIL':
       return {
@@ -50,7 +57,7 @@ export const useDatoCMS = () => {
     let toastId = null;
 
     if (activeToast) {
-      toastId = toast.loading('Loading');
+      toastId = toast.loading('Loading...');
     }
 
     let fullQueryParams = '?';
@@ -65,22 +72,25 @@ export const useDatoCMS = () => {
     try {
       dispatch({ type: 'SEND' });
 
-      const { data } = await axios.get(`/api/${content}${fullQueryParams}`);
+      const { data } = await axiosCustom.get(
+        `/api/${content}${fullQueryParams}`
+      );
 
       dispatch({ type: 'SUCCESS', data });
-
+      dispatch({ type: 'DONE' });
       activeToast
         ? toast.success(`${content} succesfully loaded`, { id: toastId })
         : null;
     } catch (error) {
       const { data, status } = error.response;
       dispatch({ type: 'FAIL', error: { message: data, status } });
+      dispatch({ type: 'DONE' });
       activeToast ? toast.error(data, { id: toastId }) : null;
     }
   }, []);
 
   const createData = useCallback(async ({ content, queryParams, body }) => {
-    const toastId = toast.loading('Loading');
+    const toastId = toast.loading('Loading...');
 
     let fullQueryParams = '?';
 
@@ -93,24 +103,27 @@ export const useDatoCMS = () => {
     try {
       dispatch({ type: 'SEND' });
 
-      await axios.post(`/api/${content}${fullQueryParams}`, body);
+      await axiosCustom.post(`/api/${content}${fullQueryParams}`, body);
 
-      const { data } = await axios.get(`/api/${content}${fullQueryParams}`);
+      const { data } = await axiosCustom.get(
+        `/api/${content}${fullQueryParams}`
+      );
 
+      toast.success(`${content} created successfully`, { id: toastId });
       dispatch({ type: 'SUCCESS', data });
-
-      toast.success(`${content} updated successfully`, { id: toastId });
+      dispatch({ type: 'DONE' });
     } catch (error) {
       console.log(error.response);
       const { data, status } = error.response;
       dispatch({ type: 'FAIL', error: { message: data, status } });
+      dispatch({ type: 'DONE' });
       toast.error(data, { id: toastId });
     }
   }, []);
 
   const updateData = useCallback(async ({ content, queryParams, body }) => {
     let toastId = null;
-    toastId = toast.loading('Loading');
+    toastId = toast.loading('Loading...');
 
     let fullQueryParams = '?';
 
@@ -123,22 +136,26 @@ export const useDatoCMS = () => {
     try {
       dispatch({ type: 'SEND' });
 
-      await axios.put(`/api/${content}${fullQueryParams}`, body);
+      await axiosCustom.put(`/api/${content}${fullQueryParams}`, body);
 
-      const { data } = await axios.get(`/api/${content}${fullQueryParams}`);
+      const { data } = await axiosCustom.get(
+        `/api/${content}${fullQueryParams}`
+      );
 
       dispatch({ type: 'SUCCESS', data });
+      dispatch({ type: 'DONE' });
 
       toast.success(`${content} updated successfully`, { id: toastId });
     } catch (error) {
       const { data, status } = error.response;
       dispatch({ type: 'FAIL', error: { message: data, status } });
+      dispatch({ type: 'DONE' });
       toast.error(data, { id: toastId });
     }
   }, []);
 
   const deleteData = useCallback(async ({ content, queryParams, items }) => {
-    const toastId = toast.loading('Loading');
+    const toastId = toast.loading('Loading...');
     let fullQueryParams = '?';
     const itemsString = items.join(',');
 
@@ -150,18 +167,21 @@ export const useDatoCMS = () => {
     try {
       dispatch({ type: 'SEND' });
 
-      await axios.delete(
+      await axiosCustom.delete(
         `/api/${content}${fullQueryParams}&items=${itemsString}`
       );
 
-      const { data } = await axios.get(`/api/${content}${fullQueryParams}`);
+      const { data } = await axiosCustom.get(
+        `/api/${content}${fullQueryParams}`
+      );
 
       dispatch({ type: 'SUCCESS', data });
-
+      dispatch({ type: 'DONE' });
       toast.success(`${content} deleted successfully`, { id: toastId });
     } catch (error) {
       const { data, status } = error.response;
       dispatch({ type: 'FAIL', error: { message: data, status } });
+      dispatch({ type: 'DONE' });
       toast.error(data, { id: toastId });
     }
   }, []);

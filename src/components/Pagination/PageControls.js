@@ -20,36 +20,34 @@ const PageControls = ({
 
   const router = useRouter();
   useEffect(() => {
-    if (requestProcess === 'pending') {
-      toast.loading('Loading...');
-    } else {
+    if (requestProcess === 'completed') {
       setButtonsDisabled({
         previous: currentPage === 1,
         next: currentPage === lastPage,
       });
     }
-    return () => {
-      toast.dismiss();
-    };
+    
   }, [requestProcess, currentPage, lastPage]);
 
   const nextPageHandler = (isLastPage) => {
+    
+    router.push(
+      `/${rootPath.page}/${userName}?userId=${userId}&page=${currentPage + 1}`
+    );
     getData({
-      content: rootPath.slice(0, rootPath.length - 1),
+      content: rootPath.api,
       queryParams: { userId, page: isLastPage ? lastPage : currentPage + 1 },
     });
-    router.push(
-      `/${rootPath}/${userName}?userId=${userId}&page=${currentPage + 1}`
-    );
   };
   const previousPageHandler = (isFirstPage) => {
-    getData({
-      content: rootPath.slice(0, rootPath.length - 1),
-      queryParams: { userId, page: isFirstPage ? 1 : currentPage + 1 },
-    });
+    
     router.push(
-      `/${rootPath}/${userName}?userId=${userId}&page=${currentPage - 1}`
+      `/${rootPath.page}/${userName}?userId=${userId}&page=${currentPage - 1}`
     );
+    getData({
+      content: rootPath.api,
+      queryParams: { userId, page: isFirstPage ? 1 : currentPage - 1 },
+    });
   };
 
   return (
@@ -65,7 +63,7 @@ const PageControls = ({
       <ControlButton
         outline
         disabled={buttonsDisabled.previous}
-        onClick={previousPageHandler}
+        onClick={() => previousPageHandler(false)}
       >
         anterior
       </ControlButton>
@@ -73,7 +71,7 @@ const PageControls = ({
       <ControlButton
         outline
         disabled={buttonsDisabled.next}
-        onClick={nextPageHandler}
+        onClick={() => nextPageHandler(false)}
       >
         próxima
       </ControlButton>

@@ -7,15 +7,18 @@ import Input from '../../inputs/Input/Input';
 export const Checkbox = styled(Input)`
   width: auto;
   align-self: center;
-  margin-right: 1.6rem;
   z-index: 101;
+  display: flex;
+  justify-content: center;
   > input {
     box-shadow: none;
   }
 `;
 
 export const CardWrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 2rem 8rem 1fr;
+  grid-gap: 1.6rem;
   width: 100%;
 `;
 
@@ -31,7 +34,7 @@ export const Overlay = styled.div`
 
 export const CardContent = styled(Box)`
   background-color: inherit;
-  padding: 0 1.2rem;
+  padding: 0;
 `;
 export const TitleWrapper = styled(Box)`
   background-color: inherit;

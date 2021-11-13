@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Toaster } from 'react-hot-toast';
-import { MdExitToApp } from 'react-icons/md';
 
 import { Box } from '../../src/components/ui/layout/Box/styled';
 import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
 import Breadcrumb from '../../src/components/Breadcrumb/Breadcrumb';
 import Card from '../../src/components/ui/display/Card/Card';
-import { List, ListItem } from '../../src/components/ui/display/List/styled';
+import { List } from '../../src/components/ui/display/List/styled';
 import Drawer from '../../src/components/ui/navigation/Drawer/Drawer';
 import Modal from '../../src/components/ui/display/Modal/Modal';
-import Preview from '../../src/components/Preview/Preview';
 import PageControls from '../../src/components/Pagination/PageControls';
 import PageCount from '../../src/components/Pagination/PageCount';
 import Sidebar from '../../src/components/Sidebar/Sidebar';
@@ -19,6 +17,7 @@ import { AlurakutMenu } from '../../src/lib/AlurakutCommons/index';
 import Spinner from '../../src/components/Spinner/Spinner';
 import CommunityCreator from '../../src/components/CommunityCreator/CommunityCreator';
 import DialogBox from '../../src/components/DialogBox/DialogBox';
+import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
 
 import { validateToken } from '../../src/utils/auth';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
@@ -32,103 +31,105 @@ import {
   LeaveOutCommunity,
   ListItemCommunity,
 } from '../../src/components/CommunitiesPage/styled';
+import rootPath from '../../src/utils/apiPaths';
+import { usePageOperations } from '../../src/hooks/usePageOperations';
 
-const CommunitiesPage = ({ ownerId, githubUser, page }) => {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [communitiesToLeave, setCommunitiesToLeave] = useState([]);
-  const [modalContent, setModalContent] = useState(null);
-
+const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
   const router = useRouter();
-  const { id: userId } = router.query;
+  const { userId: slug, userCommunities: userName } = router.query;
 
   const {
     getData,
     createData,
     cleanErrors,
-    data,
+    data: datoContent,
     status,
     isFirstLoading,
     error,
     deleteData,
   } = useDatoCMS();
 
-  useEffect(() => {
-    getData({
-      content: 'communities',
-      queryParams: { userId, limitBy: 6, page },
-    });
-  }, [getData, userId, page]);
+  const {
+    isMenuOpened,
+    isModalOpened,
+    itemsToDelete,
+    modalContentName,
+    onCleanItemsToDelete,
+    onShowMenu,
+    onShowModal,
+    onCheckCard,
+  } = usePageOperations();
 
-  const showMenuHandler = useCallback(
-    () => setIsMenuOpened((prevState) => !prevState),
-    []
-  );
+  useEffect(() => {
+    if (isFirstLoading) {
+      getData({
+        content: rootPath.community.api,
+        queryParams: { userId, page },
+      });
+    }
+  }, [getData, userId, page, isFirstLoading]);
+
+  useEffect(() => {
+    if (datoContent) {
+      if (datoContent.counters.lastPage < page) {
+        router.push(
+          `/${rootPath.community.page}/${githubName}?userId=${userId}${
+            page === 1 ? '' : `&page=${datoContent.counters.lastPage}`
+          }`
+        );
+      }
+    }
+  }, [datoContent, userId, page, githubName]);
 
   const returnModalContent = (componentName) => {
     switch (componentName) {
       case 'COMMUNITY_CREATOR':
         return (
           <CommunityCreator
-            showModal={showModalHandler}
+            showModal={onShowModal}
             onCreateCommunity={createData}
             cleanErrors={cleanErrors}
             currentPage={page}
             error={error}
             status={status}
+            rootPath={rootPath.community.api}
+            userId={userId}
+            userName={githubName}
           />
         );
 
-      // case 'DIALOGBOX':
-      //   return (
-      //     <DialogBox
-      //       showModal={showModalHandler}
-      //       onDeleteFriend={deleteData}
-      //       userId={userId}
-      //       items={usersToDelete}
-      //       cleanUsersToDelete={setUsersToDelete}
-      //     />
-      //   );
+      case 'DIALOGBOX':
+        return (
+          <DialogBox
+            onShowModal={onShowModal}
+            onDelete={deleteData}
+            userId={userId}
+            items={itemsToDelete}
+            onCleanItemsToDelete={onCleanItemsToDelete}
+            rootPath={rootPath.community.api}
+          />
+        );
+      default:
+        throw new Error('You must provide a valid component name');
     }
-
-    return null;
   };
-
-  const showModalHandler = (componentName) => {
-    setIsModalOpened((prevState) => !prevState);
-    setModalContent(componentName);
-  };
-
-  const checkCardHandler = useCallback(
-    (contentId, isCardChecked) => {
-      if (!isCardChecked) {
-        const filteredCommunities = communitiesToLeave.filter((communityId) => {
-          return contentId !== communityId;
-        });
-        setCommunitiesToLeave(filteredCommunities);
-      } else {
-        setCommunitiesToLeave((prevState) => [...prevState, contentId]);
-      }
-    },
-    [communitiesToLeave]
-  );
-
+  console.log(error);
   return (
     <>
       <AlurakutMenu
         isMenuOpened={isMenuOpened}
-        showMenu={showMenuHandler}
-        userName={userName}
-        id={ownerId}
+        showMenu={onShowMenu}
+        userName={githubName}
+        id={githubId}
       />
       {isMenuOpened && (
-        <Drawer showMenu={showMenuHandler} isMenuOpened={isMenuOpened}>
+        <Drawer showMenu={onShowMenu} isMenuOpened={isMenuOpened}>
           <UserMenu
-            userName={userName}
-            id={userId}
+            userName={githubName}
+            id={githubId}
             width={50}
             height={50}
-            src={`https://github.com/${userName}.png`}
+            src={datoContent.avatar}
           />
         </Drawer>
       )}
@@ -136,65 +137,66 @@ const CommunitiesPage = ({ ownerId, githubUser, page }) => {
         <Grid isMenuOpened={isMenuOpened}>
           <GridItem templateArea="profileArea">
             <Sidebar
-              userName={userName}
-              id={ownerId}
+              userName={githubName}
+              id={githubId}
               width={130}
               height={130}
-              src={`https://github.com/${userName}.png`}
+              src={datoContent.avatar}
             />
           </GridItem>
           <GridItem templateArea="mainArea">
             <Box>
               {isModalOpened && (
-                <Modal showModal={showModalHandler}>
-                  {returnModalContent(modalContent)}
+                <Modal showModal={onShowModal}>
+                  {returnModalContent(modalContentName)}
                 </Modal>
               )}
               <Header>Comunidades</Header>
               <Breadcrumb />
-              <CreateCommunity
-                onClick={() => showModalHandler('COMMUNITY_CREATOR')}
-              >
+              <CreateCommunity onClick={() => onShowModal('COMMUNITY_CREATOR')}>
                 Criar
               </CreateCommunity>
+              {datoContent && datoContent.communities.length !== 0 ? (
+                <>
+                  <PageCount
+                    counters={datoContent.counters}
+                    selectedItems={itemsToDelete}
+                    onShowModal={() => onShowModal('DIALOGBOX')}
+                  />
 
-              <CounterWrapper>
-                <PageCount counters={data.counters} />
-                {communitiesToLeave.length > 0 && (
-                  <ButtonWrapper>
-                    <Badge>{communitiesToLeave.length}</Badge>
-                    <LeaveOutCommunity
-                      onClick={() => showModalHandler('DIALOGBOX')}
-                    >
-                      <MdExitToApp />
-                    </LeaveOutCommunity>
-                  </ButtonWrapper>
-                )}
-              </CounterWrapper>
-              <List>
-                {data.communities.map(({ name, member, thumbnail, id }) => {
-                  return (
-                    <ListItemCommunity key={id}>
-                      <Card
-                        title={name}
-                        bodyContent={`${member} membro(s)`}
-                        width={60}
-                        height={60}
-                        src={thumbnail}
-                        contentId={id}
-                        onCheckCard={checkCardHandler}
-                      />
-                    </ListItemCommunity>
-                  );
-                })}
-              </List>
-              <PageControls
-                requestProcess={status}
-                currentPage={page}
-                userName={userName}
-                userId={userId}
-                lastPage={data.counters.lastPage}
-              />
+                  <List>
+                    {datoContent.communities.map(
+                      ({ name, members, thumbnail, id }) => {
+                        const thumnailValue = thumbnail ? thumbnail.url : null;
+                        return (
+                          <ListItemCommunity key={id}>
+                            <Card
+                              title={name}
+                              bodyContent={`${members.length} membro(s)`}
+                              src={thumnailValue}
+                              contentId={id}
+                              onCheckCard={onCheckCard}
+                            />
+                          </ListItemCommunity>
+                        );
+                      }
+                    )}
+                  </List>
+                  <PageControls
+                    rootPath={rootPath.community}
+                    requestProcess={status}
+                    currentPage={page}
+                    userName={userName}
+                    userId={userId}
+                    lastPage={datoContent.counters.lastPage}
+                    getData={getData}
+                  />
+                </>
+              ) : (
+                <NoContentMessage>
+                  <strong>{githubName}</strong>, you don't have friends yet
+                </NoContentMessage>
+              )}
             </Box>
           </GridItem>
         </Grid>
@@ -210,7 +212,7 @@ const CommunitiesPage = ({ ownerId, githubUser, page }) => {
 export default CommunitiesPage;
 
 export async function getServerSideProps({ query: { page = 1 }, ...context }) {
-  const { isAuthorized, userName, userId } = validateToken(
+  const { isAuthorized, githubName, userId, githubId } = validateToken(
     context.req.headers.cookie
   );
 
@@ -225,8 +227,9 @@ export async function getServerSideProps({ query: { page = 1 }, ...context }) {
 
   return {
     props: {
-      githubUser,
-      ownerId: id,
+      githubName,
+      userId,
+      githubId,
       page: Number(page),
     },
   };

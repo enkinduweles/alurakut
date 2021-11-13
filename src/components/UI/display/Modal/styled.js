@@ -27,14 +27,23 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  padding: 4rem 1.2rem 2rem 1.2rem;
+  padding: 4rem 2rem 2rem 2rem;
   position: absolute;
 
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 60%;
+
+  width: 85%;
   background-color: white;
   z-index: 201;
   display: inline-block;
+
+  @media (min-width: 500px) {
+    width: 65%;
+  }
+  @media (min-width: 860px) {
+    width: 60%;
+    max-width: 55rem;
+  }
 `;

@@ -18,9 +18,11 @@ import PageCount from '../../src/components/Pagination/PageCount';
 import PageControls from '../../src/components/Pagination/PageControls';
 import Modal from '../../src/components/ui/display/Modal/Modal';
 import Spinner from '../../src/components/Spinner/Spinner';
+import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
 
 import { validateToken } from '../../src/utils/auth';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
+import rootPath from '../../src/utils/apiPaths';
 
 import {
   ScrapListItem,
@@ -58,11 +60,23 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
   useEffect(() => {
     if (isFirstLoading) {
       getData({
-        content: 'scrap',
+        content: rootPath.scrap.api,
         queryParams: { userId, page },
       });
     }
   }, [getData, userId, isFirstLoading]);
+
+  useEffect(() => {
+    if (datoContent) {
+      if (datoContent.counters.lastPage < page) {
+        router.push(
+          `/${rootPath.scrap.page}/${githubName}?userId=${userId}${
+            page === 1 ? '' : `&page=${datoContent.counters.lastPage}`
+          }`
+        );
+      }
+    }
+  }, [datoContent, userId, page, githubName]);
 
   const sendScrapHandler = (event) => {
     event.preventDefault();
@@ -75,7 +89,7 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
       };
 
       createData({
-        content: 'scrap',
+        content: rootPath.scrap.api,
         queryParams: { userId },
         body: mountedScrap,
       });
@@ -125,7 +139,7 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
                   <DialogBox
                     onShowModal={onShowModal}
                     onDelete={deleteData}
-                    content="scrap"
+                    rootPath={rootPath.scrap.api}
                     userId={userId}
                     items={itemsToDelete}
                     onCleanItemsToDelete={onCleanItemsToDelete}
@@ -149,50 +163,54 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
             </Box>
 
             <Box>
-              {datoContent.length === 0 && (
-                <p className="noScrap">
-                  <FaSadCry /> you don&apos;t have scraps yet
-                </p>
-              )}
-              <Header>
-                Página de recados de {userName} ({datoContent.scraps.length})
-              </Header>
+              {datoContent && datoContent.scraps.length !== 0 ? (
+                <>
+                  <Header>
+                    Página de recados de {userName} ({datoContent.scraps.length}
+                    )
+                  </Header>
 
-              <PageCount
-                counters={datoContent.counters}
-                selectedItems={itemsToDelete}
-                onShowModal={onShowModal}
-              />
-              {datoContent.length !== 0 && (
-                <ScrapList>
-                  {datoContent.scraps.map(
-                    ({ writer: { name, avatar }, message, id }) => {
-                      return (
-                        <ScrapListItem key={id}>
-                          <Card
-                            title={name}
-                            bodyContent={message}
-                            width={60}
-                            height={60}
-                            src={avatar}
-                            contentId={id}
-                            onCheckCard={onCheckCard}
-                          />
-                        </ScrapListItem>
-                      );
-                    }
+                  <PageCount
+                    counters={datoContent.counters}
+                    selectedItems={itemsToDelete}
+                    onShowModal={onShowModal}
+                  />
+                  {datoContent.length !== 0 && (
+                    <ScrapList>
+                      {datoContent.scraps.map(
+                        ({ writer: { name, avatar }, message, id }) => {
+                          return (
+                            <ScrapListItem key={id}>
+                              <Card
+                                title={name}
+                                bodyContent={message}
+                                width={60}
+                                height={60}
+                                src={avatar}
+                                contentId={id}
+                                onCheckCard={onCheckCard}
+                              />
+                            </ScrapListItem>
+                          );
+                        }
+                      )}
+                    </ScrapList>
                   )}
-                </ScrapList>
+                  <PageControls
+                    rootPath={rootPath.scrap.page}
+                    requestProcess={status}
+                    currentPage={page}
+                    userName={userName}
+                    userId={userId}
+                    lastPage={datoContent.counters.lastPage}
+                    getData={getData}
+                  />
+                </>
+              ) : (
+                <NoContentMessage>
+                  <strong>{githubName}</strong>, you don't have scrap yet
+                </NoContentMessage>
               )}
-              <PageControls
-                rootPath="scraps"
-                requestProcess={status}
-                currentPage={page}
-                userName={userName}
-                userId={userId}
-                lastPage={datoContent.counters.lastPage}
-                getData={getData}
-              />
             </Box>
           </GridItem>
         </Grid>

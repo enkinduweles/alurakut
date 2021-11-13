@@ -4,14 +4,20 @@ import LinkBase from '../ui/navigation/Link/Link';
 
 export const ProfileList = styled(List)`
   display: grid;
-  grid-gap: 8px;
-  grid-template-columns: 1fr 1fr 1fr;
-  max-height: 220px;
+  grid-gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(min-content, 13rem));
+  justify-content: space-between;
+  padding: 0 1rem;
+`;
+
+export const ProfileListItem = styled(ListItem)`
+  padding: 0;
+  margin: 0;
 `;
 
 export const Link = styled(LinkBase)`
   display: inline-block;
-  height: 102px;
+  height: 8.5rem;
   position: relative;
   overflow: hidden;
   border-radius: 8px;
@@ -28,6 +34,16 @@ export const Link = styled(LinkBase)`
     z-index: 1;
     background-image: linear-gradient(0deg, #00000073, transparent);
   }
+`;
+
+export const SeeAll = styled(LinkBase)`
+  margin-top: 1rem;
+  display: inline-block;
+  width: 100%;
+  text-align: right;
+  font-size: 1.6rem;
+  padding-right: 1rem;
+  font-weight: bold;
 `;
 
 export const Label = styled.label`
@@ -47,7 +63,7 @@ export const Label = styled.label`
 `;
 
 export const Header = styled.h3`
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   padding-left: 0.8rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 2rem;
 `;

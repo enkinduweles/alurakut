@@ -14,7 +14,7 @@ sendRequest.use(async (request, response, next) => {
   );
 
   if (isAuthorized) {
-    request.userLoggedIn = { userId, githubId };
+    request.loggedInUser = { userId, githubId };
     next();
     return;
   }

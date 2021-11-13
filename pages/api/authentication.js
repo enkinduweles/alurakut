@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
-import axios from '../../src/utils/axiosConfig';
+import axios from 'axios';
+import axiosCustom from '../../src/utils/axiosConfig';
 import { SiteClient } from 'datocms-client';
 import sendRequest from '../../src/utils/requestHandler';
 
@@ -11,39 +12,37 @@ const USER = '1317096';
 
 sendRequest.post(async (request, response) => {
   let token = null;
-  const userName = request.body.userName;
+
+  const { userName } = request.body;
 
   if (Object.keys(userName).length !== 0) {
-    const responseGithub = await fetch(
+    const { data: githubResponse } = await axios.get(
       `https://api.github.com/users/${userName}`
     );
 
-    if (!responseGithub.ok) {
-      const customError = new Error('User not found');
-      customError.status = responseGithub.status;
-
-      throw customError;
-    }
-
-    const parsedData = await responseGithub.json();
-
-    const { data } = await axios.post('/', {
+    const { data: datoResponse } = await axiosCustom.post('/', {
       query: `
     query {
-      user(filter: {githubId: {eq: "${parsedData.id}"}}) {
+      user(filter: {githubId: {eq: "${githubResponse.id}"}}) {
         id
       }
     }
     `,
     });
 
-    let slug = null;
-
-    if (data.data.user) {
-      slug = data.data.user.id;
+    if (datoResponse.errors) {
+      throw { status: 400 };
+    }
+    console.log(githubResponse);
+    if (datoResponse.data.user) {
+      const slug = datoResponse.data.user.id;
 
       token = jwt.sign(
-        { githubName: parsedData.login, githubId: parsedData.id, userId: slug },
+        {
+          githubName: githubResponse.login,
+          githubId: githubResponse.id,
+          userId: slug,
+        },
         process.env.SECRET,
         {
           expiresIn: '1h',
@@ -63,21 +62,24 @@ sendRequest.post(async (request, response) => {
     } else {
       const newUser = await client.items.create({
         itemType: USER,
-        name: parsedData.login,
-        avatar: `https://github.com/${parsedData.login}.png`,
-        githubId: parsedData.id.toString(),
-        location: parsedData.location,
-        statusMessage: parsedData.bio,
+        name: githubResponse.login,
+        avatar: `https://github.com/${githubResponse.login}.png`,
+        githubId: githubResponse.id.toString(),
+        location: githubResponse.location,
+        statusMessage: githubResponse.bio,
         friends: null,
         scraps: null,
         communities: null,
+        sexy: 1,
+        nice: 1,
+        reliable: 1,
       });
 
       token = jwt.sign(
         {
-          githubName: parsedData.login,
+          githubName: githubResponse.login,
           userId: newUser.id,
-          githubId: parsedData.id,
+          githubId: githubResponse.id,
         },
         process.env.SECRET,
         {

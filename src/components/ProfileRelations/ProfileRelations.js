@@ -1,12 +1,24 @@
 import React from 'react';
-import Image from 'next/image';
 
-import SeeAllLink from '../ui/navigation/Link/Link';
-import { ListItem } from '../ui/display/List/styled';
-import Cover from '../ui/display/Avatar/Avatar';
-import { ProfileList, Link, Label, Header } from './styled';
+import NextImage from '../NextImage/NextImage';
+import {
+  ProfileList,
+  Link,
+  Label,
+  Header,
+  ProfileListItem,
+  SeeAll,
+} from './styled';
 
-const ProfileRelations = ({ title, data, destination, type, totalData }) => {
+const ProfileRelations = ({
+  title,
+  data,
+  rootPath,
+  type,
+  total,
+  userName,
+  userId,
+}) => {
   return (
     <>
       <Header className="smallTitle">
@@ -15,32 +27,28 @@ const ProfileRelations = ({ title, data, destination, type, totalData }) => {
 
       <ProfileList>
         {data.map((item) => {
+          const src = item.thumbnail ? item.thumbnail.url : item.avatar;
           return (
-            <ListItem key={item.id}>
+            <ProfileListItem key={item.id}>
               <Link
-                href={`/${destination}/${item.name}${
+                href={`/${rootPath}/${item.name}${
                   title.toLowerCase() === 'communities'
                     ? `?id=${item.id}`
                     : `?userId=${item.githubId}`
                 } `}
               >
-                <Cover
-                  layout="fill"
-                  src={item.avatar}
-                  alt={item.name}
-                  type={type}
-                />
+                <NextImage src={src} alt={item.name} />
 
                 <Label>{item.name}</Label>
               </Link>
-            </ListItem>
+            </ProfileListItem>
           );
         })}
       </ProfileList>
-      {totalData > 6 && (
-        <SeeAllLink className="boxLink" href="#">
+      {total > 6 && (
+        <SeeAll href={`/${rootPath}/${userName}?userId=${userId}`}>
           See All
-        </SeeAllLink>
+        </SeeAll>
       )}
     </>
   );

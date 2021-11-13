@@ -1,14 +1,19 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import Image from 'next/image';
+import axios from 'axios';
 
+import NextImage from '../../../../components/NextImage/NextImage';
 import Link from '../../../../components/ui/navigation/Link/Link';
-import { Logo, AlurakutMenuWrapper } from './styled';
+import { Logo, AlurakutMenuWrapper, LogoutButton } from './styled';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
 const AlurakutMenu = ({ userName, showMenu, isMenuOpened, id }) => {
+  const logout = () => {
+    axios.post('/api/logout');
+  };
+
   return (
     <AlurakutMenuWrapper isMenuOpen={isMenuOpened}>
       <div className="container">
@@ -33,18 +38,19 @@ const AlurakutMenu = ({ userName, showMenu, isMenuOpened, id }) => {
             </Link>
           ))}
         </nav>
-
         <nav>
-          <a href={`/logout`}>Sair</a>
+          <LogoutButton outline onClick={logout}>
+            Sair
+          </LogoutButton>
           <div>
             <input placeholder="Pesquisar no Orkut" />
           </div>
         </nav>
 
-        <button onClick={showMenu}>
+        <button onClick={showMenu} className="mobileMenu">
           {!isMenuOpened && (
             <div>
-              <Image
+              <NextImage
                 layout="fill"
                 src={`${BASE_URL}/icons/menu-closed.svg?v=${v}`}
                 alt=""

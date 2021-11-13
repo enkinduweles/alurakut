@@ -1,10 +1,10 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from '../ui/navigation/Link/Link';
 import Avatar from '../ui/display/Avatar/Avatar';
 import { List } from '../ui/display/List/styled';
 import { Box } from '../ui/layout/Box/styled';
 import { Divider } from '../ui/display/Divider/styled';
+import NextImage from '../NextImage/NextImage';
 
 import friendsIcon from '.././../../public/friends_icon.svg';
 import communityIcon from '.././../../public/community_icon.svg';
@@ -18,26 +18,11 @@ import {
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 
-const Sidebar = ({
-  userName,
-  id,
-  layout,
-  width,
-  height,
-  src,
-  className,
-  slug,
-}) => {
+const Sidebar = ({ userName, id, width, height, src, className }) => {
   return (
     <Box className={className}>
       <UserWrapper>
-        <Avatar
-          layout={layout}
-          alt={userName}
-          width={width}
-          height={height}
-          src={src}
-        />
+        <Avatar alt={userName} src={src} width={width} height={height} />
         <UsernameLink href={`https://github.com/${userName}`}>
           @{userName}
         </UsernameLink>
@@ -48,8 +33,7 @@ const Sidebar = ({
           <NavigationItem>
             <Link href={`/profile/${userName}?id=${id}`}>
               <IconWrapper>
-                <Image
-                  layout="intrinsic"
+                <NextImage
                   src={`${BASE_URL}/icons/user.svg`}
                   alt=""
                   width={15}
@@ -62,8 +46,7 @@ const Sidebar = ({
           <NavigationItem>
             <Link href={`/scraps/${userName}?userId=${id}`}>
               <IconWrapper>
-                <Image
-                  layout="intrinsic"
+                <NextImage
                   src={`${BASE_URL}/icons/book.svg`}
                   alt=""
                   width={15}
@@ -77,8 +60,7 @@ const Sidebar = ({
           <NavigationItem>
             <Link href="/">
               <IconWrapper>
-                <Image
-                  layout="intrinsic"
+                <NextImage
                   src={`${BASE_URL}/icons/camera.svg`}
                   alt=""
                   width={15}
@@ -91,8 +73,7 @@ const Sidebar = ({
           <NavigationItem>
             <Link href="/">
               <IconWrapper>
-                <Image
-                  layout="intrinsic"
+                <NextImage
                   src={`${BASE_URL}/icons/sun.svg`}
                   alt=""
                   width={15}
@@ -106,13 +87,7 @@ const Sidebar = ({
           <NavigationItem>
             <Link href={`/friends/${userName}?userId=${id}`}>
               <IconWrapper>
-                <Image
-                  layout="intrinsic"
-                  src={friendsIcon}
-                  alt=""
-                  width={15}
-                  height={15}
-                />
+                <NextImage src={friendsIcon} alt="" width={15} height={15} />
               </IconWrapper>
               Amigos
             </Link>
@@ -120,13 +95,7 @@ const Sidebar = ({
           <NavigationItem>
             <Link href={`/communities/${userName}?userId=${id}`}>
               <IconWrapper>
-                <Image
-                  layout="intrinsic"
-                  src={communityIcon}
-                  alt=""
-                  width={15}
-                  height={15}
-                />
+                <NextImage src={communityIcon} alt="" width={15} height={15} />
               </IconWrapper>
               Comunidades
             </Link>

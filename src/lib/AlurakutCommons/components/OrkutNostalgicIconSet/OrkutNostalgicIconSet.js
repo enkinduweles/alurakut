@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import NextImage from '../../../../components/NextImage/NextImage';
 import Link from '../../../../components/ui/navigation/Link/Link';
 
 import {
@@ -36,8 +36,7 @@ const OrkutNostalgicIconSet = ({
                 style={{ gridArea: 'number' }}
               >
                 <div className="OrkutNostalgicIconSet__iconSample">
-                  <Image
-                    layout="fill"
+                  <NextImage
                     key={`orkut__icon_set__${slug}_img`}
                     src={`https://alurakut.vercel.app/icons/${icon}.svg`}
                     alt=""
@@ -78,8 +77,7 @@ const OrkutNostalgicIconSet = ({
                       }}
                       onClick={() => onChangePersonalityStatus(slug, index + 1)}
                     >
-                      <Image
-                        layout="fill"
+                      <NextImage
                         src={`https://alurakut.vercel.app/icons/${icon}.svg`}
                         alt=""
                       />

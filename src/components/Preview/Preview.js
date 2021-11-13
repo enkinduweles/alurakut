@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 import Avatar from '../ui/display/Avatar/Avatar';
 import Input from '../ui/inputs/Input/Input';
@@ -22,49 +23,48 @@ const Preview = ({
   currentPage,
   error,
   status,
+  rootPath,
 }) => {
   const [foundUser, setFoundUser] = useState({});
   const [username, setUsername] = useState('');
 
   const { query } = useRouter();
-  const { id: userId } = query;
+  const { userId } = query;
 
   useEffect(() => {
-    if (!error && status === 'pending') {
+    if (error) {
+      setFoundUser({});
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!error && status === 'completed') {
       showModal();
     }
-  }, [showModal, error, status]);
+  }, [error, status, showModal]);
 
-  const fetchData = (event) => {
+  const fetchData = async (event) => {
     event.preventDefault();
+    if (username.trim() !== '') {
+      try {
+        const { data: responseData } = await axios.get(
+          `https://api.github.com/users/${username}`
+        );
 
-    const getUser = async () => {
-      const response = await fetch(`https://api.github.com/users/${username}`);
+        const { name, id, login, location } = responseData;
 
-      if (!response.ok) {
-        console.log('User not found');
-        return;
+        const foundUser = {
+          name: name ? name : login,
+          githubId: id.toString(),
+          avatar: `https://github.com/${username}.png`,
+          location,
+        };
+
+        setFoundUser(foundUser);
+        cleanErrors();
+      } catch (error) {
+        setFoundUser({ error: true });
       }
-
-      const { name, id, login, location } = await response.json();
-
-      const data = {
-        name: name ? name : login,
-        githubId: id.toString(),
-        avatar: `https://github.com/${username}.png`,
-        location,
-      };
-
-      setFoundUser(data);
-      cleanErrors();
-    };
-
-    try {
-      if (username.trim() !== '') {
-        getUser();
-      }
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -75,7 +75,7 @@ const Preview = ({
 
   const onAddFriend = () => {
     addFriendHandler({
-      content: 'friends',
+      content: rootPath,
       queryParams: {
         userId,
         page: currentPage,
@@ -86,17 +86,11 @@ const Preview = ({
 
   return (
     <>
-      {Object.keys(foundUser).length !== 0 ? (
+      {Object.keys(foundUser).length !== 0 && !foundUser.error ? (
         <>
           <PreviewWrapper>
-            <Avatar
-              src={`https://github.com/${username}.png`}
-              height="100"
-              width="100"
-            />
+            <Avatar src={foundUser.avatar} height="100" width="100" />
             <Username>{foundUser.name}</Username>
-
-            {error && <WarningMessage>{error.message}</WarningMessage>}
           </PreviewWrapper>
           <Divider />
           <ControlsWrapper>
@@ -117,6 +111,7 @@ const Preview = ({
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
+          {foundUser.error && <WarningMessage>User not found</WarningMessage>}
           <SearchButton disabled={!username.length > 0}>Pesquisar</SearchButton>
         </SearchForm>
       )}

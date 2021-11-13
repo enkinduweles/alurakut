@@ -2,11 +2,13 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 
 import { Button } from '../src/components/ui/inputs/Button/styled';
 import { Grid, GridItem } from '../src/components/ui/layout/Grid/styled';
 import Link from '../src/components/ui/navigation/Link/Link';
 import Input from '../src/components/ui/inputs/Input/Input';
+import NextImage from '../src/components/NextImage/NextImage';
 
 import { validateToken } from '../src/utils/auth';
 
@@ -32,21 +34,17 @@ const LoginScreen = () => {
 
     const toastId = toast.loading('Loading...');
 
-    const response = await fetch('/api/authentication', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userName }),
-    });
+    try {
+      await axios.post('/api/authentication', {
+        userName,
+      });
 
-    const { error } = await response.json();
-
-    if (error) {
-      toast.error('User not found', { id: toastId });
-    } else {
       toast.remove();
       router.push('/');
+    } catch (error) {
+      const { data: message } = error.response;
+
+      toast.error(message, { id: toastId });
     }
   };
 
@@ -56,10 +54,11 @@ const LoginScreen = () => {
         <GridItem templateArea="logoArea" as="section">
           <DescribeWrapper>
             <LogoWrapper>
-              <Image
+              <NextImage
                 src="https://alurakut.vercel.app/logo.svg"
                 alt="Logo"
                 layout="fill"
+                priority
               />
             </LogoWrapper>
 
