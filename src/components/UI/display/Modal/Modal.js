@@ -24,7 +24,7 @@ const Modal = ({ children, showModal }) => {
     return () => {
       document.removeEventListener('click', overlayClickHandler);
     };
-  }, []);
+  }, [showModal]);
 
   useEffect(() => {
     console.log('Render cycle finished Modal.js');

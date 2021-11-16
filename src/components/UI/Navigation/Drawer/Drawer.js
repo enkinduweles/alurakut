@@ -24,7 +24,7 @@ const Drawer = ({ children, showMenu }) => {
     return () => {
       document.removeEventListener('click', overlayClickHandler);
     };
-  }, []);
+  }, [showMenu]);
 
   useEffect(() => {
     setActiveTransition(true);

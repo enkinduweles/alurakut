@@ -64,7 +64,7 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
         queryParams: { userId, page },
       });
     }
-  }, [getData, userId, isFirstLoading]);
+  }, [getData, userId, isFirstLoading, page]);
 
   useEffect(() => {
     if (datoContent) {
@@ -76,7 +76,7 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
         );
       }
     }
-  }, [datoContent, userId, page, githubName]);
+  }, [datoContent, userId, page, githubName, router]);
 
   const sendScrapHandler = (event) => {
     event.preventDefault();
@@ -207,7 +207,7 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
                 </>
               ) : (
                 <NoContentMessage>
-                  <strong>{githubName}</strong>, you don't have scrap yet
+                  <strong>{githubName}</strong>, you don&apos;t have scrap yet
                 </NoContentMessage>
               )}
             </Box>

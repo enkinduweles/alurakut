@@ -75,7 +75,7 @@ const FriendsPage = ({ githubName, userId, githubId, page }) => {
         );
       }
     }
-  }, [datoContent, userId, page, githubName]);
+  }, [datoContent, userId, page, githubName, router]);
 
   const returnModalContent = (componentName) => {
     switch (componentName) {
@@ -191,7 +191,7 @@ const FriendsPage = ({ githubName, userId, githubId, page }) => {
                 </>
               ) : (
                 <NoContentMessage>
-                  <strong>{githubName}</strong>, you don't have friends yet
+                  <strong>{githubName}</strong>, you don&apos;t have friends yet
                 </NoContentMessage>
               )}
             </Box>
