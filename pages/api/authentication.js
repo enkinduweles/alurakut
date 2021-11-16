@@ -16,6 +16,7 @@ sendRequest.post(async (request, response) => {
 
   const { userName } = request.body;
 
+  console.log(userName);
   if (userName && Object.keys(userName).length !== 0) {
     const { data: githubResponse } = await axios.get(
       `https://api.github.com/users/${userName}`
@@ -37,6 +38,8 @@ sendRequest.post(async (request, response) => {
     }
 
     if (datoResponse.data.user) {
+      console.log(datoResponse.data.user);
+
       const slug = datoResponse.data.user.id;
 
       token = jwt.sign(
@@ -102,6 +105,7 @@ sendRequest.post(async (request, response) => {
       );
 
       response.status(201).json({ error: null });
+      return;
     }
   }
 
