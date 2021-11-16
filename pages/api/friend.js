@@ -1,6 +1,6 @@
 import { SiteClient } from 'datocms-client';
 
-import axiosCustomCustom from '../../src/utils/axiosConfig';
+import axiosCustom from '../../src/utils/axiosConfig';
 import sendRequest from '../../src/utils/requestHandler';
 import { validateToken } from '../../src/utils/auth';
 
