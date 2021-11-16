@@ -53,7 +53,7 @@ sendRequest
     if (userId === loggedInUser.userId) {
       const { data: responseData } = await axiosCustom.post('/', {
         query: `query {
-        users(filter: {id: {eq: "${userId}"}}) {
+        user(filter: {id: {eq: "${userId}"}}) {
           id
         }
       }`,
@@ -72,6 +72,7 @@ sendRequest
         });
       }
       response.end();
+      return;
     }
 
     throw { status: 403 };
