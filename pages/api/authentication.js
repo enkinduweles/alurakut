@@ -64,6 +64,7 @@ sendRequest.post(async (request, response) => {
       );
 
       response.json({ error: null });
+      return;
     } else {
       const newUser = await client.items.create({
         itemType: USER_MODEL,
