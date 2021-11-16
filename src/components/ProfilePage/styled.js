@@ -11,6 +11,7 @@ export const HeaderWrapper = styled.div`
 
 export const Header = styled.h2`
   font-size: 2rem;
+  margin-bottom: 1rem;
 `;
 
 export const Input = styled(InputBase)`

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import Link from '../ui/navigation/Link/Link';
 import Avatar from '../ui/display/Avatar/Avatar';
 import { List } from '../ui/display/List/styled';
@@ -19,6 +20,11 @@ import {
 const BASE_URL = 'http://alurakut.vercel.app/';
 
 const Sidebar = ({ userName, id, width, height, src, className }) => {
+  const router = useRouter();
+  const logout = async () => {
+    await axios.post('/api/logout');
+    router.replace('/login');
+  };
   return (
     <Box className={className}>
       <UserWrapper>
@@ -31,7 +37,7 @@ const Sidebar = ({ userName, id, width, height, src, className }) => {
       <nav>
         <List>
           <NavigationItem>
-            <Link href={`/profile/${userName}?id=${id}`}>
+            <Link href={`/profile/${userName}?userId=${id}`}>
               <IconWrapper>
                 <NextImage
                   src={`${BASE_URL}/icons/user.svg`}

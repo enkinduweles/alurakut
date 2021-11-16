@@ -1,12 +1,12 @@
 import { SiteClient } from 'datocms-client';
+
+import axiosCustom from '../../src/utils/axiosConfig';
 import sendRequest from '../../src/utils/requestHandler';
-import axios from '../../src/utils/axiosConfig';
 import { validateToken } from '../../src/utils/auth';
 
 const TOKEN = process.env.PRIVATE_KEY;
 const client = new SiteClient(TOKEN);
 
-const USER = '1317096';
 const COMMUNITY_MODEL = '975326';
 
 sendRequest
@@ -20,15 +20,15 @@ sendRequest
       next();
       return;
     }
-    const error = { statusCode: 401 };
-    throw error;
+
+    throw { status: 401 };
   })
   .get(async (request, response) => {
     const { userId, limitBy, page = 1 } = request.query;
 
     const start = page ? (page - 1) * limitBy : 0;
 
-    const { data: responseData } = await axios.post('/', {
+    const { data: responseData } = await axiosCustom.post('/', {
       query: `query {
         user(filter: {id: {eq: "${userId}"}}) {
           avatar
@@ -50,6 +50,7 @@ sendRequest
     });
 
     if (responseData.errors) {
+      console.log(responseData.errors);
       const error = new Error('Ops something went wrong');
       error.status = 400;
 
@@ -84,7 +85,7 @@ sendRequest
     if (userId === loggedInUser.userId) {
       const { body } = request;
 
-      const { data: responseData } = await axios.post('/', {
+      const { data: responseData } = await axiosCustom.post('/', {
         query: `query {
           allCommunities(filter: {name: {matches: {pattern: "${body.name}"}}}) {
             id
@@ -102,7 +103,7 @@ sendRequest
         throw { status: 400, message: 'Community already exist' };
       }
 
-      const { data: communitiesData } = await axios.post('/', {
+      const { data: communitiesData } = await axiosCustom.post('/', {
         query: `query {
           user(filter: {id: {eq: "${userId}"}}) {
             communities{
@@ -115,7 +116,7 @@ sendRequest
       let thumbnail = {};
 
       if (!body.thumbnail.uploadId) {
-        const { data: defaultThumbnail } = await axios.post('/', {
+        const { data: defaultThumbnail } = await axiosCustom.post('/', {
           query: `query {
             allUploads(filter: {tags: {contains: "community"}}) {
               id
@@ -149,7 +150,7 @@ sendRequest
       return;
     }
 
-    throw { statusCode: 403 };
+    throw { status: 403 };
   })
   .delete(async (request, response) => {
     const { loggedInUser } = request;
@@ -166,7 +167,7 @@ sendRequest
       return;
     }
 
-    throw { statusCode: 403 };
+    throw { status: 403 };
   });
 
 export default sendRequest;

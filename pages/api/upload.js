@@ -1,6 +1,7 @@
-import { SiteClient } from 'datocms-client';
-import sendRequest from '../../src/utils/requestHandler';
 import formidable from 'formidable';
+import { SiteClient } from 'datocms-client';
+
+import sendRequest from '../../src/utils/requestHandler';
 
 export const config = {
   api: {
@@ -12,34 +13,39 @@ const form = formidable();
 
 sendRequest
   .use(async (req, res, next) => {
-    form.on('fileBegin', (fileName, file) => {
-      console.log(fileName);
-      console.log(file);
-      file.path = `${form.uploadDir}\\${file.name}`;
-    });
+    const { isAuthorized } = validateToken(request.headers.cookie);
 
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        next(err);
-        return;
-      }
-      console.log(files);
-      console.log(fields);
-      const { name, size, path } = files.file;
+    if (isAuthorized) {
+      form.on('fileBegin', (fileName, file) => {
+        file.path = `${form.uploadDir}\\${file.name}`;
+      });
 
-      const uploadImg = {
-        name,
-        size,
-        filePath: path,
-      };
+      form.parse(req, (err, fields, files) => {
+        if (err) {
+          next(err);
+          return;
+        }
 
-      req.uploadedFile = uploadImg;
-      next();
-    });
+        const { name, size, path } = files.file;
+
+        const uploadImg = {
+          name,
+          size,
+          filePath: path,
+        };
+
+        req.uploadedFile = uploadImg;
+        next();
+      });
+
+      return;
+    }
+
+    throw { status: 401 };
   })
   .post(async (req, res) => {
-    console.log(req.uploadedFile);
     const { filePath } = req.uploadedFile;
+
     const TOKEN = process.env.PRIVATE_KEY;
     const client = new SiteClient(TOKEN);
 

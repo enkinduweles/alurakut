@@ -1,14 +1,14 @@
-import Image from 'next/image';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import Image from 'next/image';
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
+import Input from '../src/components/ui/inputs/Input/Input';
+import Link from '../src/components/ui/navigation/Link/Link';
+import NextImage from '../src/components/NextImage/NextImage';
 import { Button } from '../src/components/ui/inputs/Button/styled';
 import { Grid, GridItem } from '../src/components/ui/layout/Grid/styled';
-import Link from '../src/components/ui/navigation/Link/Link';
-import Input from '../src/components/ui/inputs/Input/Input';
-import NextImage from '../src/components/NextImage/NextImage';
 
 import { validateToken } from '../src/utils/auth';
 

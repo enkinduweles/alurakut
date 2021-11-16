@@ -1,21 +1,22 @@
-import jwt from 'jsonwebtoken';
-import cookie from 'cookie';
 import axios from 'axios';
-import axiosCustom from '../../src/utils/axiosConfig';
+import cookie from 'cookie';
+import jwt from 'jsonwebtoken';
 import { SiteClient } from 'datocms-client';
+
+import axiosCustom from '../../src/utils/axiosConfig';
 import sendRequest from '../../src/utils/requestHandler';
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const client = new SiteClient(PRIVATE_KEY);
 
-const USER = '1317096';
+const USER_MODEL = '1317096';
 
 sendRequest.post(async (request, response) => {
   let token = null;
 
   const { userName } = request.body;
 
-  if (Object.keys(userName).length !== 0) {
+  if (userName && Object.keys(userName).length !== 0) {
     const { data: githubResponse } = await axios.get(
       `https://api.github.com/users/${userName}`
     );
@@ -31,9 +32,10 @@ sendRequest.post(async (request, response) => {
     });
 
     if (datoResponse.errors) {
+      console.log(datoResponse.errors);
       throw { status: 400 };
     }
-    console.log(githubResponse);
+
     if (datoResponse.data.user) {
       const slug = datoResponse.data.user.id;
 
@@ -61,12 +63,15 @@ sendRequest.post(async (request, response) => {
       response.json({ error: null });
     } else {
       const newUser = await client.items.create({
-        itemType: USER,
+        itemType: USER_MODEL,
         name: githubResponse.login,
         avatar: `https://github.com/${githubResponse.login}.png`,
         githubId: githubResponse.id.toString(),
-        location: githubResponse.location,
         statusMessage: githubResponse.bio,
+        profession: '',
+        city: '',
+        state: '',
+        contact: '',
         friends: null,
         scraps: null,
         communities: null,
@@ -99,6 +104,8 @@ sendRequest.post(async (request, response) => {
       response.status(201).json({ error: null });
     }
   }
+
+  throw { status: 400, message: 'You should place a valid github user' };
 });
 
 export default sendRequest;

@@ -67,7 +67,6 @@ export const useDatoCMS = () => {
     }
 
     fullQueryParams = fullQueryParams.slice(0, fullQueryParams.length - 1);
-    console.log(fullQueryParams);
 
     try {
       dispatch({ type: 'SEND' });
@@ -113,7 +112,6 @@ export const useDatoCMS = () => {
       dispatch({ type: 'SUCCESS', data });
       dispatch({ type: 'DONE' });
     } catch (error) {
-      console.log(error.response);
       const { data, status } = error.response;
       dispatch({ type: 'FAIL', error: { message: data, status } });
       dispatch({ type: 'DONE' });

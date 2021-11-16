@@ -51,13 +51,13 @@ const Preview = ({
           `https://api.github.com/users/${username}`
         );
 
-        const { name, id, login, location } = responseData;
+        const { name, id, login, bio } = responseData;
 
         const foundUser = {
           name: name ? name : login,
           githubId: id.toString(),
           avatar: `https://github.com/${username}.png`,
-          location,
+          statusMessage: bio,
         };
 
         setFoundUser(foundUser);

@@ -25,7 +25,7 @@ export default nextConnect({
         responseError.message = 'You must have a valid credential';
         break;
       case 400:
-        responseError.message = error.message;
+        responseError.message = error.message || 'Sorry, something went wrong!';
         break;
       default:
         responseError.message = 'Sorry, something went wrong!';

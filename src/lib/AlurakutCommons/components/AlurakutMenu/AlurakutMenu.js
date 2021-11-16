@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -6,12 +7,16 @@ import NextImage from '../../../../components/NextImage/NextImage';
 import Link from '../../../../components/ui/navigation/Link/Link';
 import { Logo, AlurakutMenuWrapper, LogoutButton } from './styled';
 
+// import {logout} from '../../../../utils/auth'
+
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
 const AlurakutMenu = ({ userName, showMenu, isMenuOpened, id }) => {
-  const logout = () => {
-    axios.post('/api/logout');
+  const router = useRouter();
+  const logout = async () => {
+    await axios.post('/api/logout');
+    router.replace('/login');
   };
 
   return (

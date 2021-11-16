@@ -1,12 +1,13 @@
 import { SiteClient } from 'datocms-client';
+
+import axiosCustomCustom from '../../src/utils/axiosConfig';
 import sendRequest from '../../src/utils/requestHandler';
-import axios from '../../src/utils/axiosConfig';
 import { validateToken } from '../../src/utils/auth';
 
 const TOKEN = process.env.PRIVATE_KEY;
 const client = new SiteClient(TOKEN);
 
-const USER = '1317096';
+const USER_MODEL = '1317096';
 
 sendRequest
   .use(async (request, response, next) => {
@@ -19,22 +20,24 @@ sendRequest
       next();
       return;
     }
-    const error = { statusCode: 401 };
-    throw error;
+
+    throw { status: 401 };
   })
   .get(async (request, response) => {
     const { userId, limitBy, page = 1, items = '' } = request.query;
     const start = page ? (page - 1) * limitBy : 0;
 
-    const { data: responseData } = await axios.post('/', {
+    const { data: responseData } = await axiosCustom.post('/', {
       query: `query {
+        user(filter: {id: {eq: "${userId}"}}) {
+          avatar
+        }
         allUsers(filter: {friends: {allIn: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
-  
           id
           githubId
           name
           avatar
-          location
+          state
         
       }
         _allUsersMeta(filter: {friends: {allIn: "${userId}"}}) {
@@ -44,14 +47,12 @@ sendRequest
     });
 
     if (responseData.errors) {
-      const error = new Error('Ops something went wrong');
-      error.status = 400;
-
-      throw error;
+      console.log(responseData.errors);
+      throw { status: 400 };
     }
-    console.log(responseData.data.allUsers);
 
-    const { allUsers, _allUsersMeta } = responseData.data;
+    const { allUsers, _allUsersMeta, user } = responseData.data;
+    const avatar = user.avatar;
     const friends = allUsers;
     const total = _allUsersMeta.count;
     const lastPage = Math.ceil(total / limitBy);
@@ -60,6 +61,7 @@ sendRequest
       page * limitBy < total ? firstCountMark + friends.length - 1 : total;
 
     const data = {
+      avatar,
       friends,
       counters: {
         total,
@@ -79,12 +81,13 @@ sendRequest
       const { githubId } = request.body;
 
       if (loggedInUser.githubId === githubId) {
-        const error = new Error('Why do you want add yourself as a friend?');
-        error.status = 400;
-        throw error;
+        throw {
+          status: 400,
+          message: 'Why do you want add yourself as a friend?',
+        };
       }
 
-      const { data: responseData } = await axios.post('/', {
+      const { data: responseData } = await axiosCustom.post('/', {
         query: `query {
       allUsers(filter: {githubId: {eq: "${githubId}"}}) {
         id
@@ -136,9 +139,7 @@ sendRequest
         });
 
         if (foundUser) {
-          const error = new Error('You already added this user!');
-          error.statusCode = 400;
-          throw error;
+          throw { status: 400, message: 'You already added this user!' };
         } else {
           await updateListFriends(
             user.friends,
@@ -153,9 +154,11 @@ sendRequest
       }
 
       const newUser = await client.items.create({
-        itemType: USER,
+        itemType: USER_MODEL,
         ...request.body,
-        statusMessage: 'Hi there',
+        city: '',
+        state: '',
+        profession: '',
         sexy: 1,
         nice: 1,
         reliable: 1,
@@ -175,7 +178,7 @@ sendRequest
       return;
     }
 
-    throw { statusCode: 403 };
+    throw { status: 403 };
   })
 
   .delete(async (request, response) => {
@@ -193,7 +196,7 @@ sendRequest
       return;
     }
 
-    throw { statusCode: 403 };
+    throw { status: 403 };
   });
 
 export default sendRequest;

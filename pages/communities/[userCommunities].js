@@ -1,38 +1,38 @@
+import { Toaster } from 'react-hot-toast';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Toaster } from 'react-hot-toast';
 
-import { Box } from '../../src/components/ui/layout/Box/styled';
-import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
 import Breadcrumb from '../../src/components/Breadcrumb/Breadcrumb';
 import Card from '../../src/components/ui/display/Card/Card';
-import { List } from '../../src/components/ui/display/List/styled';
+import CommunityCreator from '../../src/components/CommunityCreator/CommunityCreator';
+import DialogBox from '../../src/components/DialogBox/DialogBox';
 import Drawer from '../../src/components/ui/navigation/Drawer/Drawer';
 import Modal from '../../src/components/ui/display/Modal/Modal';
 import PageControls from '../../src/components/Pagination/PageControls';
 import PageCount from '../../src/components/Pagination/PageCount';
 import Sidebar from '../../src/components/Sidebar/Sidebar';
-import { UserMenu } from '../../src/components/UserMenu/styled';
-import { AlurakutMenu } from '../../src/lib/AlurakutCommons/index';
 import Spinner from '../../src/components/Spinner/Spinner';
-import CommunityCreator from '../../src/components/CommunityCreator/CommunityCreator';
-import DialogBox from '../../src/components/DialogBox/DialogBox';
+import { AlurakutMenu } from '../../src/lib/AlurakutCommons/index';
+import { Box } from '../../src/components/ui/layout/Box/styled';
+import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
+import { List } from '../../src/components/ui/display/List/styled';
 import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
+import { UserMenu } from '../../src/components/UserMenu/styled';
 
-import { validateToken } from '../../src/utils/auth';
+import rootPath from '../../src/utils/apiPaths';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
+import { usePageOperations } from '../../src/hooks/usePageOperations';
+import { validateToken } from '../../src/utils/auth';
 
 import {
-  Header,
   Badge,
   ButtonWrapper,
-  CounterWrapper,
   CreateCommunity,
+  CounterWrapper,
+  Header,
   LeaveOutCommunity,
   ListItemCommunity,
 } from '../../src/components/CommunitiesPage/styled';
-import rootPath from '../../src/utils/apiPaths';
-import { usePageOperations } from '../../src/hooks/usePageOperations';
 
 const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
   const router = useRouter();
@@ -113,7 +113,7 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
         throw new Error('You must provide a valid component name');
     }
   };
-  console.log(error);
+
   return (
     <>
       <AlurakutMenu

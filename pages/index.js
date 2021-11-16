@@ -1,27 +1,27 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/router';
 import { FaSadCry } from 'react-icons/fa';
 import { Toaster } from 'react-hot-toast';
+import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { Box } from '../src/components/ui/layout/Box/styled';
-import { Grid, GridItem } from '../src/components/ui/layout/Grid/styled';
-import { Divider } from '../src/components/ui/display/Divider/styled';
 import Drawer from '../src/components/ui/navigation/Drawer/Drawer';
+import ProfileRelations from '../src/components/ProfileRelations/ProfileRelations';
 import Sidebar from '../src/components/Sidebar/Sidebar';
+import Spinner from '../src/components/Spinner/Spinner';
+import { Box } from '../src/components/ui/layout/Box/styled';
+import { Divider } from '../src/components/ui/display/Divider/styled';
+import { Grid, GridItem } from '../src/components/ui/layout/Grid/styled';
 import { NoContentMessage } from '../src/components/NoContentMessage/styled';
 import { UserMenu } from '../src/components/UserMenu/styled';
-import ProfileRelations from '../src/components/ProfileRelations/ProfileRelations';
-import Spinner from '../src/components/Spinner/Spinner';
 
 import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
 } from '../src/lib/AlurakutCommons';
 
-import { validateToken } from '../src/utils/auth';
+import rootPath from '../src/utils/apiPaths';
 import { useDatoCMS } from '../src/hooks/useDatoCMS';
 import { usePageOperations } from '../src/hooks/usePageOperations';
-import rootPath from '../src/utils/apiPaths';
+import { validateToken } from '../src/utils/auth';
 
 const Home = ({ githubName, githubId, userId }) => {
   const {
@@ -31,8 +31,6 @@ const Home = ({ githubName, githubId, userId }) => {
     isFirstLoading,
     error,
   } = useDatoCMS();
-  console.log(datoContent);
-  console.log(error);
 
   const { onShowMenu, isMenuOpened } = usePageOperations();
 

@@ -1,36 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Toaster } from 'react-hot-toast';
 import { FaSadCry } from 'react-icons/fa';
+import { Toaster } from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
 import Breadcrumb from '../../src/components/Breadcrumb/Breadcrumb';
-import { Box } from '../../src/components/ui/layout/Box/styled';
 import Card from '../../src/components/ui/display/Card/Card';
-import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
-import { List as ScrapList } from '../../src/components/ui/display/List/styled';
-import { UserMenu } from '../../src/components/UserMenu/styled';
+import DialogBox from '../../src/components/DialogBox/DialogBox';
 import Drawer from '../../src/components/ui/navigation/Drawer/Drawer';
 import Input from '../../src/components/ui/inputs/Input/Input';
-import Sidebar from '../../src/components/Sidebar/Sidebar';
-import DialogBox from '../../src/components/DialogBox/DialogBox';
-import PageCount from '../../src/components/Pagination/PageCount';
-import PageControls from '../../src/components/Pagination/PageControls';
 import Modal from '../../src/components/ui/display/Modal/Modal';
+import PageControls from '../../src/components/Pagination/PageControls';
+import PageCount from '../../src/components/Pagination/PageCount';
+import Sidebar from '../../src/components/Sidebar/Sidebar';
 import Spinner from '../../src/components/Spinner/Spinner';
+import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
+import { Box } from '../../src/components/ui/layout/Box/styled';
+import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
+import { List as ScrapList } from '../../src/components/ui/display/List/styled';
 import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
+import { UserMenu } from '../../src/components/UserMenu/styled';
 
-import { validateToken } from '../../src/utils/auth';
-import { useDatoCMS } from '../../src/hooks/useDatoCMS';
 import rootPath from '../../src/utils/apiPaths';
+import { useDatoCMS } from '../../src/hooks/useDatoCMS';
+import { usePageOperations } from '../../src/hooks/usePageOperations';
+import { validateToken } from '../../src/utils/auth';
 
 import {
-  ScrapListItem,
   Header,
-  SubmitButton,
   ScrapBox,
+  ScrapListItem,
+  SubmitButton,
 } from '../../src/components/ScrapPage/styled';
-import { usePageOperations } from '../../src/hooks/usePageOperations';
 
 const ScrapPage = ({ githubName, githubId, userId, page }) => {
   const [message, setMessage] = useState('');
@@ -98,7 +98,6 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
     }
   };
 
-  console.log(datoContent);
   return (
     <>
       <AlurakutMenu
