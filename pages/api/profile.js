@@ -1,13 +1,13 @@
 import { SiteClient } from 'datocms-client';
 
 import axiosCustom from '../../src/utils/axiosConfig';
-import sendRequest from '../../src/utils/requestHandler';
+import sendRequest from '../../src/utils/ncFactory';
 import { validateToken } from '../../src/utils/auth';
 
 const TOKEN = process.env.PRIVATE_KEY;
 const client = new SiteClient(TOKEN);
 
-sendRequest
+export default sendRequest()
   .use(async (request, response, next) => {
     const { isAuthorized, githubId, userId } = validateToken(
       request.headers.cookie
@@ -77,5 +77,3 @@ sendRequest
 
     throw { status: 403 };
   });
-
-export default sendRequest;

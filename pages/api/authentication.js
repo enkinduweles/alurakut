@@ -4,14 +4,14 @@ import jwt from 'jsonwebtoken';
 import { SiteClient } from 'datocms-client';
 
 import axiosCustom from '../../src/utils/axiosConfig';
-import sendRequest from '../../src/utils/requestHandler';
+import sendRequest from '../../src/utils/ncFactory';
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const client = new SiteClient(PRIVATE_KEY);
 
 const USER_MODEL = '1317096';
 
-sendRequest.post(async (request, response) => {
+export default sendRequest().post(async (request, response) => {
   let token = null;
 
   const { userName } = request.body;
@@ -112,5 +112,3 @@ sendRequest.post(async (request, response) => {
 
   throw { status: 400, message: 'You should place a valid github user' };
 });
-
-export default sendRequest;

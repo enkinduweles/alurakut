@@ -67,7 +67,7 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
   }, [getData, userId, isFirstLoading, page]);
 
   useEffect(() => {
-    if (datoContent) {
+    if (datoContent && datoContent.counters.lastPage !== 0) {
       if (datoContent.counters.lastPage < page) {
         router.push(
           `/${rootPath.scrap.page}/${githubName}?userId=${userId}${
@@ -162,39 +162,38 @@ const ScrapPage = ({ githubName, githubId, userId, page }) => {
             </Box>
 
             <Box>
+              <Header>
+                Página de recados de {userName} ({datoContent.scraps.length})
+              </Header>
+
               {datoContent && datoContent.scraps.length !== 0 ? (
                 <>
-                  <Header>
-                    Página de recados de {userName} ({datoContent.scraps.length}
-                    )
-                  </Header>
-
                   <PageCount
                     counters={datoContent.counters}
                     selectedItems={itemsToDelete}
                     onShowModal={onShowModal}
                   />
-                  {datoContent.length !== 0 && (
-                    <ScrapList>
-                      {datoContent.scraps.map(
-                        ({ writer: { name, avatar }, message, id }) => {
-                          return (
-                            <ScrapListItem key={id}>
-                              <Card
-                                title={name}
-                                bodyContent={message}
-                                width={60}
-                                height={60}
-                                src={avatar}
-                                contentId={id}
-                                onCheckCard={onCheckCard}
-                              />
-                            </ScrapListItem>
-                          );
-                        }
-                      )}
-                    </ScrapList>
-                  )}
+
+                  <ScrapList>
+                    {datoContent.scraps.map(
+                      ({ writer: { name, avatar }, message, id }) => {
+                        return (
+                          <ScrapListItem key={id}>
+                            <Card
+                              title={name}
+                              bodyContent={message}
+                              width={60}
+                              height={60}
+                              src={avatar}
+                              contentId={id}
+                              onCheckCard={onCheckCard}
+                            />
+                          </ScrapListItem>
+                        );
+                      }
+                    )}
+                  </ScrapList>
+
                   <PageControls
                     rootPath={rootPath.scrap.page}
                     requestProcess={status}

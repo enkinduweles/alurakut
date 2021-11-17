@@ -70,7 +70,7 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
   }, [getData, userId, page, isFirstLoading]);
 
   useEffect(() => {
-    if (datoContent) {
+    if (datoContent && datoContent.counters.lastPage !== 0) {
       if (datoContent.counters.lastPage < page) {
         router.push(
           `/${rootPath.community.page}/${githubName}?userId=${userId}${
@@ -194,7 +194,8 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
                 </>
               ) : (
                 <NoContentMessage>
-                  <strong>{githubName}</strong>, you don&apos;t have friends yet
+                  <strong>{githubName}</strong>, you don&apos;t participate of
+                  any community yet
                 </NoContentMessage>
               )}
             </Box>

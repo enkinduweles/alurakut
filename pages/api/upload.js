@@ -1,7 +1,8 @@
 import formidable from 'formidable';
 import { SiteClient } from 'datocms-client';
 
-import sendRequest from '../../src/utils/requestHandler';
+import sendRequest from '../../src/utils/ncFactory';
+import { validateToken } from '../../src/utils/auth';
 
 export const config = {
   api: {
@@ -11,8 +12,8 @@ export const config = {
 
 const form = formidable();
 
-sendRequest
-  .use(async (req, res, next) => {
+export default sendRequest()
+  .use(async (request, res, next) => {
     const { isAuthorized } = validateToken(request.headers.cookie);
 
     if (isAuthorized) {
@@ -20,7 +21,7 @@ sendRequest
         file.path = `${form.uploadDir}\\${file.name}`;
       });
 
-      form.parse(req, (err, fields, files) => {
+      form.parse(request, (err, fields, files) => {
         if (err) {
           next(err);
           return;
@@ -34,7 +35,7 @@ sendRequest
           filePath: path,
         };
 
-        req.uploadedFile = uploadImg;
+        request.uploadedFile = uploadImg;
         next();
       });
 
@@ -58,5 +59,3 @@ sendRequest
       upload,
     });
   });
-
-export default sendRequest;

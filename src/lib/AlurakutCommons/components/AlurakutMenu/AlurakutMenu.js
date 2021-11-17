@@ -7,8 +7,6 @@ import NextImage from '../../../../components/NextImage/NextImage';
 import Link from '../../../../components/ui/navigation/Link/Link';
 import { Logo, AlurakutMenuWrapper, LogoutButton } from './styled';
 
-// import {logout} from '../../../../utils/auth'
-
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 

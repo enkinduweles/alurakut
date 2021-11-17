@@ -1,8 +1,8 @@
 import cookie from 'cookie';
 
-import sendRequest from '../../src/utils/requestHandler';
+import sendRequest from '../../src/utils/ncFactory';
 
-sendRequest.post(async (request, response) => {
+export default sendRequest().post(async (request, response) => {
   response.setHeader(
     'Set-Cookie',
     cookie.serialize('TOKEN', '', {
@@ -13,5 +13,3 @@ sendRequest.post(async (request, response) => {
 
   response.end();
 });
-
-export default sendRequest;

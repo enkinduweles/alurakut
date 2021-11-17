@@ -66,7 +66,7 @@ const FriendsPage = ({ githubName, userId, githubId, page }) => {
   }, [getData, userId, page, isFirstLoading]);
 
   useEffect(() => {
-    if (datoContent) {
+    if (datoContent && datoContent.counters.lastPage !== 0) {
       if (datoContent.counters.lastPage < page) {
         router.push(
           `/${rootPath.friend.page}/${githubName}?userId=${userId}${
