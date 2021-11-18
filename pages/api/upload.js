@@ -1,5 +1,6 @@
 import formidable from 'formidable';
 import { SiteClient } from 'datocms-client';
+import { readFile } from 'fs/promises';
 
 import sendRequest from '../../src/utils/ncFactory';
 import { validateToken } from '../../src/utils/auth';
@@ -10,15 +11,15 @@ export const config = {
   },
 };
 
-const form = formidable();
+const form = formidable({ uploadDir: './public' });
 
 export default sendRequest()
-  .use(async (request, res, next) => {
+  .use(async (request, response, next) => {
     const { isAuthorized } = validateToken(request.headers.cookie);
 
     if (isAuthorized) {
       form.on('fileBegin', (fileName, file) => {
-        file.path = `${form.uploadDir}\\${file.name}`;
+        file.path = `${form.uploadDir}/${file.name}`;
       });
 
       form.parse(request, (err, fields, files) => {
@@ -44,8 +45,8 @@ export default sendRequest()
 
     throw { status: 401 };
   })
-  .post(async (req, res) => {
-    const { filePath } = req.uploadedFile;
+  .post(async (request, response) => {
+    const { filePath } = request.uploadedFile;
 
     const TOKEN = process.env.PRIVATE_KEY;
     const client = new SiteClient(TOKEN);
@@ -55,7 +56,5 @@ export default sendRequest()
       path,
     });
 
-    res.status(201).json({
-      upload,
-    });
+    response.status(201).json({ upload });
   });

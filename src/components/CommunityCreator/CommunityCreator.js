@@ -16,15 +16,12 @@ import {
 const CommunityCreator = ({
   showModal,
   onCreateCommunity,
-  cleanErrors,
-  currentPage,
   error,
   status,
   userName,
   userId,
   rootPath,
 }) => {
-  const [foundCommunity, setFoundCommunity] = useState({});
   const [communityName, setCommunityName] = useState('');
   const [communityDescription, setCommunityDescription] = useState('');
   const [uploadedImage, setUploadedImage] = useState(null);
