@@ -131,6 +131,7 @@ const Home = ({ githubName, githubId, userId }) => {
                   rootPath={rootPath.community.page}
                   userName={githubName}
                   userId={userId}
+                  type="community"
                 />
               ) : (
                 <NoContentMessage>

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { MdFileUpload } from 'react-icons/md';
 import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { MdRemoveRedEye } from 'react-icons/md';
+import { toast } from 'react-hot-toast';
 
-import NextImage from '../NextImage/NextImage';
 import Input from '../ui/inputs/Input/Input';
-import Spinner from '../Spinner/Spinner';
 
 import {
   PreviewPickedImage,
   CreateCommunity,
+  FileInput,
   FileInputWrapper,
   RegisterCommunityForm,
+  PreviewButton,
 } from './styled';
 
 const CommunityCreator = ({
@@ -24,8 +25,9 @@ const CommunityCreator = ({
 }) => {
   const [communityName, setCommunityName] = useState('');
   const [communityDescription, setCommunityDescription] = useState('');
-  const [uploadedImage, setUploadedImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [urlImage, setUrlImage] = useState('');
+  const [thumbnail, setThumbnail] = useState('');
+  const [showThumbnail, setShowThumbnail] = useState(false);
 
   useEffect(() => {
     if (!error && status === 'completed') {
@@ -34,15 +36,24 @@ const CommunityCreator = ({
   }, [showModal, error, status]);
 
   console.log(error);
-  const createCommunityHandler = (event) => {
+  const createCommunityHandler = async (event) => {
     event.preventDefault();
 
-    const thumbnailValue = uploadedImage ? uploadedImage.id : null;
+    let thumbnailId = null;
+    if (thumbnail) {
+      toast.loading('Loading...');
+      const { data: responseData } = await axios.post('/api/upload', {
+        thumbnail,
+      });
+      thumbnailId = responseData.upload.id;
+    }
+
+    toast.remove();
 
     const community = {
       name: communityName,
       description: communityDescription,
-      thumbnail: { uploadId: thumbnailValue },
+      thumbnail: thumbnailId ? { uploadId: thumbnailId } : null,
       userId,
       author: userName,
     };
@@ -54,40 +65,34 @@ const CommunityCreator = ({
     });
   };
 
-  const pickUpImage = async (event) => {
-    const file = event.target.files[0];
+  const previewThumbnail = () => {
+    setThumbnail(urlImage);
+  };
 
-    const formData = new FormData();
-    formData.append('file', file);
+  const imageURLChange = (event) => {
+    event.preventDefault();
+    const valueInput = event.target.value;
 
-    setIsLoading(true);
-
-    try {
-      const { data } = await axios.post('/api/upload', formData);
-      const { upload } = data;
-
-      setUploadedImage({ id: upload.id, url: upload.url });
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-      setUploadedImage('');
+    if (valueInput.trim() !== '') {
+      setUrlImage(event.target.value);
     }
   };
 
   return (
     <RegisterCommunityForm onSubmit={createCommunityHandler}>
-      <PreviewPickedImage hasImage={uploadedImage} isLoading={isLoading}>
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <FileInputWrapper htmlFor="fileInput" hasImage={uploadedImage}>
-            {uploadedImage ? null : 'Selecionar arquivo'}
-            <MdFileUpload />
-            <input type="file" id="fileInput" onChange={pickUpImage} />
-          </FileInputWrapper>
+      <PreviewPickedImage showImage={showThumbnail}>
+        {!thumbnail && (
+          <span>Coloque a URL da imagem e clique no botão de visualizar</span>
         )}
-        {uploadedImage && <NextImage src={uploadedImage.url} />}
+        {thumbnail && <img src={thumbnail} alt="" />}
       </PreviewPickedImage>
+
+      <FileInputWrapper>
+        <FileInput placeholder="Url da imagem" onChange={imageURLChange} />
+        <PreviewButton type="button">
+          <MdRemoveRedEye onClick={previewThumbnail} />
+        </PreviewButton>
+      </FileInputWrapper>
       <Input
         label="Nome"
         placeholder="digite um nome para sua comunidade"

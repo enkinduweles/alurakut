@@ -1,13 +1,8 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Form } from '../ui/layout/Form/styled';
 import { Button } from '../ui/inputs/Button/styled';
-
-const centralizeButton = css`
-  position: absolute;
-  bottom: 0.8rem;
-  right: 0.8rem;
-`;
+import Input from '../ui/inputs/Input/Input';
 
 export const PreviewWrapper = styled.div`
   display: flex;
@@ -15,57 +10,40 @@ export const PreviewWrapper = styled.div`
   align-items: center;
 `;
 
-export const PreviewPickedImage = styled.div`
+export const PreviewPickedImage = styled.figure`
   width: 100%;
-  height: 15rem;
-  align-self: center;
-  ${({ hasImage }) => (!hasImage ? 'background-color: #ced4da' : null)};
+  height: 18rem;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  ${({ showImage }) => (!showImage ? 'background-color: #ced4da' : null)};
+  margin-bottom: 1rem;
 
-  > div {
+  > span {
+    font-size: 1.4rem;
+    text-align: center;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2;
   }
 
-  > figure {
-    opacity: ${({ hasImage, isLoading }) =>
-      hasImage && isLoading ? '0.7' : '1'};
+  > img {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
   }
 `;
 
-export const FileInputWrapper = styled.label`
-  cursor: pointer;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 0.3rem 1.2rem;
-  background-color: var(--colorPrimary);
-  color: white;
-  border: none;
-  outline: none;
-  border-radius: 4px;
-  font-weight: bold;
+export const FileInput = styled(Input)`
+  > input {
+    font-size: 1.2rem;
+    border-radius: 0;
+    box-shadow: none;
+  }
+`;
+export const FileInputWrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-  ${({ hasImage }) => (hasImage ? centralizeButton : null)}
-
-  > svg {
-    font-size: 2.4rem;
-    align-self: flex-end;
-    margin-left: ${({ hasImage }) => (hasImage ? 0 : '0.8rem')};
-  }
-
-  input[type='file'] {
-    display: none;
-  }
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  width: 100%;
 `;
 
 export const WarningMessage = styled.p`
@@ -97,6 +75,14 @@ export const RegisterCommunityForm = styled(Form)`
 export const CreateCommunity = styled(Button)`
   align-self: flex-end;
   margin-top: 1.6rem;
+`;
+export const PreviewButton = styled(Button)`
+  padding: 0.3rem 0.8rem;
+  border-radius: 0;
+
+  > svg {
+    font-size: 1.6rem;
+  }
 `;
 
 export const ControlsWrapper = styled.div`

@@ -19,6 +19,7 @@ import { List } from '../../src/components/ui/display/List/styled';
 import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
 import { UserMenu } from '../../src/components/UserMenu/styled';
 
+import defaulAvatar from '../../public/default_avatar.svg';
 import rootPath from '../../src/utils/apiPaths';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
 import { usePageOperations } from '../../src/hooks/usePageOperations';
@@ -163,6 +164,7 @@ const FriendsPage = ({ githubName, userId, githubId, page }) => {
                   <List>
                     {datoContent.friends.map(
                       ({ name, avatar, githubId, location, id }) => {
+                        const avatarValue = avatar ? avatar : defaultAvatar;
                         return (
                           <ListItemFriend key={githubId}>
                             <Card

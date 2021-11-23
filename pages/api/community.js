@@ -113,27 +113,11 @@ export default sendRequest()
         }`,
       });
 
-      let thumbnail = {};
-
-      if (!body.thumbnail.uploadId) {
-        const { data: defaultThumbnail } = await axiosCustom.post('/', {
-          query: `query {
-            allUploads(filter: {tags: {contains: "community"}}) {
-              id
-              url
-            }
-          }`,
-        });
-        thumbnail = { uploadId: defaultThumbnail.data.allUploads[0].id };
-      } else {
-        thumbnail = body.thumbnail;
-      }
-
       const newCommunity = await client.items.create({
         itemType: COMMUNITY_MODEL,
         ...request.body,
         members: [userId],
-        thumbnail,
+        thumbnail: body.thumbnail,
       });
 
       const { user } = communitiesData.data;

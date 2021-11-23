@@ -13,7 +13,6 @@ const Modal = ({ children, showModal }) => {
     const overlayClickHandler = (event) => {
       const isClickInsideElement = refModal.contains(event.target);
 
-      console.log(isClickInsideElement);
       if (!isClickInsideElement) {
         showModal();
       }
@@ -25,10 +24,6 @@ const Modal = ({ children, showModal }) => {
       document.removeEventListener('click', overlayClickHandler);
     };
   }, [showModal]);
-
-  useEffect(() => {
-    console.log('Render cycle finished Modal.js');
-  });
 
   useEffect(() => {
     setActiveTransition(true);

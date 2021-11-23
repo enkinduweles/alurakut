@@ -1,5 +1,8 @@
 import React from 'react';
 
+import defaultImage from '../../../public/default_image.svg';
+import defaultAvatar from '../../../public/default_avatar.svg';
+
 import NextImage from '../NextImage/NextImage';
 import {
   ProfileList,
@@ -19,6 +22,11 @@ const ProfileRelations = ({
   userName,
   userId,
 }) => {
+  let defaultSrc = defaultAvatar;
+  if (type === 'community') {
+    defaultSrc = defaultImage;
+  }
+
   return (
     <>
       <Header className="smallTitle">
@@ -37,7 +45,7 @@ const ProfileRelations = ({
                     : `?userId=${item.githubId}`
                 } `}
               >
-                <NextImage src={src} alt={item.name} />
+                <NextImage src={src ? src : defaultSrc} alt={item.name} />
 
                 <Label>{item.name}</Label>
               </Link>

@@ -19,18 +19,15 @@ import { List } from '../../src/components/ui/display/List/styled';
 import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
 import { UserMenu } from '../../src/components/UserMenu/styled';
 
+import placeHolderImage from '../../public/default_image.svg';
 import rootPath from '../../src/utils/apiPaths';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
 import { usePageOperations } from '../../src/hooks/usePageOperations';
 import { validateToken } from '../../src/utils/auth';
 
 import {
-  Badge,
-  ButtonWrapper,
   CreateCommunity,
-  CounterWrapper,
   Header,
-  LeaveOutCommunity,
   ListItemCommunity,
 } from '../../src/components/CommunitiesPage/styled';
 
@@ -120,13 +117,13 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
         isMenuOpened={isMenuOpened}
         showMenu={onShowMenu}
         userName={githubName}
-        id={githubId}
+        id={userId}
       />
       {isMenuOpened && (
         <Drawer showMenu={onShowMenu} isMenuOpened={isMenuOpened}>
           <UserMenu
             userName={githubName}
-            id={githubId}
+            id={userId}
             width={50}
             height={50}
             src={datoContent.avatar}
@@ -138,7 +135,7 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
           <GridItem templateArea="profileArea">
             <Sidebar
               userName={githubName}
-              id={githubId}
+              id={userId}
               width={130}
               height={130}
               src={datoContent.avatar}
@@ -167,7 +164,9 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
                   <List>
                     {datoContent.communities.map(
                       ({ name, members, thumbnail, id }) => {
-                        const thumnailValue = thumbnail ? thumbnail.url : null;
+                        const thumnailValue = thumbnail
+                          ? thumbnail.url
+                          : placeHolderImage;
                         return (
                           <ListItemCommunity key={id}>
                             <Card

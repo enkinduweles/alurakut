@@ -1,6 +1,5 @@
 import React from 'react';
 import NextImage from '../../../NextImage/NextImage';
-import defaultAvatar from '../../../../../public/default_avatar.svg';
 
 const Avatar = ({ src, width, height, round }) => {
   return (
@@ -8,7 +7,7 @@ const Avatar = ({ src, width, height, round }) => {
       width={width}
       height={height}
       round={round}
-      src={src ? src : defaultAvatar}
+      src={src}
       layout="fill"
       priority
     />

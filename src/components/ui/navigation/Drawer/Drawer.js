@@ -13,7 +13,6 @@ const Drawer = ({ children, showMenu }) => {
     const overlayClickHandler = (event) => {
       const isClickInsideElement = refModal.contains(event.target);
 
-      console.log(isClickInsideElement);
       if (!isClickInsideElement) {
         showMenu();
       }
