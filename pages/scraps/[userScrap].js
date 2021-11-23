@@ -17,7 +17,7 @@ import { AlurakutMenu } from '../../src/lib/AlurakutCommons';
 import { Box } from '../../src/components/ui/layout/Box/styled';
 import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
 import { List as ScrapList } from '../../src/components/ui/display/List/styled';
-import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
+import NoContentMessage from '../../src/components/NoContentMessage/NoContentMessage';
 import { UserMenu } from '../../src/components/UserMenu/styled';
 
 import rootPath from '../../src/utils/apiPaths';

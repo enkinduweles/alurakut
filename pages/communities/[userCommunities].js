@@ -16,7 +16,7 @@ import { AlurakutMenu } from '../../src/lib/AlurakutCommons/index';
 import { Box } from '../../src/components/ui/layout/Box/styled';
 import { Grid, GridItem } from '../../src/components/ui/layout/Grid/styled';
 import { List } from '../../src/components/ui/display/List/styled';
-import { NoContentMessage } from '../../src/components/NoContentMessage/styled';
+import NoContentMessage from '../../src/components/NoContentMessage/NoContentMessage';
 import { UserMenu } from '../../src/components/UserMenu/styled';
 
 import placeHolderImage from '../../public/default_image.svg';

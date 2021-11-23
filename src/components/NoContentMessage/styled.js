@@ -1,13 +1,11 @@
 import styled from 'styled-components';
 
-export const NoContentMessage = styled.p`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const Paragraph = styled.p`
   height: 50px;
   font-size: 20px;
   color: #f368e0;
-  > svg {
-    margin-right: 8px;
-  }
+  font-size: 1.6rem;
+  text-align: center;
+  padding: 0 1rem;
+  margin-top: 2rem;
 `;

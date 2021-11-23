@@ -10,7 +10,7 @@ import Spinner from '../src/components/Spinner/Spinner';
 import { Box } from '../src/components/ui/layout/Box/styled';
 import { Divider } from '../src/components/ui/display/Divider/styled';
 import { Grid, GridItem } from '../src/components/ui/layout/Grid/styled';
-import { NoContentMessage } from '../src/components/NoContentMessage/styled';
+import NoContentMessage from '../src/components/NoContentMessage/NoContentMessage';
 import { UserMenu } from '../src/components/UserMenu/styled';
 
 import {
