@@ -17,6 +17,14 @@ export const ListItemFriend = styled(ListItem)`
   margin-bottom: 0;
   position: relative;
 
+  figure {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    img {
+      border-radius: 10px;
+    }
+  }
+
   &:nth-child(even) {
     background-color: var(--backgroundPrimary);
   }

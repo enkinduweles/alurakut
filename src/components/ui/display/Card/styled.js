@@ -18,6 +18,7 @@ export const Checkbox = styled(Input)`
 export const CardWrapper = styled.div`
   display: grid;
   grid-template-columns: 2rem 8rem 1fr;
+  align-items: center;
   grid-gap: 1.6rem;
   width: 100%;
 `;
@@ -35,6 +36,7 @@ export const Overlay = styled.div`
 export const CardContent = styled(Box)`
   background-color: inherit;
   padding: 0;
+  margin: 0;
 `;
 export const TitleWrapper = styled(Box)`
   background-color: inherit;
@@ -42,7 +44,7 @@ export const TitleWrapper = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.8rem;
+  margin: 0;
   > svg {
     font-size: 1.8rem;
     cursor: pointer;
@@ -57,6 +59,7 @@ export const Body = styled.p`
   width: 80%;
   font-size: 1.4rem;
   color: #555;
+  margin-top: 0.8rem;
 `;
 
 export const CardTitle = styled(Link)`

@@ -1,64 +1,35 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-const listItemStyle = css`
-  li {
-    font-size: 1.4rem;
-    color: #5a5a5a;
-    display: flex;
-    flex-direction: column;
+import { List, ListItem } from '../../../../components/ui/display/List/styled';
 
-    .OrkutNostalgicIconSet__title {
-      display: block;
-      font-style: italic;
-    }
-    .OrkutNostalgicIconSet__number {
-      min-width: 15px;
+export const OrkutNostalgicIconSetList = styled(List)`
+  display: flex;
+  margin-top: 1.5rem;
+`;
+
+export const OrkutNostalgicIconSetItem = styled(ListItem)`
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+
+  > a {
+    width: 60px;
+
+    > div {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-
-      .OrkutNostalgicIconSet__iconComplex {
-        position: relative;
-
-        min-width: 1.5rem;
-        min-height: 1.5rem;
-        margin-right: 5px;
-      }
-
-      .OrkutNostalgicIconSet__iconSample {
-        position: relative;
-
-        min-width: 1.5rem;
-        min-height: 1.5rem;
-        margin-right: 7px;
-      }
+      gap: 5px;
     }
   }
 `;
 
-export const OrkutNostalgicIconSetList = styled.ul`
-  list-style: none;
-  display: flex;
-  gap: 20px;
-
-  ${listItemStyle}
+export const Header = styled.h2`
+  margin-top: 3rem;
+  font-size: 2rem;
 `;
 
-export const PersonalityIconSet = styled.ul`
-  display: flex;
-  gap: 20px;
-  cursor: pointer;
-  ${listItemStyle}
-`;
-
-export const IconsSetContainer = styled.div`
-  margin-top: 3.2rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-
-  @media (min-width: 860px) {
-    justify-content: initial;
-  }
+export const IconWrapper = styled.div`
+  width: 15px;
+  height: 15px;
 `;

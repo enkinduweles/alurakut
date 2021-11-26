@@ -7,8 +7,10 @@ import { Box } from '../ui/layout/Box/styled';
 import { Divider } from '../ui/display/Divider/styled';
 import NextImage from '../NextImage/NextImage';
 
-import friendsIcon from '.././../../public/friends_icon.svg';
-import communityIcon from '.././../../public/community_icon.svg';
+import friendsIcon from '../../../public/friends_icon.svg';
+import communityIcon from '../../../public/community_icon.svg';
+import cameraIcon from '../../../public/camera_icon.svg';
+import noteIcon from '../../../public/note_icon.svg';
 
 import {
   NavigationItem,
@@ -52,12 +54,7 @@ const Sidebar = ({ userName, id, width, height, src, className }) => {
           <NavigationItem>
             <Link href={`/scraps/${userName}?userId=${id}`}>
               <IconWrapper>
-                <NextImage
-                  src={`${BASE_URL}/icons/book.svg`}
-                  alt=""
-                  width={15}
-                  height={15}
-                />
+                <NextImage src={noteIcon} alt="" width={15} height={15} />
               </IconWrapper>
               Recados
             </Link>
@@ -66,12 +63,7 @@ const Sidebar = ({ userName, id, width, height, src, className }) => {
           <NavigationItem>
             <Link href="/">
               <IconWrapper>
-                <NextImage
-                  src={`${BASE_URL}/icons/camera.svg`}
-                  alt=""
-                  width={15}
-                  height={15}
-                />
+                <NextImage src={cameraIcon} alt="" width={15} height={15} />
               </IconWrapper>
               Fotos
             </Link>

@@ -19,6 +19,7 @@ import { List } from '../../src/components/ui/display/List/styled';
 import NoContentMessage from '../../src/components/NoContentMessage/NoContentMessage';
 import { UserMenu } from '../../src/components/UserMenu/styled';
 
+import unfollow from '../../public/unfollow_icon.svg';
 import defaulAvatar from '../../public/default_avatar.svg';
 import rootPath from '../../src/utils/apiPaths';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
@@ -159,17 +160,18 @@ const FriendsPage = ({ githubName, userId, githubId, page }) => {
                     counters={datoContent.counters}
                     selectedItems={itemsToDelete}
                     onShowModal={() => onShowModal('DIALOGBOX')}
+                    icon={unfollow}
                   />
 
                   <List>
                     {datoContent.friends.map(
-                      ({ name, avatar, githubId, location, id }) => {
+                      ({ name, avatar, githubId, state, id }) => {
                         const avatarValue = avatar ? avatar : defaultAvatar;
                         return (
                           <ListItemFriend key={githubId}>
                             <Card
                               title={name}
-                              bodyContent={location}
+                              bodyContent={state}
                               width={60}
                               height={60}
                               src={avatar}
@@ -192,7 +194,7 @@ const FriendsPage = ({ githubName, userId, githubId, page }) => {
                   />
                 </>
               ) : (
-                <NoContentMessage>
+                <NoContentMessage withDivider>
                   <strong>{githubName}</strong>, you don&apos;t have friends yet
                 </NoContentMessage>
               )}

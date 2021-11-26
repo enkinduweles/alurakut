@@ -24,23 +24,19 @@ const defineTypeGrid = (type) => {
 };
 
 export const Grid = styled.main`
-  display: grid;
   width: 100%;
-  grid-gap: 1rem;
   margin: 0 auto;
-  /* max-width: 60rem; */
   max-width: 35rem;
   padding: 1.6rem;
-
-  /* display: ${({ isMenuOpened }) => (isMenuOpened ? 'none' : null)}; */
 
   @media (min-width: 425px) {
     max-width: 48rem;
   }
-  /* @media (min-width: 600px) {
-    max-width: 55rem;
-  } */
+
   @media (min-width: 860px) {
+    display: grid;
+    grid-gap: 0.8rem;
+
     max-width: 111rem;
     grid-template-areas: ${(props) => {
       return defineTypeGrid(props.type).templateArea;

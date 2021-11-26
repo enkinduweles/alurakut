@@ -2,12 +2,13 @@ import { Divider } from '../ui/display/Divider/styled';
 
 import { Paragraph } from './styled';
 
-const NoContentMessage = ({ children }) => {
+const NoContentMessage = ({ children, withDivider, className }) => {
   return (
-    <div>
-      <Divider />
-      <Paragraph>{children}</Paragraph>
-    </div>
+    <>
+      {withDivider && <Divider />}
+
+      <Paragraph className={className}>{children}</Paragraph>
+    </>
   );
 };
 

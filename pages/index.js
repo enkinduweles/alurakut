@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import Drawer from '../src/components/ui/navigation/Drawer/Drawer';
+import Link from '../src/components/ui/navigation/Link/Link';
 import ProfileRelations from '../src/components/ProfileRelations/ProfileRelations';
 import Sidebar from '../src/components/Sidebar/Sidebar';
 import Spinner from '../src/components/Spinner/Spinner';
@@ -43,20 +44,6 @@ const Home = ({ githubName, githubId, userId }) => {
     });
   }, [getData, userId]);
 
-  const changePersonalityStatusHandler = (name, value) => {
-    if (datoContent.personalityStatus[name] === value) {
-      return;
-    }
-
-    updateData({
-      content: 'home',
-      queryParams: {
-        userId,
-      },
-      body: { personalityName: name, value },
-    });
-  };
-
   return (
     <>
       <AlurakutMenu
@@ -89,16 +76,12 @@ const Home = ({ githubName, githubId, userId }) => {
           </GridItem>
           <GridItem templateArea="mainArea">
             <Box>
-              <h1 className="title">Bem vindo, {githubName}</h1>
-              <Divider />
+              <h2>Bem vindo, {githubName}</h2>
+              {/* <Divider /> */}
               <OrkutNostalgicIconSet
                 userName={githubName}
                 id={userId}
                 scraps={datoContent.counters.totalScraps}
-                reliable={datoContent.personalityStatus.reliable}
-                sexy={datoContent.personalityStatus.sexy}
-                nice={datoContent.personalityStatus.nice}
-                onChangePersonalityStatus={changePersonalityStatusHandler}
               />
             </Box>
           </GridItem>
@@ -106,10 +89,9 @@ const Home = ({ githubName, githubId, userId }) => {
             <Box>
               {datoContent && datoContent.friends.length !== 0 ? (
                 <ProfileRelations
-                  title="Friends"
+                  title="Amigos"
                   data={datoContent.friends}
                   type="avatar"
-                  destination="friends"
                   total={datoContent.counters.totalFriends}
                   rootPath={rootPath.friend.page}
                   userName={githubName}
@@ -117,16 +99,19 @@ const Home = ({ githubName, githubId, userId }) => {
                 />
               ) : (
                 <NoContentMessage>
-                  <FaSadCry /> you didn&apos;t add friends yet
+                  Clique{' '}
+                  <Link href={`/${rootPath.friend.page}/userId=${userId}`}>
+                    aqui
+                  </Link>{' '}
+                  para adicionar um amigo
                 </NoContentMessage>
               )}
             </Box>
             <Box>
-              {datoContent && datoContent.friends.length !== 0 ? (
+              {datoContent && datoContent.communities.length !== 0 ? (
                 <ProfileRelations
-                  title="Communities"
+                  title="Comunidades"
                   data={datoContent.communities}
-                  destination="communities"
                   total={datoContent.counters.totalCommunities}
                   rootPath={rootPath.community.page}
                   userName={githubName}
@@ -135,7 +120,11 @@ const Home = ({ githubName, githubId, userId }) => {
                 />
               ) : (
                 <NoContentMessage>
-                  <FaSadCry /> no communities yet
+                  Clique{' '}
+                  <Link href={`/${rootPath.community.page}/userId=${userId}`}>
+                    aqui
+                  </Link>{' '}
+                  para criar ou participar de uma comunidade
                 </NoContentMessage>
               )}
             </Box>

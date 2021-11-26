@@ -1,6 +1,8 @@
 import styled from 'styled-components';
-import { List, ListItem } from '../ui/display/List/styled';
+
 import LinkBase from '../ui/navigation/Link/Link';
+import NoContentMessage from '../NoContentMessage/NoContentMessage';
+import { List, ListItem } from '../ui/display/List/styled';
 
 export const ProfileList = styled(List)`
   display: grid;
@@ -15,9 +17,11 @@ export const ProfileListItem = styled(ListItem)`
   margin: 0;
 `;
 
-export const Link = styled(LinkBase)`
+export const ItemLink = styled(LinkBase)`
   display: inline-block;
   height: 8.5rem;
+  text-align: center;
+  /* width: 100%; */
   position: relative;
   overflow: hidden;
   border-radius: 8px;
@@ -46,13 +50,16 @@ export const SeeAll = styled(LinkBase)`
   font-weight: bold;
 `;
 
-export const Label = styled.label`
-  color: #ffffff;
+export const Label = styled.span`
+  color: #fff;
+  z-index: 2;
+  margin-top: 0.6rem;
+  display: inline-block;
   font-size: 10px;
   position: absolute;
   left: 0;
   bottom: 10px;
-  z-index: 2;
+
   padding: 0 4px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -62,8 +69,12 @@ export const Label = styled.label`
   -webkit-box-orient: vertical;
 `;
 
-export const Header = styled.h3`
+export const Header = styled.h2`
   font-size: 1.6rem;
   padding-left: 0.8rem;
   margin-bottom: 2rem;
+`;
+
+export const Message = styled(NoContentMessage)`
+  font-size: 1.2rem;
 `;

@@ -19,6 +19,7 @@ import { List } from '../../src/components/ui/display/List/styled';
 import NoContentMessage from '../../src/components/NoContentMessage/NoContentMessage';
 import { UserMenu } from '../../src/components/UserMenu/styled';
 
+import leave from '../../public/door_exit_icon.svg';
 import placeHolderImage from '../../public/default_image.svg';
 import rootPath from '../../src/utils/apiPaths';
 import { useDatoCMS } from '../../src/hooks/useDatoCMS';
@@ -159,12 +160,13 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
                     counters={datoContent.counters}
                     selectedItems={itemsToDelete}
                     onShowModal={() => onShowModal('DIALOGBOX')}
+                    icon={leave}
                   />
 
                   <List>
                     {datoContent.communities.map(
                       ({ name, members, thumbnail, id }) => {
-                        const thumnailValue = thumbnail
+                        const thumbnailValue = thumbnail
                           ? thumbnail.url
                           : placeHolderImage;
                         return (
@@ -172,8 +174,10 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
                             <Card
                               title={name}
                               bodyContent={`${members.length} membro(s)`}
-                              src={thumnailValue}
+                              src={thumbnailValue}
                               contentId={id}
+                              width={60}
+                              height={60}
                               onCheckCard={onCheckCard}
                             />
                           </ListItemCommunity>
@@ -192,7 +196,7 @@ const CommunitiesPage = ({ githubName, githubId, userId, page }) => {
                   />
                 </>
               ) : (
-                <NoContentMessage>
+                <NoContentMessage withDivider>
                   <strong>{githubName}</strong>, you don&apos;t participate of
                   any community yet
                 </NoContentMessage>

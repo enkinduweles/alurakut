@@ -31,39 +31,29 @@ export const PageCountWrapper = styled.div`
   gap: 0.8rem;
 `;
 
-// export const CounterWrapper = styled.div`
-
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;
-//   gap: 0.8rem;
-// `;
-
-export const ButtonWrapper = styled.div`
+export const ButtonWrapper = styled.button`
   position: relative;
+  border: 0;
+  outline: none;
+  background-color: transparent;
 `;
 
-export const DeleteItem = styled(Button)`
-  font-size: 1.6rem;
-  padding: 0.3rem 0.8rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #6d6875;
-  gap: 0.6rem;
-  margin-right: 0.6rem;
+export const IconWrapper = styled.div`
+  width: 25px;
+  height: 25px;
+  margin-right: 0.5rem;
 `;
 
 export const Badge = styled.span`
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background-color: var(--backgroundQuarternary);
   color: black;
   position: absolute;
   font-size: 1.2rem;
   right: 0;
-  top: -0.6rem;
+  top: -10px;
   display: flex;
   justify-content: center;
   align-items: center;

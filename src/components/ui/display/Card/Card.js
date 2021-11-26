@@ -16,12 +16,12 @@ const Card = ({
   bodyContent,
   href,
   src,
-  layout,
   width,
   height,
   contentId,
   onCheckCard,
   type,
+  round,
 }) => {
   const [checkboxValue, setCheckboxValue] = useState(false);
 
@@ -40,12 +40,12 @@ const Card = ({
         value={checkboxValue}
         onChange={selectCardHandler}
       />
-      <Cover src={src} width={width} height={height} type />
+      <Cover src={src} width={width} height={height} type round={round} />
       <CardContent>
         <TitleWrapper>
           <CardTitle href="/">{title}</CardTitle>
         </TitleWrapper>
-        <Body>{bodyContent}</Body>
+        {bodyContent && <Body>{bodyContent}</Body>}
       </CardContent>
     </CardWrapper>
   );

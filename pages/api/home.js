@@ -29,9 +29,6 @@ export default sendRequest()
       query: `query {
       user(filter: {id: {eq: "${userId}"}}) {
         avatar
-        nice
-        sexy
-        reliable
       }
       allUsers(filter: {friends: {allIn: "${userId}"}}, first: "${limitBy}", skip: "${start}") {
         name
@@ -73,7 +70,7 @@ export default sendRequest()
       _allScrapsMeta,
     } = responseData.data;
 
-    const { avatar, ...personalityStatus } = user;
+    const { avatar } = user;
     const friends = allUsers;
     const communities = allCommunities;
     const totalFriends = _allUsersMeta.count;
@@ -84,7 +81,6 @@ export default sendRequest()
       avatar,
       communities,
       friends,
-      personalityStatus,
       counters: {
         totalCommunities,
         totalFriends,
@@ -93,36 +89,4 @@ export default sendRequest()
     };
 
     response.json(data);
-  })
-  .put(async (request, response) => {
-    const { loggedInUser } = request;
-    const { userId } = request.query;
-
-    if (loggedInUser.userId === userId) {
-      const { personalityName, value: countPersonality } = request.body;
-
-      const { data: responseData } = await axiosCustom.post('/', {
-        query: `query {
-      user(filter: {id: {eq: "${userId}"}}) {
-        ${personalityName}
-      }
-    }`,
-      });
-
-      if (responseData.errors) {
-        const error = new Error('We could not get resources requested');
-        error.statusCode = 422;
-
-        throw error;
-      }
-
-      await client.items.update(userId, {
-        [personalityName]: countPersonality,
-      });
-
-      response.json();
-      return;
-    }
-
-    throw { status: 403 };
   });

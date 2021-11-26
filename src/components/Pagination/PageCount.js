@@ -1,12 +1,14 @@
-import React, { memo } from 'react';
-import { MdDelete } from 'react-icons/md';
+import { memo } from 'react';
 
-import { PageCountWrapper, ButtonWrapper, Badge, DeleteItem } from './styled';
+import NextImage from '../NextImage/NextImage';
+
+import { PageCountWrapper, ButtonWrapper, Badge, IconWrapper } from './styled';
 
 const PageCount = ({
   counters: { firstCountMark, lastCountMark, total },
   selectedItems,
   onShowModal,
+  icon,
 }) => {
   return (
     <PageCountWrapper>
@@ -16,9 +18,9 @@ const PageCount = ({
       {selectedItems.length > 0 && (
         <ButtonWrapper onClick={onShowModal}>
           <Badge>{selectedItems.length}</Badge>
-          <DeleteItem>
-            <MdDelete />
-          </DeleteItem>
+          <IconWrapper>
+            <NextImage src={icon} />
+          </IconWrapper>
         </ButtonWrapper>
       )}
     </PageCountWrapper>
